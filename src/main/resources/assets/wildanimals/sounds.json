@@ -1,0 +1,128 @@
+{
+ "mob.bigCat.bark": 
+ {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/tiger/bark1",
+      "mob/tiger/bark2",
+      "mob/tiger/bark3"
+    ]
+  },
+  "mob.bigCat.death": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/tiger/death"
+    ]
+  },
+  "mob.bigCat.growl": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/tiger/growl1",
+      "mob/tiger/growl2",
+      "mob/tiger/growl3",
+      "mob/tiger/growl4"
+    ]
+  },
+  "mob.bigCat.howl": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/tiger/howl1",
+      "mob/tiger/howl2",
+      "mob/tiger/howl3",
+      "mob/tiger/howl4"
+    ]
+  },
+  "mob.bigCat.hurt": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/tiger/hurt1",
+      "mob/tiger/hurt2",
+      "mob/tiger/hurt3"
+    ]
+  },
+  "mob.bigCat.panting": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/tiger/panting"
+    ]
+  },
+  "mob.bigCat.shake": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/tiger/shake"
+    ]
+  },
+  "mob.bigCat.step": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/tiger/step1",
+      "mob/tiger/step2",
+      "mob/tiger/step3",
+      "mob/tiger/step4",
+      "mob/tiger/step5"
+    ]
+  },
+  "mob.bigCat.whine": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/tiger/whine"
+    ]
+  },
+  "mob.elephant.say": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/elephant/elephant_say"
+    ]
+  },
+  "mob.elephant.hurt": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/elephant/elephant_hurt"
+    ]
+  },
+  "mob.serpent.hurt": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/serpent/snake_die"
+    ]
+  },
+  "mob.serpent.hiss": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/serpent/snake_hiss"
+    ]
+  },
+  "mob.serpent.death": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/serpent/snake_die"
+    ]
+  }
+ }

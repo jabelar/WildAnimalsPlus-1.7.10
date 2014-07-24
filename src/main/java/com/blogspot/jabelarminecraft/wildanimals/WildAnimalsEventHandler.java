@@ -543,7 +543,7 @@ public class WildAnimalsEventHandler
     @SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)
     public void onEvent(BlockEvent.BreakEvent event)
     {
-        
+       
     }
 
     @SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)

@@ -46,8 +46,6 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityElep
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
 import com.blogspot.jabelarminecraft.wildanimals.items.ItemWildAnimalSpawnEggThrowable;
 import com.blogspot.jabelarminecraft.wildanimals.networking.ServerPacketHandler;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterators;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -66,7 +64,6 @@ public class CommonProxy
 {
     
     protected int modEntityID = 0;
-    protected Configuration config;
     
     // fluids
     public Fluid testFluid;
@@ -108,7 +105,6 @@ public class CommonProxy
     
     protected void initConfig(FMLPreInitializationEvent event)
     {
-        // might need to use suggestedConfigFile (event.getSuggestedConfigFile) location to publish
         WildAnimals.configFile = event.getSuggestedConfigurationFile();
         // DEBUG
         System.out.println(WildAnimals.MODNAME+" config path = "+WildAnimals.configFile.getAbsolutePath());
@@ -273,7 +269,7 @@ public class CommonProxy
         // For the biome type you can use an list, but unfortunately the built-in biomeList contains
         // null entries and will crash, so you need to clean up that list.
         // Diesieben07 suggested the following code to remove the nulls and create list of all biomes
-        BiomeGenBase[] allBiomes = Iterators.toArray(Iterators.filter(Iterators.forArray(BiomeGenBase.getBiomeGenArray()), Predicates.notNull()), BiomeGenBase.class);
+        // BiomeGenBase[] allBiomes = Iterators.toArray(Iterators.filter(Iterators.forArray(BiomeGenBase.getBiomeGenArray()), Predicates.notNull()), BiomeGenBase.class);
 
         // savanna
         EntityRegistry.addSpawn(EntityLion.class, 6, 1, 5, EnumCreatureType.creature, BiomeGenBase.savanna); //change the values to vary the spawn rarity, biome, etc.              

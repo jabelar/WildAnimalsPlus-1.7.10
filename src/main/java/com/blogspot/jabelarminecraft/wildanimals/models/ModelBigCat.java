@@ -102,32 +102,32 @@ public void renderBigCat(EntityBigCat entity, float f, float f1, float f2, float
     GL11.glTranslatef(0F, -0.2F, 0F); // need to figure out how to calculate this from scaleFactor (need to manually tweak currently)
 	GL11.glScalef(entity.getScaleFactor(), entity.getScaleFactor(), entity.getScaleFactor());
 
-	if (!this.isChild)
+	if (!isChild)
     {
-        this.head.renderWithRotation(f5);
-        this.body.render(f5);
-        this.leg1.render(f5);
-        this.leg2.render(f5);
-        this.leg3.render(f5);
-        this.leg4.render(f5);
-        this.tail.renderWithRotation(f5);
+        head.renderWithRotation(f5);
+        body.render(f5);
+        leg1.render(f5);
+        leg2.render(f5);
+        leg3.render(f5);
+        leg4.render(f5);
+        tail.renderWithRotation(f5);
     }
     else
     {
         float f6 = 2.0F;
         GL11.glPushMatrix();
         GL11.glTranslatef(0.0F, 5.0F * f5, 2.0F * f5);
-        this.head.renderWithRotation(f5);
+        head.renderWithRotation(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glScalef(1.0F / f6, 1.0F / f6, 1.0F / f6);
         GL11.glTranslatef(-0.05F, 24.0F * f5, 0.0F);
-        this.body.render(f5);
-        this.leg1.render(f5);
-        this.leg2.render(f5);
-        this.leg3.render(f5);
-        this.leg4.render(f5);
-        this.tail.renderWithRotation(f5);
+        body.render(f5);
+        leg1.render(f5);
+        leg2.render(f5);
+        leg3.render(f5);
+        leg4.render(f5);
+        tail.renderWithRotation(f5);
         GL11.glPopMatrix();
     }
 
@@ -147,45 +147,45 @@ public void setLivingAnimations(EntityLivingBase par1EntityLivingBase, float par
 
       if (entityBigCat.isAngry())
       {
-          this.tail.rotateAngleY = 0.0F;
+          tail.rotateAngleY = 0.0F;
       }
       else
       {
-          this.tail.rotateAngleY = MathHelper.cos(par2 * 0.6662F) * 1.4F * par3;
+          tail.rotateAngleY = MathHelper.cos(par2 * 0.6662F) * 1.4F * par3;
       }
 
       if (entityBigCat.isSitting())
       {
-          this.body.setRotationPoint(0.0F, 18.0F, 0.0F);
-          this.body.rotateAngleX = ((float)Math.PI / 4F);
-          this.tail.setRotationPoint(-1.0F, 21.0F, 6.0F);
-          this.leg1.setRotationPoint(-2.5F, 22.0F, 2.0F);
-          this.leg1.rotateAngleX = ((float)Math.PI * 3F / 2F);
-          this.leg2.setRotationPoint(0.5F, 22.0F, 2.0F);
-          this.leg2.rotateAngleX = ((float)Math.PI * 3F / 2F);
-          this.leg3.rotateAngleX = 5.811947F;
-          this.leg3.setRotationPoint(-2.49F, 17.0F, -4.0F);
-          this.leg4.rotateAngleX = 5.811947F;
-          this.leg4.setRotationPoint(0.51F, 17.0F, -4.0F);
+          body.setRotationPoint(0.0F, 18.0F, 0.0F);
+          body.rotateAngleX = ((float)Math.PI / 4F);
+          tail.setRotationPoint(-1.0F, 21.0F, 6.0F);
+          leg1.setRotationPoint(-2.5F, 22.0F, 2.0F);
+          leg1.rotateAngleX = ((float)Math.PI * 3F / 2F);
+          leg2.setRotationPoint(0.5F, 22.0F, 2.0F);
+          leg2.rotateAngleX = ((float)Math.PI * 3F / 2F);
+          leg3.rotateAngleX = 5.811947F;
+          leg3.setRotationPoint(-2.49F, 17.0F, -4.0F);
+          leg4.rotateAngleX = 5.811947F;
+          leg4.setRotationPoint(0.51F, 17.0F, -4.0F);
       }
       else
       {
-          this.body.setRotationPoint(0.0F, 14.0F, 2.0F);
-          this.body.rotateAngleX = ((float)Math.PI / 2F);
-          this.tail.setRotationPoint(-1.0F, 12.0F, 8.0F);
-          this.leg1.setRotationPoint(-2.5F, 16.0F, 7.0F);
-          this.leg2.setRotationPoint(0.5F, 16.0F, 7.0F);
-          this.leg3.setRotationPoint(-2.5F, 16.0F, -4.0F);
-          this.leg4.setRotationPoint(0.5F, 16.0F, -4.0F);
-          this.leg1.rotateAngleX = MathHelper.cos(par2 * 0.6662F) * 1.4F * par3;
-          this.leg2.rotateAngleX = MathHelper.cos(par2 * 0.6662F + (float)Math.PI) * 1.4F * par3;
-          this.leg3.rotateAngleX = MathHelper.cos(par2 * 0.6662F + (float)Math.PI) * 1.4F * par3;
-          this.leg4.rotateAngleX = MathHelper.cos(par2 * 0.6662F) * 1.4F * par3;
+          body.setRotationPoint(0.0F, 14.0F, 2.0F);
+          body.rotateAngleX = ((float)Math.PI / 2F);
+          tail.setRotationPoint(-1.0F, 12.0F, 8.0F);
+          leg1.setRotationPoint(-2.5F, 16.0F, 7.0F);
+          leg2.setRotationPoint(0.5F, 16.0F, 7.0F);
+          leg3.setRotationPoint(-2.5F, 16.0F, -4.0F);
+          leg4.setRotationPoint(0.5F, 16.0F, -4.0F);
+          leg1.rotateAngleX = MathHelper.cos(par2 * 0.6662F) * 1.4F * par3;
+          leg2.rotateAngleX = MathHelper.cos(par2 * 0.6662F + (float)Math.PI) * 1.4F * par3;
+          leg3.rotateAngleX = MathHelper.cos(par2 * 0.6662F + (float)Math.PI) * 1.4F * par3;
+          leg4.rotateAngleX = MathHelper.cos(par2 * 0.6662F) * 1.4F * par3;
       }
 
-      this.head.rotateAngleZ = entityBigCat.getInterestedAngle(par4) + entityBigCat.getShakeAngle(par4, 0.0F);
-      this.body.rotateAngleZ = entityBigCat.getShakeAngle(par4, -0.16F);
-      this.tail.rotateAngleZ = entityBigCat.getShakeAngle(par4, -0.2F);
+      head.rotateAngleZ = entityBigCat.getInterestedAngle(par4) + entityBigCat.getShakeAngle(par4, 0.0F);
+      body.rotateAngleZ = entityBigCat.getShakeAngle(par4, -0.16F);
+      tail.rotateAngleZ = entityBigCat.getShakeAngle(par4, -0.2F);
   }
 
   /**
@@ -197,8 +197,8 @@ public void setLivingAnimations(EntityLivingBase par1EntityLivingBase, float par
 public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity par7Entity)
   {
       super.setRotationAngles(par1, par2, par3, par4, par5, par6, par7Entity);
-      this.head.rotateAngleX = par5 / (180F / (float)Math.PI);
-      this.head.rotateAngleY = par4 / (180F / (float)Math.PI);
-      this.tail.rotateAngleX = par3;
+      head.rotateAngleX = par5 / (180F / (float)Math.PI);
+      head.rotateAngleY = par4 / (180F / (float)Math.PI);
+      tail.rotateAngleX = par3;
   }
 }

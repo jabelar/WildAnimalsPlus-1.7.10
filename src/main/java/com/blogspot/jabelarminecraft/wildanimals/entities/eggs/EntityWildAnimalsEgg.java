@@ -20,29 +20,27 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.projectile.EntityThrowable;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-
-import com.blogspot.jabelarminecraft.wildanimals.items.ItemWildAnimalSpawnEggThrowable;
 
 public class EntityWildAnimalsEgg extends EntityThrowable
 {  
     protected String entityToSpawnName = "";
     protected EntityAnimal entityToSpawn;
-    protected EntityItemWildAnimalsEgg entityItem; // tracks throwable aid rendering
-//    protected int colorBase;
-//    protected int colorSpots;
+    protected int colorBase;
+    protected int colorSpots;
 
     public EntityWildAnimalsEgg(World par1World)
     {
         super(par1World);
     }
 
-    public EntityWildAnimalsEgg(World par1World, EntityLivingBase par2EntityLivingBase)
+    public EntityWildAnimalsEgg(World par1World, EntityLivingBase par2EntityLivingBase, int parColorBase, int parColorSpots)
     {
         super(par1World, par2EntityLivingBase);
+        colorBase = parColorBase;
+        colorSpots = parColorSpots;
     }
     
     public void setEntityToSpawn(String parEntityToSpawnName)
@@ -50,43 +48,10 @@ public class EntityWildAnimalsEgg extends EntityThrowable
         entityToSpawnName = parEntityToSpawnName;
     }
     
-    public void setEntityItem(ItemStack parItemStack)
-    {
-    	// DEBUG
-    	System.out.println("EntityWildAnimalsEgg setEntityItem with Stack "+parItemStack.toString());
-        entityItem = new EntityItemWildAnimalsEgg(worldObj, posX, posY, posZ, parItemStack);
-        worldObj.spawnEntityInWorld(entityItem);
-
-    }
-    
-    public void setEntityItem(ItemWildAnimalSpawnEggThrowable parItem)
-    {
-    	// DEBUG
-    	System.out.println("EntityWildAnimalsEgg setEntityItem "+parItem.toString());
-        entityItem = new EntityItemWildAnimalsEgg(worldObj, posX, posY, posZ, new ItemStack(parItem));
-        worldObj.spawnEntityInWorld(entityItem);
-    }
-    
     public String getEntityToSpawn()
     {
         return entityToSpawnName;
     }
-    
-//    public void setColors(int parColorBase, int parColorSpots) 
-//    {
-//    	colorBase = parColorBase;
-//    	colorSpots = parColorSpots;
-//    }
-//    
-//    public int getColorBase()
-//    {
-//    	return colorBase;
-//    }
-//    
-//    public int getColorSpots()
-//    {
-//    	return colorSpots;
-//    }
 
     /**
      * Called when this EntityThrowable hits a block or entity.
@@ -114,22 +79,17 @@ public class EntityWildAnimalsEgg extends EntityThrowable
 
         if (!worldObj.isRemote)
         {
-        	entityItem.setDead();
             setDead();
         }
     }
-    
-    @Override
-	public void onUpdate()
+
+    public int getColorBase()
     {
-    	super.onUpdate();
-    	if (entityItem != null) // first tick might be null
-    	{
-    		// entity item needs to track entity
-        	entityItem.setPosition(posX, posY, posZ);
-        	entityItem.motionX = motionX;
-        	entityItem.motionY = motionY;
-        	entityItem.motionZ = motionZ;
-    	}
-    }   
+    	return colorBase;
+    }
+    
+    public int getColorSpots()
+    {
+		return colorSpots;  	
+    }
 }

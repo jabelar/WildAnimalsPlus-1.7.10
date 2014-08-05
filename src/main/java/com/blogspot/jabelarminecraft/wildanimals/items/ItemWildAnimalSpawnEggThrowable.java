@@ -48,25 +48,23 @@ public class ItemWildAnimalSpawnEggThrowable extends Item
         colorSpots = parSecondaryColor;
     }
 
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     */
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, 
+          EntityPlayer par3EntityPlayer)
     {
         if (!par3EntityPlayer.capabilities.isCreativeMode)
         {
             --par1ItemStack.stackSize;
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / 
+              (itemRand.nextFloat() * 0.4F + 0.8F));
 
         if (!par2World.isRemote)
         {
-            entityEgg = new EntityWildAnimalsEgg(par2World, par3EntityPlayer);
+            entityEgg = new EntityWildAnimalsEgg(par2World, par3EntityPlayer, colorBase, colorSpots);
             entityEgg.setEntityToSpawn(entityToSpawnNameFull);
             par2World.spawnEntityInWorld(entityEgg);
-            entityEgg.setEntityItem(par1ItemStack);
         }
 
         return par1ItemStack;
@@ -108,9 +106,9 @@ public class ItemWildAnimalSpawnEggThrowable extends Item
      */
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamageForRenderPass(int par1, int par2)
+    public IIcon getIconFromDamageForRenderPass(int parDamageVal, int parRenderPass)
     {
-        return par2 > 0 ? theIcon : super.getIconFromDamageForRenderPass(par1, par2);
+        return parRenderPass > 0 ? theIcon : super.getIconFromDamageForRenderPass(parDamageVal, parRenderPass);
     }
     
     public void setColors(int parColorBase, int parColorSpots)

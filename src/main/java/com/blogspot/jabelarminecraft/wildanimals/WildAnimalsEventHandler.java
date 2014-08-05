@@ -23,6 +23,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.EntityViewRenderEvent.FogColors;
 import net.minecraftforge.client.event.EntityViewRenderEvent.FogDensity;
+import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -630,6 +631,13 @@ public class WildAnimalsEventHandler
     public void onEvent(FogDensity event)
     {
         // must be canceled to affect the fog density
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)
+    public void onEvent(RenderFogEvent event)
+    {
+        
     }
 
     @SideOnly(Side.CLIENT)

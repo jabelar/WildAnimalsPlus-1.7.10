@@ -40,7 +40,6 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityManEatin
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityManEatingTiger;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityTiger;
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
-import com.blogspot.jabelarminecraft.wildanimals.entities.eggs.EntityItemWildAnimalsEgg;
 import com.blogspot.jabelarminecraft.wildanimals.entities.eggs.EntityWildAnimalsEgg;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityElephant;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
@@ -186,7 +185,6 @@ public class CommonProxy
 
         // register generic spawn egg entity.  Make sure that the track changes flag is set true
         registerModEntityFastTracking(EntityWildAnimalsEgg.class, "Spawn Egg");
-        registerModEntityFastTracking(EntityItemWildAnimalsEgg.class, "Spawn Egg Entity");
         
         // uses configuration file to control whether each entity type is registered, to allow user customization
         

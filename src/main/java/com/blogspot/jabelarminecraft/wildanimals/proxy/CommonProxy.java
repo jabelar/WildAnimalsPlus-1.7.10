@@ -43,7 +43,7 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBird
 import com.blogspot.jabelarminecraft.wildanimals.entities.eggs.EntityWildAnimalsEgg;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityElephant;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
-import com.blogspot.jabelarminecraft.wildanimals.items.ItemWildAnimalSpawnEggThrowable;
+import com.blogspot.jabelarminecraft.wildanimals.items.WildAnimalsMonsterPlacer;
 import com.blogspot.jabelarminecraft.wildanimals.networking.ServerPacketHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -62,7 +62,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class CommonProxy 
 {
     
-    protected int modEntityID = 0;
+    protected int modEntityID = -1;
     
     // fluids
     public Fluid testFluid;
@@ -115,10 +115,10 @@ public class CommonProxy
     
     public static void syncConfig() 
     {
-    	WildAnimals.configBigCatsAreManEaters = WildAnimals.config.getBoolean("BigCatsAreManEaters", Configuration.CATEGORY_GENERAL, WildAnimals.configBigCatsAreManEaters, "An Boolean!");
-    	WildAnimals.configIncludeSnakes = WildAnimals.config.getBoolean("IncludeSnakes", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeSnakes, "An Boolean!");
-    	WildAnimals.configIncludeBigCats = WildAnimals.config.getBoolean("IncludeBigCats", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeBigCats, "An Boolean!");
-    	WildAnimals.configIncludeHerdAnimals = WildAnimals.config.getBoolean("IncludeHerdAnimals", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeHerdAnimals, "An Boolean!");
+    	WildAnimals.configBigCatsAreManEaters = WildAnimals.config.getBoolean("BigCatsAreManEaters", Configuration.CATEGORY_GENERAL, WildAnimals.configBigCatsAreManEaters, "A Boolean!");
+    	WildAnimals.configIncludeSnakes = WildAnimals.config.getBoolean("IncludeSnakes", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeSnakes, "A Boolean!");
+    	WildAnimals.configIncludeBigCats = WildAnimals.config.getBoolean("IncludeBigCats", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeBigCats, "A Boolean!");
+    	WildAnimals.configIncludeHerdAnimals = WildAnimals.config.getBoolean("IncludeHerdAnimals", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeHerdAnimals, "A Boolean!");
  
         if(WildAnimals.config.hasChanged())
         {
@@ -227,11 +227,13 @@ public class CommonProxy
      public void registerModEntity(Class parEntityClass, String parEntityName)
      {
             EntityRegistry.registerModEntity(parEntityClass, parEntityName, ++modEntityID, WildAnimals.instance, 80, 3, false);
+       	 // DEBUG
+       	 System.out.println("Registering mod entity "+parEntityName+" with ID ="+modEntityID);
      }
 
      public void registerModEntityWithEgg(Class parEntityClass, String parEntityName, int parEggColor, int parEggSpotsColor)
      {
-            EntityRegistry.registerModEntity(parEntityClass, parEntityName, ++modEntityID, WildAnimals.instance, 80, 3, false);
+            registerModEntity(parEntityClass, parEntityName);
             registerSpawnEgg(parEntityName, parEggColor, parEggSpotsColor);
      }
 
@@ -239,14 +241,16 @@ public class CommonProxy
      // name passed must match entity name string
      public void registerSpawnEgg(String parSpawnName, int parEggColor, int parEggSpotsColor)
      {
-         Item itemSpawnEgg = new ItemWildAnimalSpawnEggThrowable(parSpawnName, parEggColor, parEggSpotsColor).setUnlocalizedName("spawn_egg_"+parSpawnName.toLowerCase()).setTextureName("wildanimals:spawn_egg");
-         GameRegistry.registerItem(itemSpawnEgg, "spawnEgg"+parSpawnName);
+       Item itemSpawnEgg = new WildAnimalsMonsterPlacer(parSpawnName, parEggColor, parEggSpotsColor).setUnlocalizedName("spawn_egg_"+parSpawnName.toLowerCase()).setTextureName("wildanimals:spawn_egg");
+       GameRegistry.registerItem(itemSpawnEgg, "spawnEgg"+parSpawnName);
      }
      
      // for fast moving entities and projectiles need registration with tracking flag set true
      public void registerModEntityFastTracking(Class parEntityClass, String parEntityName)
      {
             EntityRegistry.registerModEntity(parEntityClass, parEntityName, ++modEntityID, WildAnimals.instance, 80, 10, true);
+          	 // DEBUG
+          	 System.out.println("Registering fast tracking mod entity "+parEntityName+" with ID ="+modEntityID);
      }
           
     public void registerEntitySpawns()

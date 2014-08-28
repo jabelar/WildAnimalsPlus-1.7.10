@@ -16,7 +16,6 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.items;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -30,48 +29,44 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Facing;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import com.blogspot.jabelarminecraft.wildanimals.WildAnimals;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class WildAnimalsMonsterPlacer extends Item
+public class WildAnimalsMonsterPlacer extends ItemMonsterPlacer
 {
     @SideOnly(Side.CLIENT)
     private IIcon theIcon;
-    // private static final String __OBFID = "CL_00000070";
+	protected int colorBase = 0x000000;
+	protected int colorSpots = 0xFFFFFF;
+    protected String entityToSpawnName = "";
+    protected String entityToSpawnNameFull = "";
+    protected EntityLiving entityToSpawn = null;
 
     public WildAnimalsMonsterPlacer()
     {
-        setHasSubtypes(true);
-        setCreativeTab(CreativeTabs.tabMisc);
+        super();
     }
-
-    @Override
-	public String getItemStackDisplayName(ItemStack par1ItemStack)
+    
+    public WildAnimalsMonsterPlacer(String parEntityToSpawnName, int parPrimaryColor, int parSecondaryColor)
     {
-        String s = ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
-        String s1 = EntityList.getStringFromID(par1ItemStack.getItemDamage());
-
-        if (s1 != null)
-        {
-            s = s + " " + StatCollector.translateToLocal("entity." + s1 + ".name");
-        }
-
-        return s;
-    } 
-
-    @Override
-	@SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack par1ItemStack, int par2)
-    {
-        EntityList.EntityEggInfo entityegginfo = (EntityList.EntityEggInfo)EntityList.entityEggs.get(Integer.valueOf(par1ItemStack.getItemDamage()));
-        return entityegginfo != null ? (par2 == 0 ? entityegginfo.primaryColor : entityegginfo.secondaryColor) : 16777215;
+        setHasSubtypes(false);
+        maxStackSize = 64;
+        setCreativeTab(CreativeTabs.tabMisc);
+        setEntityToSpawnName(parEntityToSpawnName);
+        colorBase = parPrimaryColor;
+    	colorSpots = parSecondaryColor;
+    	// DEBUG
+    	System.out.println("Spawn egg constructor for "+entityToSpawnName);
     }
 
     /**
@@ -98,7 +93,7 @@ public class WildAnimalsMonsterPlacer extends Item
                 d0 = 0.5D;
             }
 
-            Entity entity = spawnCreature(par3World, par1ItemStack.getItemDamage(), par4 + 0.5D, par5 + d0, par6 + 0.5D);
+            Entity entity = spawnEntity(par3World, par4 + 0.5D, par5 + d0, par6 + 0.5D);
 
             if (entity != null)
             {
@@ -155,7 +150,7 @@ public class WildAnimalsMonsterPlacer extends Item
 
                     if (par2World.getBlock(i, j, k) instanceof BlockLiquid)
                     {
-                        Entity entity = spawnCreature(par2World, par1ItemStack.getItemDamage(), i, j, k);
+                        Entity entity = spawnEntity(par2World, i, j, k);
 
                         if (entity != null)
                         {
@@ -181,116 +176,123 @@ public class WildAnimalsMonsterPlacer extends Item
      * Spawns the creature specified by the egg's type in the location specified by the last three parameters.
      * Parameters: world, entityID, x, y, z.
      */
-    public static Entity spawnCreature(World par0World, String parName, double par2, double par4, double par6)
+    public Entity spawnEntity(World parWorld, double parX, double parY, double parZ)
     {
-    	// put in switch to cover all entities of interest
-    	// entering manually is a slight pain, but not really any harder than creating a registry
     	
-    	
-        if (!EntityList.entityEggs.containsKey(parName))
+       if (!parWorld.isRemote) // never spawn entity on client side
         {
-            return null;
+		    entityToSpawnNameFull = WildAnimals.MODID+"."+entityToSpawnName;
+		    if (EntityList.stringToClassMapping.containsKey(entityToSpawnNameFull))
+		    {
+		    	entityToSpawn = (EntityLiving) EntityList.createEntityByName(entityToSpawnNameFull, parWorld);
+//		    	entityToSpawn.setPosition(parX, parY, parZ);
+                entityToSpawn.setLocationAndAngles(parX, parY, parZ, MathHelper.wrapAngleTo180_float(parWorld.rand.nextFloat() * 360.0F), 0.0F);
+	    		parWorld.spawnEntityInWorld(entityToSpawn);
+	    		entityToSpawn.onSpawnWithEgg((IEntityLivingData)null);
+	    		entityToSpawn.playLivingSound();
+		    }
+		    else
+		    {
+		    	//DEBUG
+		    	System.out.println("Entity not found "+entityToSpawnName);
+		    }
         }
-        else
-        {
-            Entity entity = null;
-
-            for (int j = 0; j < 1; ++j)
-            {
-                entity = EntityList.createEntityByName(parName, par0World);
-
-                if (entity != null && entity instanceof EntityLivingBase)
-                {
-                    EntityLiving entityliving = (EntityLiving)entity;
-                    entity.setLocationAndAngles(par2, par4, par6, MathHelper.wrapAngleTo180_float(par0World.rand.nextFloat() * 360.0F), 0.0F);
-                    entityliving.rotationYawHead = entityliving.rotationYaw;
-                    entityliving.renderYawOffset = entityliving.rotationYaw;
-                    entityliving.onSpawnWithEgg((IEntityLivingData)null);
-                    par0World.spawnEntityInWorld(entity);
-                    entityliving.playLivingSound();
-                }
-            }
-
-            return entity;
-        }
+		    
+        return entityToSpawn;
     }
 
-    /**
-     * Spawns the creature specified by the egg's type in the location specified by the last three parameters.
-     * Parameters: world, entityID, x, y, z.
-     */
-    public static Entity spawnCreature(World par0World, int par1, double par2, double par4, double par6)
-    {
-    	// put in switch to cover all entities of interest
-    	// entering manually is a slight pain, but not really any harder than creating a registry
-    	
-    	
-        if (!EntityList.entityEggs.containsKey(Integer.valueOf(par1)))
-        {
-            return null;
-        }
-        else
-        {
-            Entity entity = null;
-
-            for (int j = 0; j < 1; ++j)
-            {
-                entity = EntityList.createEntityByID(par1, par0World);
-
-                if (entity != null && entity instanceof EntityLivingBase)
-                {
-                    EntityLiving entityliving = (EntityLiving)entity;
-                    entity.setLocationAndAngles(par2, par4, par6, MathHelper.wrapAngleTo180_float(par0World.rand.nextFloat() * 360.0F), 0.0F);
-                    entityliving.rotationYawHead = entityliving.rotationYaw;
-                    entityliving.renderYawOffset = entityliving.rotationYaw;
-                    entityliving.onSpawnWithEgg((IEntityLivingData)null);
-                    par0World.spawnEntityInWorld(entity);
-                    entityliving.playLivingSound();
-                }
-            }
-
-            return entity;
-        }
-    }
-
-    @Override
-	@SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses()
-    {
-        return true;
-    }
-
-    /**
-     * Gets an icon index based on an item's damage value and the given render pass
-     */
-    @Override
-	@SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamageForRenderPass(int par1, int par2)
-    {
-        return par2 > 0 ? theIcon : super.getIconFromDamageForRenderPass(par1, par2);
-    }
+//                EntityLiving entityToSpawn = (EntityLiving) EntityList.createEntityByName(entityToSpawnName, parWorld);
+//        	EntityTiger entityToSpawn = new EntityTiger(parWorld);
+//        	// DEBUG
+//        	System.out.println("Created entity");
+//            entityToSpawn.setPosition(parX, parY, parZ);
+//            // DEBUG
+//            System.out.println("Setting position");
+//        	parWorld.spawnEntityInWorld(entityToSpawn);
+//        	System.out.println("Spawned in world");
+//                entityToSpawn.rotationYawHead = entityToSpawn.rotationYaw;
+//                entityToSpawn.renderYawOffset = entityToSpawn.rotationYaw;
+ //               entityToSpawn.onSpawnWithEgg((IEntityLivingData)null);
+//                entityToSpawn.playLivingSound();
+//                
+//                return entityToSpawn;
+//        }
+//		return null;
+//        
+//     }
 
     /**
      * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
      */
     @Override
 	@SideOnly(Side.CLIENT)
-    public void getSubItems(Item p_150895_1_, CreativeTabs p_150895_2_, List p_150895_3_)
+    public void getSubItems(Item parItem, CreativeTabs parTab, List parList)
     {
-        Iterator iterator = EntityList.entityEggs.values().iterator();
-
-        while (iterator.hasNext())
-        {
-            EntityList.EntityEggInfo entityegginfo = (EntityList.EntityEggInfo)iterator.next();
-            p_150895_3_.add(new ItemStack(p_150895_1_, 1, entityegginfo.spawnedID));
-        }
+        parList.add(new ItemStack(parItem, 1, 0));    	
     }
 
     @Override
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack par1ItemStack, int parColorType)
+    {
+        return (parColorType == 0) ? colorBase : colorSpots;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean requiresMultipleRenderPasses()
+    {
+        return true;
+    }
+    
+    @Override
+    // Doing this override means that there is no localization for language
+    // unless you specifically check for localization here and convert
+       public String getItemStackDisplayName(ItemStack par1ItemStack)
+       {
+           return "Spawn "+entityToSpawnName;
+       }  
+
+
+    @Override
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister par1IconRegister)
     {
         super.registerIcons(par1IconRegister);
         theIcon = par1IconRegister.registerIcon(getIconString() + "_overlay");
     }
+    
+    /**
+     * Gets an icon index based on an item's damage value and the given render pass
+     */
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamageForRenderPass(int parDamageVal, int parRenderPass)
+    {
+        return parRenderPass > 0 ? theIcon : super.getIconFromDamageForRenderPass(parDamageVal, parRenderPass);
+    }
+    
+    public void setColors(int parColorBase, int parColorSpots)
+    {
+    	colorBase = parColorBase;
+    	colorSpots = parColorSpots;
+    }
+    
+    public int getColorBase()
+    {
+    	return colorBase;
+    }
+    
+    public int getColorSpots()
+    {
+    	return colorSpots;
+    }
+    
+    public void setEntityToSpawnName(String parEntityToSpawnName)
+    {
+        entityToSpawnName = parEntityToSpawnName;
+        entityToSpawnNameFull = WildAnimals.MODID+"."+entityToSpawnName; // need to extend with name of mod
+
+    }
+
 }

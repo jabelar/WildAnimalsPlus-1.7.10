@@ -18,7 +18,6 @@ package com.blogspot.jabelarminecraft.wildanimals;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.EntityViewRenderEvent.FogColors;
@@ -225,12 +224,7 @@ public class WildAnimalsEventHandler
     @SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)
     public void onEvent(LivingJumpEvent event)
     {
-        // DEBUG
-        if (event.entity instanceof EntityPlayer)
-        {
-            System.out.println("Boing");
-        }
-        
+         
     }
 
     @SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)

@@ -61,7 +61,7 @@ public class WildAnimals
     // set up configuration properties (will be read from config file in preInit)
     public static File configFile;
     public static Configuration config;
-    public static Boolean configBigCatsAreManEaters = true;
+    public static Boolean configBigCatsAreManEaters = false;
     public static Boolean configIncludeSnakes = true;
     public static Boolean configIncludeBigCats = true;
     public static Boolean configIncludeHerdAnimals = true;

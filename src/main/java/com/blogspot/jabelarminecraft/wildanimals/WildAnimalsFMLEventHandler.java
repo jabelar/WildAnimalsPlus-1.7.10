@@ -60,8 +60,6 @@ public class WildAnimalsFMLEventHandler
 	@SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)
 	public void onEvent(KeyInputEvent event)
 	{
-		// DEBUG
-		System.out.println("Click");
 		
 	}
 

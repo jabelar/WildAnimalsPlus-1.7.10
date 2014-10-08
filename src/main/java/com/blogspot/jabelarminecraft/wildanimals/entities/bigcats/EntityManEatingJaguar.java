@@ -38,21 +38,21 @@ public class EntityManEatingJaguar extends EntityJaguar
         // DEBUG
         System.out.println("EntityManEatingJaguar constructor()");
      
-        this.setSize(0.6F, 0.8F);
+        setSize(0.6F, 0.8F);
                 
         // rebuild AI task list specific to this sub-class
         clearAITasks();
-        this.tasks.addTask(1, this.aiSwimming);
-        this.tasks.addTask(2, this.aiLeapAtTarget);
-        this.tasks.addTask(3, this.aiAttackOnCollide);
-        this.tasks.addTask(4, this.aiSeePlayer);
-        this.tasks.addTask(5, this.aiWander);
-        this.tasks.addTask(6, this.aiWatchClosest);
-        this.tasks.addTask(7, this.aiLookIdle);
-        this.targetTasks.addTask(1, this.aiHurtByTarget);
-        this.targetTasks.addTask(2, this.aiTargetNonTamedAnimal);
+        tasks.addTask(1, aiSwimming);
+        tasks.addTask(2, aiLeapAtTarget);
+        tasks.addTask(3, aiAttackOnCollide);
+        tasks.addTask(4, aiSeePlayer);
+        tasks.addTask(5, aiWander);
+        tasks.addTask(6, aiWatchClosest);
+        tasks.addTask(7, aiLookIdle);
+        targetTasks.addTask(1, aiHurtByTarget);
+        targetTasks.addTask(2, aiTargetNonTamedAnimal);
         
-        this.setTamed(false);
+        setTamed(false);
 
     }
 
@@ -60,8 +60,8 @@ public class EntityManEatingJaguar extends EntityJaguar
 	protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.30000001192092896D);
-        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(8.0D);
+        getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.30000001192092896D);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(8.0D);
     }
  
 
@@ -81,12 +81,12 @@ public class EntityManEatingJaguar extends EntityJaguar
     {
         super.onLivingUpdate();
 
-        if (!this.worldObj.isRemote && this.isShaking && !this.field_70928_h && !this.hasPath() && this.onGround)
+        if (!worldObj.isRemote && isShaking && !field_70928_h && !hasPath() && onGround)
         {
-            this.field_70928_h = true;
-            this.timeBigCatIsShaking = 0.0F;
-            this.prevTimeBigCatIsShaking = 0.0F;
-            this.worldObj.setEntityState(this, (byte)8);
+            field_70928_h = true;
+            timeBigCatIsShaking = 0.0F;
+            prevTimeBigCatIsShaking = 0.0F;
+            worldObj.setEntityState(this, (byte)8);
         }
     }
 

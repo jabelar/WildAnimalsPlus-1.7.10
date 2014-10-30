@@ -76,8 +76,11 @@ public class WildAnimalsFMLEventHandler
 	 public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) 
 	 {
 	     if(event.modID.equals(WildAnimals.MODID))
-	            CommonProxy.syncConfig();
-	    }
+	     {
+	    	 WildAnimals.config.save();
+	         CommonProxy.syncConfig();
+	     }
+	 }
 	   
 	/*
 	 * Player events

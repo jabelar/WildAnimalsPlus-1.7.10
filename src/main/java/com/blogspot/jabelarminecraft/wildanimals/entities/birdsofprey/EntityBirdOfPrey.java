@@ -87,6 +87,9 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected String soundHurt = "wildanimals:mob.birdofprey.death";
     protected String soundDeath = "wildanimals:mob.birdofprey.death";
     protected String soundCall = "wildanimals:mob.birdofprey.hiss";
+    
+    static protected double soarHeight = 126D;
+    protected boolean soarClockwise;
 
     public EntityBirdOfPrey(World par1World) throws IOException
     {
@@ -97,8 +100,9 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 +par1World.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
 
         setSize(2.0F, 3.0F);
+        soarClockwise = par1World.rand.nextBoolean();
         initExtProps();
-        setupAI();        
+        setupAI();
      }
         
     @Override
@@ -145,7 +149,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.50000001192092896D);
+        getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.5D);
         getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(8.0D);
         // need to register any additional attributes
         getAttributeMap().registerAttribute(SharedMonsterAttributes.attackDamage);
@@ -222,32 +226,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 break;
             }
         }
-        
-        // from EntityBat
-        
-//            // check if block has been added at spawnpoint
-//            if (this.spawnPosition != null && (!this.worldObj.isAirBlock(this.spawnPosition.posX, this.spawnPosition.posY, this.spawnPosition.posZ) || this.spawnPosition.posY < 1))
-//            {
-//                this.spawnPosition = null;
-//            }
-//
-//            // create new spawn point
-//            if (this.spawnPosition == null || this.rand.nextInt(30) == 0 || this.spawnPosition.getDistanceSquared((int)this.posX, (int)this.posY, (int)this.posZ) < 4.0F)
-//            {
-//                this.spawnPosition = new ChunkCoordinates((int)this.posX + this.rand.nextInt(7) - this.rand.nextInt(7), (int)this.posY + this.rand.nextInt(6) - 2, (int)this.posZ + this.rand.nextInt(7) - this.rand.nextInt(7));
-//            }
-//
-//            double d0 = (double)this.spawnPosition.posX + 0.5D - this.posX;
-//            double d1 = (double)this.spawnPosition.posY + 0.1D - this.posY;
-//            double d2 = (double)this.spawnPosition.posZ + 0.5D - this.posZ;
-//            this.motionX += (Math.signum(d0) * 0.5D - this.motionX) * 0.10000000149011612D;
-//            this.motionY += (Math.signum(d1) * 0.699999988079071D - this.motionY) * 0.10000000149011612D;
-//            this.motionZ += (Math.signum(d2) * 0.5D - this.motionZ) * 0.10000000149011612D;
-//            float f = (float)(Math.atan2(this.motionZ, this.motionX) * 180.0D / Math.PI) - 90.0F;
-//            float f1 = MathHelper.wrapAngleTo180_float(f - this.rotationYaw);
-//            this.moveForward = 0.5F;
-//            this.rotationYaw += f1;
-
     }
 
     /**
@@ -401,41 +379,35 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         super.onUpdate();
         
-
-        // counteract gravity
-        motionY *= 0.6000000238418579D;
         // climb to soaring height
-        if (posY < 100)
+        if (posY < 126)
         {
-            // DEBUG
-            System.out.println("Climbing");
-            motionY += 0.6D;
+            motionY = 0.1D;
+        }
+        else if (posY > 126)
+        {
+            motionY = -0.1D;
+        }
+
+        motionX = getLookVec().xCoord * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        motionZ = getLookVec().zCoord * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+//        if (isCourseTraversable(this.waypointX, this.waypointY, this.waypointZ))
+//        {
+//            this.motionX += d0 / d3 * 0.1D;
+//            this.motionY += d1 / d3 * 0.1D;
+//            this.motionZ += d2 / d3 * 0.1D;
+//        }
+
+//        setMoveForward((float)this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
+        // turn
+        if (soarClockwise)
+        {
+            rotationYaw += 1.5F;
         }
         else
         {
+            rotationYaw -= 1.5F;
         }
-
-//        if (func_70922_bv())
-//        {
-//            field_70926_e += (1.0F - field_70926_e) * 0.4F;
-//        }
-//        else
-//        {
-//            field_70926_e += (0.0F - field_70926_e) * 0.4F;
-//        }
-//
-//        if (func_70922_bv())
-//        {
-//            numTicksToChaseTarget = 10;
-//        }
-//
-//        if (isWet())
-//        {
-//            // can do special things if in water (or in rain)
-//        }
-//        else 
-//        {
-//        }
     }
     
     /**
@@ -707,5 +679,15 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 e.printStackTrace();
             }           
         }
+    }
+    
+    public void setSoarClockwise(boolean parClockwise)
+    {
+        soarClockwise = parClockwise;
+    }
+    
+    public boolean getSoarClockwise()
+    {
+        return soarClockwise;
     }
 }

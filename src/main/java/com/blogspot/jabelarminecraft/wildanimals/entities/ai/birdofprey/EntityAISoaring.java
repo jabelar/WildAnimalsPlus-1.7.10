@@ -56,7 +56,10 @@ public class EntityAISoaring extends EntityAIBase
 	public void startExecuting()
     {
     	// DEBUG
-    	System.out.println("AISoaring startExecute(), state = "+theEntity.getState()+", isClientWorld = "+worldObject.isRemote);
+    	System.out.println("startExecute(), state = "+theEntity.getState());
+    	
+    	// randomize soar direction
+        theEntity.setSoarClockwise(theEntity.getRNG().nextBoolean());
     }
 
     /**
@@ -75,11 +78,9 @@ public class EntityAISoaring extends EntityAIBase
     	else
     	{
     	       
-            // DEBUG
-            System.out.println("continueExecuting = "+continueExecuting);
+//            // DEBUG
+//            System.out.println("continueExecuting = "+continueExecuting);
 
-            // turn
-            theEntity.rotationYaw += 5;
     	}
     	
     	return (continueExecuting);

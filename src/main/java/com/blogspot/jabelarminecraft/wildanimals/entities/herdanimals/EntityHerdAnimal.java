@@ -47,13 +47,13 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
-import com.blogspot.jabelarminecraft.wildanimals.entities.IWildAnimalsEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.herdanimal.EntityAIHurtByTargetHerdAnimal;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.herdanimal.EntityAIPanicHerdAnimal;
 import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketClientSide;
 import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketServerSide;
 
-public class EntityHerdAnimal extends EntityAnimal implements IWildAnimalsEntity
+public class EntityHerdAnimal extends EntityAnimal implements IModEntity
 {
     protected static final int REARING_TICKS_MAX = 20;
     

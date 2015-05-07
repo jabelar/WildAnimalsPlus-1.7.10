@@ -60,7 +60,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.blogspot.jabelarminecraft.wildanimals.entities.IWildAnimalsEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.bigcat.EntityAIBegBigCat;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityHerdAnimal;
 import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketServerSide;
@@ -68,7 +68,7 @@ import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacke
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EntityBigCat extends EntityTameable implements IWildAnimalsEntity
+public class EntityBigCat extends EntityTameable implements IModEntity
 {
     protected float field_70926_e;
     protected float field_70924_f;

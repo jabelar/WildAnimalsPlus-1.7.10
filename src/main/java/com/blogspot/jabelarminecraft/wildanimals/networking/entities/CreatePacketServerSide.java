@@ -24,7 +24,7 @@ import java.io.IOException;
 import net.minecraft.entity.Entity;
 
 import com.blogspot.jabelarminecraft.wildanimals.WildAnimals;
-import com.blogspot.jabelarminecraft.wildanimals.entities.IWildAnimalsEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.networking.PacketTypeServer;
 
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
@@ -69,7 +69,7 @@ public class CreatePacketServerSide
 		// write entity instance id (not the class registry id!)
 		bbos.writeInt(parEntity.getEntityId());
 
-		((IWildAnimalsEntity) parEntity).getExtPropsToBuffer(bbos);;
+		((IModEntity) parEntity).getExtPropsToBuffer(bbos);;
 
 		// put payload into a packet		
 		FMLProxyPacket thePacket = new FMLProxyPacket(bbos.buffer(), WildAnimals.NETWORK_CHANNEL_NAME);

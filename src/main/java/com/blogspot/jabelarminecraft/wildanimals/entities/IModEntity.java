@@ -20,7 +20,7 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.minecraft.nbt.NBTTagCompound;
 
-public interface IWildAnimalsEntity {
+public interface IModEntity {
 	
     // set up AI tasks
     void setupAI();

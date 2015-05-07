@@ -99,7 +99,7 @@ import net.minecraftforge.fluids.FluidEvent.FluidSpilledEvent;
 import net.minecraftforge.fluids.FluidRegistry.FluidRegisterEvent;
 import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
 
-import com.blogspot.jabelarminecraft.wildanimals.entities.IWildAnimalsEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.entities.extendedproperties.ExtendedPropertiesWildAnimals;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -171,7 +171,7 @@ public class WildAnimalsEventHandler
     {
         // Register extended entity properties
 
-        if (event.entity instanceof IWildAnimalsEntity)
+        if (event.entity instanceof IModEntity)
         {
             // DEBUG
             System.out.println("OnEntityConstructing registering IWildAnimalsEntity extended properties");

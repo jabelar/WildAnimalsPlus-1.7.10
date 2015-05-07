@@ -25,7 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-import com.blogspot.jabelarminecraft.wildanimals.entities.IWildAnimalsEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.networking.PacketTypeServer;
 
 import cpw.mods.fml.relauncher.Side;
@@ -70,7 +70,7 @@ public class ProcessPacketClientSide
 					// DEBUG
 					System.out.println("Entity ID = "+entityID);
 
-					IWildAnimalsEntity foundEntity = (IWildAnimalsEntity) getEntityByID(entityID, theWorld);
+					IModEntity foundEntity = (IModEntity) getEntityByID(entityID, theWorld);
 
 					// DEBUG
 					if (foundEntity != null)

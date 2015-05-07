@@ -51,10 +51,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-import com.blogspot.jabelarminecraft.wildanimals.entities.IWildAnimalsEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketServerSide;
 
-public class EntitySerpent extends EntityAnimal implements IWildAnimalsEntity
+public class EntitySerpent extends EntityAnimal implements IModEntity
 {
 	// for variable fields that need to be synced and saved put them in a compound
 	// this is used for the extended properties interface, plus in custom packet

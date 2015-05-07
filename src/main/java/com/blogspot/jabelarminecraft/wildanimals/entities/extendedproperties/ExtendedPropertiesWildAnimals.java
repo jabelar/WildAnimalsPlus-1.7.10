@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 import com.blogspot.jabelarminecraft.wildanimals.WildAnimals;
-import com.blogspot.jabelarminecraft.wildanimals.entities.IWildAnimalsEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 
 public class ExtendedPropertiesWildAnimals implements IExtendedEntityProperties
 {
@@ -37,7 +37,7 @@ public class ExtendedPropertiesWildAnimals implements IExtendedEntityProperties
 		
 		// good idea to keep your extended properties in a sub-compound to avoid conflicts with other
 		// possible extended properties, even from other mods (like if a mod extends all EntityAnimal)
-		parCompound.setTag(WildAnimals.EXT_PROPS_NAME, ((IWildAnimalsEntity)theEntity).getExtProps()); // set as a sub-compound
+		parCompound.setTag(WildAnimals.EXT_PROPS_NAME, ((IModEntity)theEntity).getExtProps()); // set as a sub-compound
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class ExtendedPropertiesWildAnimals implements IExtendedEntityProperties
 		System.out.println("ExtendedPropertiesWildAnimals loadNBTData(), Entity = "+theEntity.getEntityId()+", client side = "+theWorld.isRemote);
 
 		// Get the sub-compound
-		((IWildAnimalsEntity)theEntity).setExtProps((NBTTagCompound) parCompound.getTag(WildAnimals.EXT_PROPS_NAME));
+		((IModEntity)theEntity).setExtProps((NBTTagCompound) parCompound.getTag(WildAnimals.EXT_PROPS_NAME));
 	}
 
 	@Override

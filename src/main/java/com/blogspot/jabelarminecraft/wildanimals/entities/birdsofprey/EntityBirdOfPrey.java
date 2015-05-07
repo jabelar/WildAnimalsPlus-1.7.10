@@ -25,34 +25,29 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackOnCollide;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAIPanic;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.blogspot.jabelarminecraft.wildanimals.entities.IWildAnimalsEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAIDiving;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAILanding;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAIPerched;
@@ -60,7 +55,7 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAI
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAITakingOff;
 import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketServerSide;
 
-public class EntityBirdOfPrey extends EntityAnimal implements IEntityOwnable, IWildAnimalsEntity
+public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IModEntity
 {
     // for variable fields that need to be synced and saved put them in a compound
     // this is used for the extended properties interface, plus in custom packet
@@ -69,7 +64,7 @@ public class EntityBirdOfPrey extends EntityAnimal implements IEntityOwnable, IW
     // good to have instances of AI so task list can be modified, including in sub-classes
     protected EntityAIBase aiSwimming = new EntityAISwimming(this);
     protected EntityAIBase aiLeapAtTarget = new EntityAILeapAtTarget(this, 0.4F);
-    protected EntityAIBase aiAttackOnCollide = new EntityAIAttackOnCollide(this, 1.0D, true);
+//    protected EntityAIBase aiAttackOnCollide = new EntityAIAttackOnCollide(this, 1.0D, true);
     protected EntityAIBase aiPerched = new EntityAIPerched(this);
     protected EntityAIBase aiTakingOff = new EntityAITakingOff(this);
     protected EntityAIBase aiSoaring = new EntityAISoaring(this);
@@ -77,10 +72,9 @@ public class EntityBirdOfPrey extends EntityAnimal implements IEntityOwnable, IW
     protected EntityAIBase aiLanding = new EntityAILanding(this);
     protected EntityAIBase aiWatchClosest = new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F);
     protected EntityAIBase aiLookIdle = new EntityAILookIdle(this);
-    protected EntityAIBase aiHurtByTarget = new EntityAIHurtByTarget(this, true);
-    protected EntityAIBase aiPanic = new EntityAIPanic(this, 2.0D);
-    protected final EntityAIBase aiTargetChicken = new EntityAINearestAttackableTarget(this, EntityChicken.class, 200, false);
-    private float field_70926_e;
+//    protected EntityAIBase aiHurtByTarget = new EntityAIHurtByTarget(this, true);
+//    protected EntityAIBase aiPanic = new EntityAIPanic(this, 2.0D);
+//    protected final EntityAIBase aiTargetChicken = new EntityAINearestAttackableTarget(this, EntityChicken.class, 200, false);
 
     // create state constants, did not use enum because need to cast to int anyway for packets
     protected final int STATE_PERCHED = 0;
@@ -131,19 +125,19 @@ public class EntityBirdOfPrey extends EntityAnimal implements IEntityOwnable, IW
     {
         getNavigator().setAvoidsWater(true);
         clearAITasks(); // clear any tasks assigned in super classes
-        tasks.addTask(1, aiSwimming);
-        tasks.addTask(2, aiPanic);
-        tasks.addTask(3, aiLeapAtTarget);
-        tasks.addTask(4, aiAttackOnCollide);
-        tasks.addTask(5, aiPerched);
-        tasks.addTask(6, aiTakingOff);
+//        tasks.addTask(1, aiSwimming);
+//        tasks.addTask(2, aiPanic);
+//        tasks.addTask(3, aiLeapAtTarget);
+//        tasks.addTask(4, aiAttackOnCollide);
+//        tasks.addTask(5, aiPerched);
+//        tasks.addTask(6, aiTakingOff);
         tasks.addTask(7, aiSoaring);
-        tasks.addTask(8, aiDiving);
-        tasks.addTask(9, aiLanding);
-        tasks.addTask(10, aiWatchClosest);
-        tasks.addTask(11, aiLookIdle);
-        targetTasks.addTask(9, aiHurtByTarget);
-        targetTasks.addTask(10, aiTargetChicken);
+//        tasks.addTask(8, aiDiving);
+//        tasks.addTask(9, aiLanding);
+//        tasks.addTask(10, aiWatchClosest);
+//        tasks.addTask(11, aiLookIdle);
+//        targetTasks.addTask(9, aiHurtByTarget);
+//        targetTasks.addTask(10, aiTargetChicken);
     }
 
     // you don't have to call this as it is called automatically during entityLiving subclass creation
@@ -267,6 +261,29 @@ public class EntityBirdOfPrey extends EntityAnimal implements IEntityOwnable, IW
     }
 
     /**
+     * Called when the mob is falling. Calculates and applies fall damage.
+     */
+    @Override
+    protected void fall(float p_70069_1_) {}
+
+    /**
+     * Takes in the distance the entity has fallen this tick and whether its on the ground to update the fall distance
+     * and deal fall damage if landing on the ground.  Args: distanceFallenThisTick, onGround
+     */
+    @Override
+    protected void updateFallState(double p_70064_1_, boolean p_70064_3_) {}
+
+    /**
+     * Return whether this entity should NOT trigger a pressure plate or a tripwire.
+     */
+    @Override
+    public boolean doesEntityNotTriggerPressurePlate()
+    {
+        return true;
+    }
+
+
+    /**
      * Sets the active target the Task system uses for tracking
      */
     @Override
@@ -383,28 +400,69 @@ public class EntityBirdOfPrey extends EntityAnimal implements IEntityOwnable, IW
     public void onUpdate()
     {
         super.onUpdate();
-        if (func_70922_bv())
+        
+
+        // counteract gravity
+        motionY *= 0.6000000238418579D;
+        // climb to soaring height
+        if (posY < 100)
         {
-            field_70926_e += (1.0F - field_70926_e) * 0.4F;
+            // DEBUG
+            System.out.println("Climbing");
+            motionY += 0.6D;
         }
         else
         {
-            field_70926_e += (0.0F - field_70926_e) * 0.4F;
         }
 
-        if (func_70922_bv())
-        {
-            numTicksToChaseTarget = 10;
-        }
-
-        if (isWet())
-        {
-            // can do special things if in water (or in rain)
-        }
-        else 
-        {
-        }
+//        if (func_70922_bv())
+//        {
+//            field_70926_e += (1.0F - field_70926_e) * 0.4F;
+//        }
+//        else
+//        {
+//            field_70926_e += (0.0F - field_70926_e) * 0.4F;
+//        }
+//
+//        if (func_70922_bv())
+//        {
+//            numTicksToChaseTarget = 10;
+//        }
+//
+//        if (isWet())
+//        {
+//            // can do special things if in water (or in rain)
+//        }
+//        else 
+//        {
+//        }
     }
+    
+    /**
+     * True if the entity has an unobstructed line of travel to the waypoint.
+     */
+    public boolean isCourseTraversable(double parX, double parY, double parZ)
+    {
+        double theDistance = MathHelper.sqrt_double(parX * parX + parY * parY + parZ * parZ);
+
+        double incrementX = (parX - this.posX) / theDistance;
+        double incrementY = (parY - this.posY) / theDistance;
+        double incrementZ = (parZ - this.posZ) / theDistance;
+        AxisAlignedBB axisalignedbb = this.boundingBox.copy();
+
+        for (int i = 1; i < theDistance; ++i)
+        {
+            axisalignedbb.offset(incrementX, incrementY, incrementZ);
+
+            if (!this.worldObj.getCollidingBoundingBoxes(this, axisalignedbb).isEmpty())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Called when the entity is attacked.
      */
@@ -590,12 +648,6 @@ public class EntityBirdOfPrey extends EntityAnimal implements IEntityOwnable, IW
     @Override
     public Entity getOwner() 
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public EntityAgeable createChild(EntityAgeable var1) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -44,9 +44,9 @@ public class EntityAISoaring extends EntityAIBase
     }
 
 	@Override
-	public boolean shouldExecute() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean shouldExecute() 
+	{
+	    return true;
 	}
 	
     /**
@@ -56,7 +56,7 @@ public class EntityAISoaring extends EntityAIBase
 	public void startExecuting()
     {
     	// DEBUG
-    	System.out.println("AIPerched startExecute(), state = "+theEntity.getState()+", isClientWorld = "+worldObject.isRemote);
+    	System.out.println("AISoaring startExecute(), state = "+theEntity.getState()+", isClientWorld = "+worldObject.isRemote);
     }
 
     /**
@@ -72,9 +72,16 @@ public class EntityAISoaring extends EntityAIBase
     	if (!continueExecuting)
     	{
     	}
+    	else
+    	{
+    	       
+            // DEBUG
+            System.out.println("continueExecuting = "+continueExecuting);
+
+            // turn
+            theEntity.rotationYaw += 5;
+    	}
     	
-    	// DEBUG
-    	System.out.println("AIPerched continueExecuting = "+continueExecuting+", isClientWorld = "+worldObject.isRemote);
     	return (continueExecuting);
     }
 }

@@ -36,6 +36,7 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -53,6 +54,7 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAI
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAIPerched;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAISoaring;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAITakingOff;
+import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityFlyingAINearestAttackableTarget;
 import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketServerSide;
 
 public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IModEntity
@@ -74,7 +76,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected EntityAIBase aiLookIdle = new EntityAILookIdle(this);
 //    protected EntityAIBase aiHurtByTarget = new EntityAIHurtByTarget(this, true);
 //    protected EntityAIBase aiPanic = new EntityAIPanic(this, 2.0D);
-//    protected final EntityAIBase aiTargetChicken = new EntityAINearestAttackableTarget(this, EntityChicken.class, 200, false);
+    protected final EntityAIBase aiTargetChicken = new EntityFlyingAINearestAttackableTarget(this, EntityChicken.class, 200, false);
 
     // create state constants, did not use enum because need to cast to int anyway for packets
     public final int STATE_PERCHED = 0;
@@ -100,7 +102,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 +parWorld.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
 
         setSize(2.0F, 3.0F);
-        setState(STATE_SOARING);
         soarClockwise = parWorld.rand.nextBoolean();
         soarHeight = 126-Math.pow(parWorld.rand.nextInt(6), 2);
         initExtProps();
@@ -111,7 +112,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     public void initExtProps()
     {
         extPropsCompound.setFloat("scaleFactor", 1.0F);
-        extPropsCompound.setInteger("state", STATE_PERCHED);
+        extPropsCompound.setInteger("state", STATE_SOARING);
         extPropsCompound.setInteger("stateCounter", 0);
         extPropsCompound.setDouble("anchorX", posX);
         extPropsCompound.setDouble("anchorY", posY);
@@ -137,7 +138,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 //        tasks.addTask(4, aiAttackOnCollide);
 //        tasks.addTask(5, aiPerched);
 //        tasks.addTask(6, aiTakingOff);
-        tasks.addTask(7, aiSoaring);
+//        tasks.addTask(7, aiSoaring);
 //        tasks.addTask(8, aiDiving);
 //        tasks.addTask(9, aiLanding);
 //        tasks.addTask(10, aiWatchClosest);
@@ -171,63 +172,63 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected void updateAITasks()
     {
         super.updateAITasks();
-        
-        // should reorganize this as a switch statement based on state
-        switch (getState())
-        {
-            case STATE_PERCHED:
-            {
-                // check if block perched upon has disappeared
-                if (!worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
-                {
-                    setState(STATE_TAKING_OFF);
-                    worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
-                }
-                else // still solidly perched
-                {
-                    // can occasionally adjust or flap, look around, or play sound to create variety
-                    if (rand.nextInt(200) == 0)
-                    {
-                        rotationYawHead = rand.nextInt(360);
-                    }
-
-                    // entity can get scared if player gets too close
-                    if (worldObj.getClosestPlayerToEntity(this, 4.0D) != null)
-                    {
-                        setState(STATE_TAKING_OFF);
-                        worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
-                    }
-                }
-                break;            
-            }
-            case STATE_TAKING_OFF:
-            {
-                break;
-            }
-            case STATE_SOARING:
-            {
-                break;
-            }
-            case STATE_DIVING:
-            {
-                break;
-            }
-            case STATE_LANDING:
-            {
-                // check if actually landed on a block
-                if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
-                {
-                    setState(STATE_PERCHED);
-                }
-                break;
-            }
-            default:
-            {
-                // DEBUG
-                System.out.println("EntityBirdOfPrey OnLivingUpdate() **ERROR** unhandled state");
-                break;
-            }
-        }
+//        
+//        // should reorganize this as a switch statement based on state
+//        switch (getState())
+//        {
+//            case STATE_PERCHED:
+//            {
+//                // check if block perched upon has disappeared
+//                if (!worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
+//                {
+//                    setState(STATE_TAKING_OFF);
+//                    worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
+//                }
+//                else // still solidly perched
+//                {
+//                    // can occasionally adjust or flap, look around, or play sound to create variety
+//                    if (rand.nextInt(200) == 0)
+//                    {
+//                        rotationYawHead = rand.nextInt(360);
+//                    }
+//
+//                    // entity can get scared if player gets too close
+//                    if (worldObj.getClosestPlayerToEntity(this, 4.0D) != null)
+//                    {
+//                        setState(STATE_TAKING_OFF);
+//                        worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
+//                    }
+//                }
+//                break;            
+//            }
+//            case STATE_TAKING_OFF:
+//            {
+//                break;
+//            }
+//            case STATE_SOARING:
+//            {
+//                break;
+//            }
+//            case STATE_DIVING:
+//            {
+//                break;
+//            }
+//            case STATE_LANDING:
+//            {
+//                // check if actually landed on a block
+//                if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
+//                {
+//                    setState(STATE_PERCHED);
+//                }
+//                break;
+//            }
+//            default:
+//            {
+//                // DEBUG
+//                System.out.println("EntityBirdOfPrey OnLivingUpdate() **ERROR** unhandled state");
+//                break;
+//            }
+//        }
     }
 
     /**
@@ -279,6 +280,25 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected void updateAITick()
     {
         dataWatcher.updateObject(18, Float.valueOf(this.getHealth()));
+        
+        // DEBUG
+        System.out.println("State = "+getState());
+        
+        switch (getState())
+        {
+        case STATE_PERCHED:
+        	setState(STATE_SOARING);
+        	break;
+        case STATE_TAKING_OFF:
+        	setState(STATE_SOARING);
+        	break;
+        case STATE_SOARING:
+        	// DEBUG
+        	System.out.println("State is soaring");
+        	processSoaring();
+        	break;
+        }
+
     }
 
     @Override
@@ -380,7 +400,10 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     public void onUpdate()
     {
         super.onUpdate();
-        
+    }
+    
+    protected void processSoaring()
+    {
         // climb to soaring height
         if (posY < soarHeight)
         {
@@ -391,8 +414,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             motionY = -0.1D;
         }
 
-        motionX = getLookVec().xCoord * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
-        motionZ = getLookVec().zCoord * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        moveForward();
+        
 //        if (isCourseTraversable(this.waypointX, this.waypointY, this.waypointZ))
 //        {
 //            this.motionX += d0 / d3 * 0.1D;
@@ -410,6 +433,20 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         {
             rotationYaw -= 1.5F;
         }
+    }
+    
+    protected void moveForward()
+    {
+        motionX = getLookVec().xCoord * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        motionZ = getLookVec().zCoord * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+
+    }
+    
+    protected void stopMoving()
+    {
+    	motionX = 0;
+    	motionY = 0;
+    	motionZ = 0;
     }
     
     /**

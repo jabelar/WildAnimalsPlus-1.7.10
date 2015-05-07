@@ -182,19 +182,62 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         switch (getState())
         {
         case STATE_PERCHED:
+        	processPerched();
         	break;
         case STATE_TAKING_OFF:
+        	processTakingOff();
         	break;
         case STATE_SOARING:
-        	// DEBUG
-        	System.out.println("State is soaring");
         	processSoaring();
         	break;
+        case STATE_DIVING:
+        	processDiving();
+        	break;
+        case STATE_LANDING:
+        	processLanding();
+        	break;
+    	default:
+    		// DEBUG
+    		System.out.println("Unknown state");
+    		break;
+        		
         }
 
     }
 
     /**
+	 * 
+	 */
+	private void processLanding() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	private void processDiving() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	private void processTakingOff() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	private void processPerched() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
      * This checks whether state should change
      */
     @Override

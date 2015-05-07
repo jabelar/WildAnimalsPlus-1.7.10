@@ -45,7 +45,7 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     public ModelRenderer wingRight2;
 
     // create an animation cycles
-    protected float[][] perchCycle = new float[][]
+    protected float[][] perchedCycle = new float[][]
     {
     	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
 	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F }
@@ -230,20 +230,44 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 		// all entities of same type aren't at same point in animation
 		// because ticksExisted gets reset when world is loaded
 		// so initial randomness due to when entity was spawned will be reset
-		int cycleIndex;
-		cycleIndex = (int)Math.floor((parEntity.ticksExisted+parEntity.getEntityId())%takingOffCycle.length)/2;
+		if (parEntity.getState()==parEntity.STATE_TAKING_OFF)
+		{
+			doAnimate(parEntity, takingOffCycle);
+		}
+		else if (parEntity.getState()==parEntity.STATE_DIVING)
+		{
+			doAnimate(parEntity, divingCycle);
+		}
+		else if (parEntity.getState()==parEntity.STATE_LANDING)
+		{
+			doAnimate(parEntity, landingCycle);
+		}
+		else if (parEntity.getState()==parEntity.STATE_PERCHED)
+		{
+			doAnimate(parEntity, perchedCycle);
+		}
+		else if (parEntity.getState()==parEntity.STATE_SOARING)
+		{
+			doAnimate(parEntity, soaringCycle);
+		}
+
+	}
+	
+	public void doAnimate(EntityBirdOfPrey parEntity, float[][] parCycleArray)
+	{
+		cycleIndex = (int)Math.floor((parEntity.ticksExisted+parEntity.getEntityId())%parCycleArray.length)/2;
 		// will need to set based on entity state
     	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-		setRotation(body, takingOffCycle[cycleIndex][0], 0, 0);
-		setRotation(head, takingOffCycle[cycleIndex][1], 0, 0);
+		setRotation(body, parCycleArray[cycleIndex][0], 0, 0);
+		setRotation(head, parCycleArray[cycleIndex][1], 0, 0);
 		// both legs have same angle
-		setRotation(leg1, takingOffCycle[cycleIndex][2], 0, 0);
-		setRotation(leg2, takingOffCycle[cycleIndex][2], 0, 0);
-		setRotation(tail, takingOffCycle[cycleIndex][3], 0, 0);
+		setRotation(leg1, parCycleArray[cycleIndex][2], 0, 0);
+		setRotation(leg2, parCycleArray[cycleIndex][2], 0, 0);
+		setRotation(tail, parCycleArray[cycleIndex][3], 0, 0);
 		// both legs have same (well negative) angle
-		setRotation(wingLeft1, takingOffCycle[cycleIndex][4], 0, takingOffCycle[cycleIndex][5]);
-		setRotation(wingRight1, takingOffCycle[cycleIndex][4], 0, -takingOffCycle[cycleIndex][5]);
-		setRotation(wingLeft2, 0, -21F, -takingOffCycle[cycleIndex][6]);
-		setRotation(wingRight2, 0, 21F, takingOffCycle[cycleIndex][6]);
+		setRotation(wingLeft1, parCycleArray[cycleIndex][4], 0, parCycleArray[cycleIndex][5]);
+		setRotation(wingRight1, parCycleArray[cycleIndex][4], 0, -parCycleArray[cycleIndex][5]);
+		setRotation(wingLeft2, 0, -21F, -parCycleArray[cycleIndex][6]);
+		setRotation(wingRight2, 0, 21F, parCycleArray[cycleIndex][6]);
 	}
 }

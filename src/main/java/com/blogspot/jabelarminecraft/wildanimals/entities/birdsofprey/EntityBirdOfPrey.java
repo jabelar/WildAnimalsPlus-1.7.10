@@ -167,68 +167,98 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         return true;
     }
-    
+
+    /**
+     * This process the current state.
+     */
+    @Override
+    protected void updateAITick()
+    {
+        dataWatcher.updateObject(18, Float.valueOf(this.getHealth()));
+        
+        // DEBUG
+        System.out.println("State = "+getState());
+        
+        switch (getState())
+        {
+        case STATE_PERCHED:
+        	break;
+        case STATE_TAKING_OFF:
+        	break;
+        case STATE_SOARING:
+        	// DEBUG
+        	System.out.println("State is soaring");
+        	processSoaring();
+        	break;
+        }
+
+    }
+
+    /**
+     * This checks whether state should change
+     */
     @Override
     protected void updateAITasks()
     {
         super.updateAITasks();
-//        
-//        // should reorganize this as a switch statement based on state
-//        switch (getState())
-//        {
-//            case STATE_PERCHED:
-//            {
-//                // check if block perched upon has disappeared
-//                if (!worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
-//                {
-//                    setState(STATE_TAKING_OFF);
-//                    worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
-//                }
-//                else // still solidly perched
-//                {
-//                    // can occasionally adjust or flap, look around, or play sound to create variety
-//                    if (rand.nextInt(200) == 0)
-//                    {
-//                        rotationYawHead = rand.nextInt(360);
-//                    }
-//
-//                    // entity can get scared if player gets too close
-//                    if (worldObj.getClosestPlayerToEntity(this, 4.0D) != null)
-//                    {
-//                        setState(STATE_TAKING_OFF);
-//                        worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
-//                    }
-//                }
-//                break;            
-//            }
-//            case STATE_TAKING_OFF:
-//            {
-//                break;
-//            }
-//            case STATE_SOARING:
-//            {
-//                break;
-//            }
-//            case STATE_DIVING:
-//            {
-//                break;
-//            }
-//            case STATE_LANDING:
-//            {
-//                // check if actually landed on a block
-//                if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
-//                {
-//                    setState(STATE_PERCHED);
-//                }
-//                break;
-//            }
-//            default:
-//            {
-//                // DEBUG
-//                System.out.println("EntityBirdOfPrey OnLivingUpdate() **ERROR** unhandled state");
-//                break;
-//            }
-//        }
+        
+        // should reorganize this as a switch statement based on state
+        switch (getState())
+        {
+            case STATE_PERCHED:
+            {
+                // check if block perched upon has disappeared
+                if (!worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
+                {
+                    setState(STATE_TAKING_OFF);
+                    worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
+                }
+                else // still solidly perched
+                {
+                    // can occasionally adjust or flap, look around, or play sound to create variety
+                    if (rand.nextInt(200) == 0)
+                    {
+                        rotationYawHead = rand.nextInt(360);
+                    }
+
+                    // entity can get scared if player gets too close
+                    if (worldObj.getClosestPlayerToEntity(this, 4.0D) != null)
+                    {
+                        setState(STATE_TAKING_OFF);
+                        worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
+                    }
+                }
+                break;            
+            }
+            case STATE_TAKING_OFF:
+            {
+            	setState(STATE_SOARING);
+                break;
+            }
+            case STATE_SOARING:
+            {
+                break;
+            }
+            case STATE_DIVING:
+            {
+                break;
+            }
+            case STATE_LANDING:
+            {
+                // check if actually landed on a block
+                if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
+                {
+                    setState(STATE_PERCHED);
+                }
+                break;
+            }
+            default:
+            {
+                // DEBUG
+                System.out.println("EntityBirdOfPrey OnLivingUpdate() **ERROR** unhandled state");
+                break;
+            }
+        }
     }
 
     /**
@@ -273,33 +303,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         super.setAttackTarget(par1EntityLivingBase);
     }
 
-    /**
-     * main AI tick function, replaces updateEntityActionState
-     */
-    @Override
-    protected void updateAITick()
-    {
-        dataWatcher.updateObject(18, Float.valueOf(this.getHealth()));
-        
-        // DEBUG
-        System.out.println("State = "+getState());
-        
-        switch (getState())
-        {
-        case STATE_PERCHED:
-        	setState(STATE_SOARING);
-        	break;
-        case STATE_TAKING_OFF:
-        	setState(STATE_SOARING);
-        	break;
-        case STATE_SOARING:
-        	// DEBUG
-        	System.out.println("State is soaring");
-        	processSoaring();
-        	break;
-        }
-
-    }
 
     @Override
     protected void entityInit()

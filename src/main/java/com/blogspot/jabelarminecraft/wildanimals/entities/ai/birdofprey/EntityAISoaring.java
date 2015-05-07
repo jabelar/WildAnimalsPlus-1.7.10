@@ -60,6 +60,7 @@ public class EntityAISoaring extends EntityAIBase
     	
     	// randomize soar direction
         theEntity.setSoarClockwise(theEntity.getRNG().nextBoolean());
+        theEntity.setSoarHeight(126-Math.pow(theEntity.getRNG().nextInt(6), 2));
     }
 
     /**

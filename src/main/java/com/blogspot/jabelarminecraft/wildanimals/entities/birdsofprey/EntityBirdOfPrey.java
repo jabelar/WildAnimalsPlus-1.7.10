@@ -88,19 +88,20 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected String soundDeath = "wildanimals:mob.birdofprey.death";
     protected String soundCall = "wildanimals:mob.birdofprey.hiss";
     
-    static protected double soarHeight = 126D;
+    protected double soarHeight;
     protected boolean soarClockwise;
 
-    public EntityBirdOfPrey(World par1World) throws IOException
+    public EntityBirdOfPrey(World parWorld) throws IOException
     {
-        super(par1World);
+        super(parWorld);
         
         // DEBUG
         System.out.println("EntityBirdOfPrey constructor(), "+"on Client="
-                +par1World.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
+                +parWorld.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
 
         setSize(2.0F, 3.0F);
-        soarClockwise = par1World.rand.nextBoolean();
+        soarClockwise = parWorld.rand.nextBoolean();
+        soarHeight = 126-Math.pow(parWorld.rand.nextInt(6), 2);
         initExtProps();
         setupAI();
      }
@@ -380,11 +381,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         super.onUpdate();
         
         // climb to soaring height
-        if (posY < 126)
+        if (posY < soarHeight)
         {
             motionY = 0.1D;
         }
-        else if (posY > 126)
+        else if (posY > soarHeight)
         {
             motionY = -0.1D;
         }
@@ -689,5 +690,15 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     public boolean getSoarClockwise()
     {
         return soarClockwise;
+    }
+    
+    public void setSoarHeight(double parHeight)
+    {
+        soarHeight = parHeight;
+    }
+    
+    public double getSoarHeight()
+    {
+        return soarHeight;
     }
 }

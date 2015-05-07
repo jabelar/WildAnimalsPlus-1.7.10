@@ -46,7 +46,7 @@ public class EntityAISoaring extends EntityAIBase
 	@Override
 	public boolean shouldExecute() 
 	{
-	    return true;
+	    return (theEntity.getState() == theEntity.STATE_SOARING);
 	}
 	
     /**
@@ -72,16 +72,18 @@ public class EntityAISoaring extends EntityAIBase
     	Boolean continueExecuting = true; 
     	// do code to see if continuation should end here
     	
+    	// check conditions for stopping continuation here
+    	if (theEntity.getAttackTarget() != null)
+    	{
+    		theEntity.setState(theEntity.STATE_DIVING);
+    		continueExecuting = false;
+    	}
+    	
     	// clean up if finished execution
     	if (!continueExecuting)
     	{
-    	}
-    	else
-    	{
-    	       
-//            // DEBUG
-//            System.out.println("continueExecuting = "+continueExecuting);
-
+    		// TODO
+    		// probably should do an attack sound here
     	}
     	
     	return (continueExecuting);

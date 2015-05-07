@@ -77,11 +77,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 //    protected final EntityAIBase aiTargetChicken = new EntityAINearestAttackableTarget(this, EntityChicken.class, 200, false);
 
     // create state constants, did not use enum because need to cast to int anyway for packets
-    protected final int STATE_PERCHED = 0;
-    protected final int STATE_TAKING_OFF = 1;
-    protected final int STATE_SOARING = 2;
-    protected final int STATE_DIVING = 3;
-    protected final int STATE_LANDING = 4;
+    public final int STATE_PERCHED = 0;
+    public final int STATE_TAKING_OFF = 1;
+    public final int STATE_SOARING = 2;
+    public final int STATE_DIVING = 3;
+    public final int STATE_LANDING = 4;
     
     // use fields for sounds to allow easy changes in child classes
     protected String soundHurt = "wildanimals:mob.birdofprey.death";
@@ -100,6 +100,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 +parWorld.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
 
         setSize(2.0F, 3.0F);
+        setState(STATE_SOARING);
         soarClockwise = parWorld.rand.nextBoolean();
         soarHeight = 126-Math.pow(parWorld.rand.nextInt(6), 2);
         initExtProps();

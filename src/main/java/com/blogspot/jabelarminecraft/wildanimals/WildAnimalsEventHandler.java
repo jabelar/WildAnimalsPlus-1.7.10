@@ -98,10 +98,6 @@ import net.minecraftforge.fluids.FluidEvent.FluidMotionEvent;
 import net.minecraftforge.fluids.FluidEvent.FluidSpilledEvent;
 import net.minecraftforge.fluids.FluidRegistry.FluidRegisterEvent;
 import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
-
-import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
-import com.blogspot.jabelarminecraft.wildanimals.entities.extendedproperties.ExtendedPropertiesWildAnimals;
-
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -170,13 +166,6 @@ public class WildAnimalsEventHandler
     public void onEvent(EntityConstructing event)
     {
         // Register extended entity properties
-
-        if (event.entity instanceof IModEntity)
-        {
-            // DEBUG
-            System.out.println("OnEntityConstructing registering IWildAnimalsEntity extended properties");
-            event.entity.registerExtendedProperties("ExtendedPropertiesWildAnimals", new ExtendedPropertiesWildAnimals());
-        }
     }
     
     @SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)

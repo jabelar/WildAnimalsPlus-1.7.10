@@ -16,11 +16,6 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.serpents;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-
-import java.io.IOException;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.Entity;
@@ -52,13 +47,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
-import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketServerSide;
+import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 public class EntitySerpent extends EntityAnimal implements IModEntity
 {
-	// for variable fields that need to be synced and saved put them in a compound
-	// this is used for the extended properties interface, plus in custom packet
-	public NBTTagCompound extPropsCompound = new NBTTagCompound();
+    private NBTTagCompound syncDataCompound = new NBTTagCompound();
 
 	// good to have instances of AI so task list can be modified, including in sub-classes
     protected EntityAIBase aiSwimming = new EntityAISwimming(this);
@@ -87,15 +80,9 @@ public class EntitySerpent extends EntityAnimal implements IModEntity
         		+par1World.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
 
         setSize(1.0F, 0.25F);
-        initExtProps();
+        initSyncDataCompound();
         setupAI();		
  	}
-		
-	@Override
-	public void initExtProps() 
-	{
-		extPropsCompound.setFloat("scaleFactor", 1.0F);
-	}
     
     // use clear tasks for subclasses then build up their ai task list specifically
     @Override
@@ -420,7 +407,7 @@ public class EntitySerpent extends EntityAnimal implements IModEntity
     @Override
 	public void setScaleFactor(float parScaleFactor)
     {
-    	extPropsCompound.setFloat("scaleFactor", Math.abs(parScaleFactor));
+    	syncDataCompound.setFloat("scaleFactor", Math.abs(parScaleFactor));
    	
     	// don't forget to sync client and server
     	sendEntitySyncPacket();
@@ -429,59 +416,35 @@ public class EntitySerpent extends EntityAnimal implements IModEntity
     @Override
 	public float getScaleFactor()
     {
-    	return extPropsCompound.getFloat("scaleFactor");
+    	return syncDataCompound.getFloat("scaleFactor");
+    }
+
+    
+    @Override
+    public void sendEntitySyncPacket()
+    {
+        Utilities.sendEntitySyncPacketToClient(this);
     }
 
     @Override
-	public NBTTagCompound getExtProps()
+    public NBTTagCompound getSyncDataCompound()
     {
-    	return extPropsCompound;
+        return syncDataCompound;
+    }
+    
+    @Override
+    public void setSyncDataCompound(NBTTagCompound parCompound)
+    {
+        syncDataCompound = parCompound;
     }
 
-	@Override
-	public void setExtProps(NBTTagCompound parCompound) 
-	{
-		extPropsCompound = parCompound;
-		
-		// probably need to be careful sync'ing here as this is called by
-		// sync process itself -- don't create infinite loop
-	}
-
-	@Override
-	// no need to return the buffer because the buffer is operated on directly
-	public void getExtPropsToBuffer(ByteBufOutputStream parBBOS) 
-	{
-		try {
-			parBBOS.writeFloat(extPropsCompound.getFloat("scaleFactor"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	// no need to return anything because the extended properties tag is updated directly
-	public void setExtPropsFromBuffer(ByteBufInputStream parBBIS) 
-	{
-		try {
-			extPropsCompound.setFloat("scaleFactor", parBBIS.readFloat());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void sendEntitySyncPacket() 
-	{
-    	if (!worldObj.isRemote)
-    	{
-        	try {
-				CreatePacketServerSide.sendS2CEntityNBTSync(this);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}   		
-    	}
-	}
+    /* (non-Javadoc)
+     * @see com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity#initSyncDataCompound()
+     */
+    @Override
+    public void initSyncDataCompound()
+    {
+        syncDataCompound.setFloat("scaleFactor", 1.0F);        
+    }
+    
 }

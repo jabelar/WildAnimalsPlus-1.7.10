@@ -48,7 +48,6 @@ import com.blogspot.jabelarminecraft.wildanimals.items.WildAnimalsMonsterPlacer;
 import com.blogspot.jabelarminecraft.wildanimals.networking.MessageSyncEntityToClient;
 import com.blogspot.jabelarminecraft.wildanimals.networking.MessageToClient;
 import com.blogspot.jabelarminecraft.wildanimals.networking.MessageToServer;
-import com.blogspot.jabelarminecraft.wildanimals.networking.ServerPacketHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -86,18 +85,16 @@ public class CommonProxy
         registerModEntities();
         registerEntitySpawns();
         registerFuelHandlers();
+        registerSimpleNetworking();
+//      VillagerRegistry.instance().registerVillagerId(10);
+//      VillagerRegistry.instance().registerVillageTradeHandler(10, new VillageTradeHandlerMagicBeans());
+//      VillagerRegistry.getRegisteredVillagers();
     }
     
     public void fmlLifeCycleEvent(FMLInitializationEvent event)
     {
         // register custom event listeners
         registerEventListeners();
- 
-        // register networking channel 
-        registerNetworkingChannel();
-        
-        // register server packet handler
-        registerServerPacketHandler();
         
         // register recipes here to allow use of items from other mods
         registerRecipes();
@@ -434,26 +431,6 @@ public class CommonProxy
         WildAnimals.network.registerMessage(MessageSyncEntityToClient.Handler.class, MessageSyncEntityToClient.class, packetId++, Side.CLIENT);
     }
 
-    public void sendMessageToPlayer(ChatComponentText msg) { }
-
-    // Got this idea to use IGuiHandler interface from message from Noppes at http://www.minecraftforge.net/forum/index.php/topic,15403.0.html
-    // With code example at https://dl.dropboxusercontent.com/u/3096920/NetworkExampleMod.zip
-
-    public void registerNetworkingChannel()
-    {
-        WildAnimals.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(WildAnimals.NETWORK_CHANNEL_NAME);
-        // when you want to send a packet elsewhere, use one of these methods (server or client):
-        //     WildAnimals.channel.sendToServer(FMLProxyPacket);
-        //     WildAnimals.channel.sendTo(FMLProxyPacket, EntityPlayerMP); for player-specific GUI interaction
-        //     WildAnimals.channel.sendToAll(FMLProxyPacket); for all player sync like entities
-        // and there are other sendToxxx methods to check out.
-    }
-    
-    public void registerServerPacketHandler()
-    {
-        WildAnimals.channel.register(new ServerPacketHandler());
-    }
-
 	public void fmlLifeCycleEvent(FMLServerStartingEvent event) 
 	{
         event.registerServerCommand(new CommandConjure());
@@ -488,6 +465,15 @@ public class CommonProxy
     public EntityPlayer getPlayerEntityFromContext(MessageContext ctx) 
     {
         return ctx.getServerHandler().playerEntity;
+    }
+
+    /**
+     * @param msg
+     */
+    public void sendMessageToPlayer(ChatComponentText msg)
+    {
+        // TODO Auto-generated method stub
+        
     }
     
 

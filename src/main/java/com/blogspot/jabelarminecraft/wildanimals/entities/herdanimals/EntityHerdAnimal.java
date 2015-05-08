@@ -16,11 +16,6 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-
-import java.io.IOException;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -50,18 +45,15 @@ import net.minecraftforge.common.ForgeHooks;
 import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.herdanimal.EntityAIHurtByTargetHerdAnimal;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.herdanimal.EntityAIPanicHerdAnimal;
-import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketClientSide;
-import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketServerSide;
+import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 public class EntityHerdAnimal extends EntityAnimal implements IModEntity
 {
+    protected NBTTagCompound syncDataCompound = new NBTTagCompound();
+
     protected static final int REARING_TICKS_MAX = 20;
     
     protected boolean isHitWithoutResistance = false ;
-
-    // for variable fields that need to be synced and saved put them in a compound
-    // this is used for the extended properties interface, plus in custom packet
-    public NBTTagCompound extPropsCompound = new NBTTagCompound();
     
     public EntityHerdAnimal(World par1World)
     {
@@ -71,16 +63,16 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
         System.out.println("EntityHerdAnimal constructor(), entity.worldObj.isRemote = "+this.worldObj.isRemote);
 
         setSize(0.9F, 1.3F);
-        initExtProps();
+        initSyncDataCompound();
         setupAI();        
      }
     
     @Override
-    public void initExtProps()
+    public void initSyncDataCompound()
     {
-        extPropsCompound.setFloat("scaleFactor", 1.0F);
-        extPropsCompound.setInteger("rearingCounter", 0);
-        extPropsCompound.setBoolean("isRearing", false);
+        syncDataCompound.setFloat("scaleFactor", 1.0F);
+        syncDataCompound.setInteger("rearingCounter", 0);
+        syncDataCompound.setBoolean("isRearing", false);
     }
     
     // set up AI tasks
@@ -224,14 +216,7 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
      */
     @Override
     public boolean interact(EntityPlayer par1EntityPlayer)
-    {
-        // DEBUG
-        // send a test packet from client to server
-         if (par1EntityPlayer.worldObj.isRemote)  
-        {
-             CreatePacketClientSide.sendTestPacket(69);
-        }
-        
+    {      
         ItemStack itemstack = par1EntityPlayer.inventory.getCurrentItem();
 
         if (itemstack != null && itemstack.getItem() == Items.bucket && !par1EntityPlayer.capabilities.isCreativeMode)
@@ -434,7 +419,7 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
         if (parSetRearing && getAITarget()==null) // don't rear if already has target
         {
             setRearingCounter(REARING_TICKS_MAX);
-            extPropsCompound.setBoolean("isRearing", true);
+            syncDataCompound.setBoolean("isRearing", true);
             // DEBUG
             System.out.println("Rearing instead of fleeing");
             System.out.println("rearingCounter = "+getRearingCounter());
@@ -442,7 +427,7 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
         else
         {
             setRearingCounter(0);
-            extPropsCompound.setBoolean("isRearing", false);
+            syncDataCompound.setBoolean("isRearing", false);
             // DEBUG
             System.out.println("Finished Rearing");
             System.out.println("rearingCounter = "+getRearingCounter());
@@ -454,13 +439,13 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
     
     public boolean isRearing()
     {
-        return extPropsCompound.getBoolean("isRearing");
+        return syncDataCompound.getBoolean("isRearing");
     }
     
     @Override
     public void setScaleFactor(float parScaleFactor)
     {
-        extPropsCompound.setFloat("scaleFactor", Math.abs(parScaleFactor));
+        syncDataCompound.setFloat("scaleFactor", Math.abs(parScaleFactor));
        
         // don't forget to sync client and server
         sendEntitySyncPacket();
@@ -469,12 +454,12 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
     @Override
     public float getScaleFactor()
     {
-        return extPropsCompound.getFloat("scaleFactor");
+        return syncDataCompound.getFloat("scaleFactor");
     }
     
     public void setRearingCounter(int parTicks)
     {
-        extPropsCompound.setInteger("rearingCounter", parTicks);
+        syncDataCompound.setInteger("rearingCounter", parTicks);
            
         // don't forget to sync client and server
         sendEntitySyncPacket();
@@ -482,7 +467,7 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
     
     public void decrementRearingCounter()
     {
-        extPropsCompound.setInteger("rearingCounter", getRearingCounter()-1);
+        syncDataCompound.setInteger("rearingCounter", getRearingCounter()-1);
            
         // don't forget to sync client and server
         sendEntitySyncPacket();
@@ -490,62 +475,29 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
     
     public int getRearingCounter()
     {
-        return extPropsCompound.getInteger("rearingCounter");
+        return syncDataCompound.getInteger("rearingCounter");
     }
 
     public boolean isRearingFirstTick()
     {
-        return (extPropsCompound.getInteger("rearingCounter")==REARING_TICKS_MAX);
+        return (syncDataCompound.getInteger("rearingCounter")==REARING_TICKS_MAX);
     }
     
     @Override
-    public NBTTagCompound getExtProps()
+    public void sendEntitySyncPacket()
     {
-        return extPropsCompound;
+        Utilities.sendEntitySyncPacketToClient(this);
     }
 
     @Override
-    public void setExtProps(NBTTagCompound parCompound) 
+    public NBTTagCompound getSyncDataCompound()
     {
-        extPropsCompound = parCompound;
-        
-        // probably need to be careful sync'ing here as this is called by
-        // sync process itself -- don't create infinite loop
+        return syncDataCompound;
     }
-
+    
     @Override
-    // no need to return the buffer because the buffer is operated on directly
-    public void getExtPropsToBuffer(ByteBufOutputStream parBBOS) 
+    public void setSyncDataCompound(NBTTagCompound parCompound)
     {
-        try {
-            parBBOS.writeFloat(extPropsCompound.getFloat("scaleFactor"));
-            parBBOS.writeInt(extPropsCompound.getInteger("rearingCounter"));
-            parBBOS.writeBoolean(extPropsCompound.getBoolean("isRearing"));
-        } catch (IOException e) { e.printStackTrace(); }        
-    }
-
-    @Override
-    // no need to return anything because the extended properties tag is updated directly
-    public void setExtPropsFromBuffer(ByteBufInputStream parBBIS) 
-    {
-        try {
-            extPropsCompound.setFloat("scaleFactor", parBBIS.readFloat());
-            extPropsCompound.setInteger("rearingCounter", parBBIS.readInt());
-            extPropsCompound.setBoolean("isRearing", parBBIS.readBoolean());
-        } catch (IOException e) { e.printStackTrace(); }
-    }
-
-    @Override
-    public void sendEntitySyncPacket() 
-    {
-        if (!worldObj.isRemote)
-        {
-            try {
-                CreatePacketServerSide.sendS2CEntityNBTSync(this);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }           
-        }
+        syncDataCompound = parCompound;
     }
 }

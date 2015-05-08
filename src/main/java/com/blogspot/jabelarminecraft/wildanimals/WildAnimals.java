@@ -52,10 +52,7 @@ public class WildAnimals
     public static final String MODCREDITS = "Dedicated to jnaejnae.";
     public static final String MODURL = "www.jabelarminecraft.blogspot.com";
 
-    // this is tag used for sub-compound in extended properties and packet syncing
-	public final static String EXT_PROPS_NAME = "extendedPropertiesWildAnimal";
- 
-	// use a named channel to identify packets related to this mod
+    // use a named channel to identify packets related to this mod
     public static final String NETWORK_CHANNEL_NAME = "WildAnimals";
 	public static FMLEventChannel channel;
 	// networking
@@ -83,7 +80,7 @@ public class WildAnimals
     //public final static Item tomato = new ItemTomato();
     
     // Says where the client and server 'proxy' code is loaded.
-    @SidedProxy(clientSide="com.blogspot.jabelarminecraft.wildanimals.proxy.client.ClientProxy", serverSide="com.blogspot.jabelarminecraft.wildanimals.proxy.CommonProxy")
+    @SidedProxy(clientSide="com.blogspot.jabelarminecraft.wildanimals.proxy.ClientProxy", serverSide="com.blogspot.jabelarminecraft.wildanimals.proxy.CommonProxy")
     public static CommonProxy proxy;
             
     @EventHandler

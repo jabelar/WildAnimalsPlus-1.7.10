@@ -16,11 +16,6 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.bigcats;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-
-import java.io.IOException;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.Entity;
@@ -63,13 +58,15 @@ import net.minecraft.world.World;
 import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.bigcat.EntityAIBegBigCat;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityHerdAnimal;
-import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketServerSide;
+import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityBigCat extends EntityTameable implements IModEntity
 {
+    protected NBTTagCompound syncDataCompound = new NBTTagCompound();
+
     protected float field_70926_e;
     protected float field_70924_f;
     /**
@@ -82,11 +79,6 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      */
     protected float timeBigCatIsShaking;
     protected float prevTimeBigCatIsShaking;
-    // protected static final String __OBFID = "CL_00001654";
-        
-	// for variable fields that need to be synced and saved put them in a compound
-	// this is used for the extended properties interface, plus in custom packet
-	public NBTTagCompound extPropsCompound = new NBTTagCompound();
 	
     // good to have instances of AI so task list can be modified, including in sub-classes
     protected EntityAIBase aiSwimming = new EntityAISwimming(this);
@@ -116,7 +108,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         System.out.println("EntityBigCat constructor(), "+"on Client="+par1World.isRemote);
 
         setSize(1.0F, 1.33F);
-        initExtProps();
+        initSyncDataCompound();
         setupAI();		
         setTamed(false);
  	}
@@ -147,9 +139,9 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     }
 
 	@Override
-	public void initExtProps() 
+	public void initSyncDataCompound() 
 	{
-    	extPropsCompound.setFloat("scaleFactor", 1.2F);
+    	syncDataCompound.setFloat("scaleFactor", 1.2F);
 	}
     
     // use clear tasks for subclasses then build up their ai task list specifically
@@ -801,7 +793,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     @Override
 	public void setScaleFactor(float parScaleFactor)
     {
-    	extPropsCompound.setFloat("scaleFactor", Math.abs(parScaleFactor));
+    	syncDataCompound.setFloat("scaleFactor", Math.abs(parScaleFactor));
    	
     	// don't forget to sync client and server
     	sendEntitySyncPacket();
@@ -810,58 +802,24 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     @Override
 	public float getScaleFactor()
     {
-    	return extPropsCompound.getFloat("scaleFactor");
+    	return syncDataCompound.getFloat("scaleFactor");
+    }
+    
+    @Override
+    public void sendEntitySyncPacket()
+    {
+        Utilities.sendEntitySyncPacketToClient(this);
     }
 
     @Override
-	public NBTTagCompound getExtProps()
+    public NBTTagCompound getSyncDataCompound()
     {
-    	return extPropsCompound;
+        return syncDataCompound;
     }
-
-	@Override
-	public void setExtProps(NBTTagCompound parCompound) 
-	{
-		extPropsCompound = parCompound;
-		
-		// probably need to be careful sync'ing here as this is called by
-		// sync process itself -- don't create infinite loop
-	}
-
-	@Override
-	// no need to return the buffer because the buffer is operated on directly
-	public void getExtPropsToBuffer(ByteBufOutputStream parBBOS) 
-	{
-		try {
-			parBBOS.writeFloat(extPropsCompound.getFloat("scaleFactor"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	// no need to return anything because the extended properties tag is updated directly
-	public void setExtPropsFromBuffer(ByteBufInputStream parBBIS)
-	{
-		try {
-			extPropsCompound.setFloat("scaleFactor", parBBIS.readFloat());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void sendEntitySyncPacket() 
-	{
-    	if (!worldObj.isRemote)
-    	{
-        	try {
-				CreatePacketServerSide.sendS2CEntityNBTSync(this);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}   		
-    	}
-	}
+    
+    @Override
+    public void setSyncDataCompound(NBTTagCompound parCompound)
+    {
+        syncDataCompound = parCompound;
+    }    
 }

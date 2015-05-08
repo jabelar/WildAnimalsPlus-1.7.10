@@ -16,27 +16,17 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-
 import java.io.IOException;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAILeapAtTarget;
-import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -45,38 +35,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
-import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAIDiving;
-import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAILanding;
-import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAIPerched;
-import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAISoaring;
-import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityAITakingOff;
-import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.EntityFlyingAINearestAttackableTarget;
-import com.blogspot.jabelarminecraft.wildanimals.networking.entities.CreatePacketServerSide;
+import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IModEntity
 {
-    // for variable fields that need to be synced and saved put them in a compound
-    // this is used for the extended properties interface, plus in custom packet
-    public NBTTagCompound extPropsCompound = new NBTTagCompound();
-
-    // good to have instances of AI so task list can be modified, including in sub-classes
-    protected EntityAIBase aiSwimming = new EntityAISwimming(this);
-    protected EntityAIBase aiLeapAtTarget = new EntityAILeapAtTarget(this, 0.4F);
-//    protected EntityAIBase aiAttackOnCollide = new EntityAIAttackOnCollide(this, 1.0D, true);
-    protected EntityAIBase aiPerched = new EntityAIPerched(this);
-    protected EntityAIBase aiTakingOff = new EntityAITakingOff(this);
-    protected EntityAIBase aiSoaring = new EntityAISoaring(this);
-    protected EntityAIBase aiDiving = new EntityAIDiving(this);
-    protected EntityAIBase aiLanding = new EntityAILanding(this);
-    protected EntityAIBase aiWatchClosest = new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F);
-    protected EntityAIBase aiLookIdle = new EntityAILookIdle(this);
-//    protected EntityAIBase aiHurtByTarget = new EntityAIHurtByTarget(this, true);
-//    protected EntityAIBase aiPanic = new EntityAIPanic(this, 2.0D);
-    protected final EntityAIBase aiTargetChicken = new EntityFlyingAINearestAttackableTarget(this, EntityChicken.class, 200, false);
+    private NBTTagCompound syncDataCompound = new NBTTagCompound();
 
     // create state constants, did not use enum because need to cast to int anyway for packets
     public final int STATE_PERCHED = 0;
@@ -89,9 +55,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected String soundHurt = "wildanimals:mob.birdofprey.death";
     protected String soundDeath = "wildanimals:mob.birdofprey.death";
     protected String soundCall = "wildanimals:mob.birdofprey.hiss";
-    
-    protected double soarHeight;
-    protected boolean soarClockwise;
 
     public EntityBirdOfPrey(World parWorld) throws IOException
     {
@@ -102,21 +65,22 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 +parWorld.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
 
         setSize(2.0F, 3.0F);
-        soarClockwise = parWorld.rand.nextBoolean();
-        soarHeight = 126-Math.pow(parWorld.rand.nextInt(6), 2);
-        initExtProps();
+        initSyncDataCompound();
         setupAI();
      }
         
     @Override
-    public void initExtProps()
+    public void initSyncDataCompound()
     {
-        extPropsCompound.setFloat("scaleFactor", 1.0F);
-        extPropsCompound.setInteger("state", STATE_TAKING_OFF);
-        extPropsCompound.setInteger("stateCounter", 0);
-        extPropsCompound.setDouble("anchorX", posX);
-        extPropsCompound.setDouble("anchorY", posY);
-        extPropsCompound.setDouble("anchorZ", posZ);
+        syncDataCompound.setFloat("scaleFactor", 1.0F);
+        syncDataCompound.setInteger("state", STATE_TAKING_OFF);
+        syncDataCompound.setInteger("stateCounter", 0);
+        syncDataCompound.setBoolean("soarClockwise", worldObj.rand.nextBoolean());
+        syncDataCompound.setDouble("soarHeight", 126-Math.pow(worldObj.rand.nextInt(6), 2));
+        syncDataCompound.setInteger("stateCounter", 0);
+        syncDataCompound.setDouble("anchorX", posX);
+        syncDataCompound.setDouble("anchorY", posY);
+        syncDataCompound.setDouble("anchorZ", posZ);
     }
     
     // use clear tasks then build up their custom ai task list specifically
@@ -226,11 +190,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 	protected void processTakingOff() 
 	{
         // climb to soaring height
-        if (posY < soarHeight)
+        if (posY < getSoarHeight())
         {
             motionY = 0.1D;
         }
-        else if (posY > soarHeight)
+        else if (posY > getSoarHeight())
         {
             motionY = -0.1D;
         }
@@ -246,7 +210,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 
 //        setMoveForward((float)this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
         // turn
-        if (soarClockwise)
+        if (getSoarClockwise())
         {
             rotationYaw += 1.5F;
         }
@@ -268,11 +232,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected void processSoaring()
     {
         // climb to soaring height
-        if (posY < soarHeight)
+        if (posY < getSoarHeight())
         {
             motionY = 0.1D;
         }
-        else if (posY > soarHeight)
+        else if (posY > getSoarHeight())
         {
             motionY = -0.1D;
         }
@@ -288,7 +252,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 
 //        setMoveForward((float)this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
         // turn
-        if (soarClockwise)
+        if (getSoarClockwise())
         {
             rotationYaw += 1.5F;
         }
@@ -336,7 +300,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             }
             case STATE_TAKING_OFF:
             {
-            	if (posY >= soarHeight)
+            	if (posY >= getSoarHeight())
             	{
             		setState(STATE_SOARING);
             	}
@@ -652,7 +616,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     @Override
     public void setScaleFactor(float parScaleFactor)
     {
-        extPropsCompound.setFloat("scaleFactor", Math.abs(parScaleFactor));
+        syncDataCompound.setFloat("scaleFactor", Math.abs(parScaleFactor));
        
         // don't forget to sync client and server
         sendEntitySyncPacket();
@@ -661,7 +625,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     @Override
     public float getScaleFactor()
     {
-        return extPropsCompound.getFloat("scaleFactor");
+        return syncDataCompound.getFloat("scaleFactor");
     }
 
     public void setState(int parState)
@@ -669,7 +633,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         // DEBUG
         System.out.println("EntityBirdOfPrey setState() state changed to "+parState);
 
-        extPropsCompound.setInteger("state", parState);
+        syncDataCompound.setInteger("state", parState);
         
         // don't forget to sync client and server
         sendEntitySyncPacket();
@@ -677,12 +641,12 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 
     public int getState() 
     {
-        return extPropsCompound.getInteger("state");
+        return syncDataCompound.getInteger("state");
     } 
 
     public void setStateCounter(int parCount)
     {
-        extPropsCompound.setInteger("stateCounter", parCount);
+        syncDataCompound.setInteger("stateCounter", parCount);
         
         // don't forget to sync client and server
         sendEntitySyncPacket();
@@ -690,7 +654,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 
     public void decrementStateCounter()
     {
-        extPropsCompound.setInteger("stateCounter", extPropsCompound.getInteger("stateCounter")-1);
+        syncDataCompound.setInteger("stateCounter", syncDataCompound.getInteger("stateCounter")-1);
         
         // don't forget to sync client and server
         sendEntitySyncPacket();
@@ -698,14 +662,14 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 
     public int getStateCounter() 
     {
-        return extPropsCompound.getInteger("stateCounter");
+        return syncDataCompound.getInteger("stateCounter");
     } 
 
     public void setAnchor(double parX, double parY, double parZ)
     {
-        extPropsCompound.setDouble("anchorX", parX);
-        extPropsCompound.setDouble("anchorY", parY);
-        extPropsCompound.setDouble("anchorZ", parZ);
+        syncDataCompound.setDouble("anchorX", parX);
+        syncDataCompound.setDouble("anchorY", parY);
+        syncDataCompound.setDouble("anchorZ", parZ);
         
         // don't forget to sync client and server
         sendEntitySyncPacket();
@@ -713,17 +677,17 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 
     public double getAnchorX() 
     {
-        return extPropsCompound.getDouble("anchorX");
+        return syncDataCompound.getDouble("anchorX");
     } 
 
     public double getAnchorY() 
     {
-        return extPropsCompound.getDouble("anchorY");
+        return syncDataCompound.getDouble("anchorY");
     } 
 
     public double getAnchorZ() 
     {
-        return extPropsCompound.getDouble("anchorZ");
+        return syncDataCompound.getDouble("anchorZ");
     } 
 
     @Override
@@ -739,81 +703,48 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         // TODO Auto-generated method stub
         return null;
     }
-
+    
     @Override
-    public NBTTagCompound getExtProps()
+    public void sendEntitySyncPacket()
     {
-        return extPropsCompound;
-    }
-
-    @Override
-    public void setExtProps(NBTTagCompound parCompound) 
-    {
-        extPropsCompound = parCompound;
-        
-        // probably need to be careful sync'ing here as this is called by
-        // sync process itself -- don't create infinite loop
-    }
-
-    @Override
-    // no need to return the buffer because the buffer is operated on directly
-    public void getExtPropsToBuffer(ByteBufOutputStream parBBOS) 
-    {
-        try {
-            parBBOS.writeFloat(extPropsCompound.getFloat("scaleFactor"));
-            parBBOS.writeFloat(extPropsCompound.getInteger("state"));
-            parBBOS.writeFloat(extPropsCompound.getInteger("stateCounter"));
-            parBBOS.writeDouble(extPropsCompound.getDouble("anchorX"));
-            parBBOS.writeDouble(extPropsCompound.getDouble("anchorY"));
-            parBBOS.writeDouble(extPropsCompound.getDouble("anchorZ"));
-        } catch (IOException e) { e.printStackTrace(); }
-    }
-
-    @Override
-    // no need to return anything because the extended properties tag is updated directly
-    public void setExtPropsFromBuffer(ByteBufInputStream parBBIS)
-    {
-    	MovingObjectPosition mop = Minecraft.getMinecraft().thePlayer.rayTrace(200, 1.0F);
-        try {
-            extPropsCompound.setFloat("scaleFactor", parBBIS.readFloat());
-            extPropsCompound.setInteger("state", parBBIS.readInt());
-            extPropsCompound.setInteger("stateCounter", parBBIS.readInt());
-            extPropsCompound.setDouble("anchorX", parBBIS.readDouble());
-            extPropsCompound.setDouble("anchorY", parBBIS.readDouble());
-            extPropsCompound.setDouble("anchorZ", parBBIS.readDouble());
-        } catch (IOException e) { e.printStackTrace(); }
-    }
-
-    @Override
-    public void sendEntitySyncPacket() 
-    {
-        if (!worldObj.isRemote)
-        {
-            try {
-                CreatePacketServerSide.sendS2CEntityNBTSync(this);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }           
-        }
+        Utilities.sendEntitySyncPacketToClient(this);
     }
     
     public void setSoarClockwise(boolean parClockwise)
     {
-        soarClockwise = parClockwise;
+        syncDataCompound.setBoolean("soarClockwise", parClockwise);
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
     }
     
     public boolean getSoarClockwise()
     {
-        return soarClockwise;
+        return syncDataCompound.getBoolean("soarClockwise");
     }
     
     public void setSoarHeight(double parHeight)
     {
-        soarHeight = parHeight;
+        syncDataCompound.setDouble("soarHeight", parHeight);
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
     }
     
     public double getSoarHeight()
     {
-        return soarHeight;
+        return syncDataCompound.getInteger("soarHeight");
     }
+
+    @Override
+    public NBTTagCompound getSyncDataCompound()
+    {
+        return syncDataCompound;
+    }
+    
+    @Override
+    public void setSyncDataCompound(NBTTagCompound parCompound)
+    {
+        syncDataCompound = parCompound;
+    }    
 }

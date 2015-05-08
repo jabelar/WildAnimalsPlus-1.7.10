@@ -22,7 +22,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
 
-import com.blogspot.jabelarminecraft.wildanimals.WildAnimals;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityJaguar;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityLion;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityLynx;
@@ -36,7 +35,6 @@ import com.blogspot.jabelarminecraft.wildanimals.models.ModelBigCat;
 import com.blogspot.jabelarminecraft.wildanimals.models.ModelBirdOfPrey;
 import com.blogspot.jabelarminecraft.wildanimals.models.ModelElephant;
 import com.blogspot.jabelarminecraft.wildanimals.models.ModelSerpent;
-import com.blogspot.jabelarminecraft.wildanimals.networking.ClientPacketHandler;
 import com.blogspot.jabelarminecraft.wildanimals.renderers.RenderBigCat;
 import com.blogspot.jabelarminecraft.wildanimals.renderers.RenderBirdOfPrey;
 import com.blogspot.jabelarminecraft.wildanimals.renderers.RenderHerdAnimal;
@@ -73,12 +71,6 @@ public class ClientProxy extends CommonProxy
 		super.fmlLifeCycleEvent(event);
 
 		// do client-specific stuff
-		registerClientPacketHandler();
-	}
-	
-	private void registerClientPacketHandler() 
-	{
-		WildAnimals.channel.register(new ClientPacketHandler());	
 	}
 	
 	@Override
@@ -143,7 +135,8 @@ public class ClientProxy extends CommonProxy
     }
 	
     @Override
-    public void sendMessageToPlayer(ChatComponentText msg) {
+    public void sendMessageToPlayer(ChatComponentText msg) 
+    {
         Minecraft.getMinecraft().thePlayer.addChatMessage(msg);
     }
     

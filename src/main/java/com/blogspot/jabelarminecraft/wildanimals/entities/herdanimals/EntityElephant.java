@@ -28,15 +28,15 @@ public class EntityElephant extends EntityHerdAnimal
 		// DEBUG
         System.out.println("EntityElephant constructor()");
 
-        initExtProps();
-        setSize(width*extPropsCompound.getFloat("scaleFactor"), height*extPropsCompound.getFloat("scaleFactor"));
+        initSyncDataCompound();
+        setSize(width*getScaleFactor(), height*getScaleFactor());
 	}
 	
     @Override
-	public void initExtProps()
+	public void initSyncDataCompound()
     {
-    	super.initExtProps();
-    	extPropsCompound.setFloat("scaleFactor", 2.0F); // elephants are big!
+    	super.initSyncDataCompound();
+    	syncDataCompound.setFloat("scaleFactor", 2.0F); // elephants are big!
     }
 
     @Override

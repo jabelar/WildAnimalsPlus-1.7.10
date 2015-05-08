@@ -255,7 +255,7 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 	
 	public void doAnimate(EntityBirdOfPrey parEntity, float[][] parCycleArray)
 	{
-		cycleIndex = (int)Math.floor((parEntity.ticksExisted+parEntity.getEntityId())%parCycleArray.length)/2;
+		cycleIndex = (int)Math.floor((parEntity.ticksExisted+parEntity.getRandFactor()*2)%parCycleArray.length)/2;
 		// will need to set based on entity state
     	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
 		setRotation(body, parCycleArray[cycleIndex][0], 0, 0);

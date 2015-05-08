@@ -728,4 +728,9 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         syncDataCompound = parCompound;
     }    
+    
+    public int getRandFactor()
+    {
+        return randFactor;
+    }
 }

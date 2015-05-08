@@ -17,6 +17,7 @@
 package com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey;
 
 import java.io.IOException;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
@@ -42,7 +43,7 @@ import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IModEntity
 {
-    private NBTTagCompound syncDataCompound = new NBTTagCompound();
+    protected NBTTagCompound syncDataCompound = new NBTTagCompound();
 
     // create state constants, did not use enum because need to cast to int anyway for packets
     public final int STATE_PERCHED = 0;
@@ -55,6 +56,10 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected String soundHurt = "wildanimals:mob.birdofprey.death";
     protected String soundDeath = "wildanimals:mob.birdofprey.death";
     protected String soundCall = "wildanimals:mob.birdofprey.hiss";
+    
+    // to ensure that multiple entities don't get synced
+    // create a random factor per entity
+    protected int randFactor;
 
     public EntityBirdOfPrey(World parWorld) throws IOException
     {
@@ -65,6 +70,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 +parWorld.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
 
         setSize(2.0F, 3.0F);
+        randFactor = new Random().nextInt(10);
         initSyncDataCompound();
         setupAI();
      }
@@ -76,7 +82,10 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         syncDataCompound.setInteger("state", STATE_TAKING_OFF);
         syncDataCompound.setInteger("stateCounter", 0);
         syncDataCompound.setBoolean("soarClockwise", worldObj.rand.nextBoolean());
-        syncDataCompound.setDouble("soarHeight", 126-Math.pow(worldObj.rand.nextInt(6), 2));
+        syncDataCompound.setDouble("soarHeight", 126-randFactor);
+        // DEBUG
+        System.out.println("Soar height ="+getSoarHeight());
+        System.out.println("Rand ="+randFactor);
         syncDataCompound.setInteger("stateCounter", 0);
         syncDataCompound.setDouble("anchorX", posX);
         syncDataCompound.setDouble("anchorY", posY);
@@ -96,19 +105,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         getNavigator().setAvoidsWater(true);
         clearAITasks(); // clear any tasks assigned in super classes
-//        tasks.addTask(1, aiSwimming);
-//        tasks.addTask(2, aiPanic);
-//        tasks.addTask(3, aiLeapAtTarget);
-//        tasks.addTask(4, aiAttackOnCollide);
-//        tasks.addTask(5, aiPerched);
-//        tasks.addTask(6, aiTakingOff);
-//        tasks.addTask(7, aiSoaring);
-//        tasks.addTask(8, aiDiving);
-//        tasks.addTask(9, aiLanding);
-//        tasks.addTask(10, aiWatchClosest);
-//        tasks.addTask(11, aiLookIdle);
-//        targetTasks.addTask(9, aiHurtByTarget);
-//        targetTasks.addTask(10, aiTargetChicken);
     }
 
     // you don't have to call this as it is called automatically during entityLiving subclass creation
@@ -200,15 +196,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         }
 
         moveForward();
-        
-//        if (isCourseTraversable(this.waypointX, this.waypointY, this.waypointZ))
-//        {
-//            this.motionX += d0 / d3 * 0.1D;
-//            this.motionY += d1 / d3 * 0.1D;
-//            this.motionZ += d2 / d3 * 0.1D;
-//        }
 
-//        setMoveForward((float)this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
         // turn
         if (getSoarClockwise())
         {
@@ -231,26 +219,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     
     protected void processSoaring()
     {
-        // climb to soaring height
-        if (posY < getSoarHeight())
-        {
-            motionY = 0.1D;
-        }
-        else if (posY > getSoarHeight())
-        {
-            motionY = -0.1D;
-        }
+        // drift down slowly
+        motionY = -0.01D;
 
         moveForward();
         
-//        if (isCourseTraversable(this.waypointX, this.waypointY, this.waypointZ))
-//        {
-//            this.motionX += d0 / d3 * 0.1D;
-//            this.motionY += d1 / d3 * 0.1D;
-//            this.motionZ += d2 / d3 * 0.1D;
-//        }
-
-//        setMoveForward((float)this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
         // turn
         if (getSoarClockwise())
         {
@@ -308,6 +281,14 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             }
             case STATE_SOARING:
             {
+                // climb again if drifting too low
+                // put some randomness in so entities aren't synced after loading save game
+//                // DEBUG
+//                System.out.println("soar limt ="+(getSoarHeight()*0.9D));
+                if (posY < getSoarHeight()*0.9D)
+                {
+                    setState(STATE_TAKING_OFF);
+                }
                 break;
             }
             case STATE_DIVING:

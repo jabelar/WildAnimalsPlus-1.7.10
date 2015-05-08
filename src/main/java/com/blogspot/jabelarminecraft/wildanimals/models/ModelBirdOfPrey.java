@@ -248,6 +248,8 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 		}
 		else if (parEntity.getState()==parEntity.STATE_SOARING)
 		{
+			// DEBUG
+			System.out.println("rendering soaring");
 			doAnimate(parEntity, soaringCycle);
 		}
 

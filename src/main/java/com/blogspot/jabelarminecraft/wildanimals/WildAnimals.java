@@ -36,6 +36,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 @Mod(modid = WildAnimals.MODID, 
       name = WildAnimals.MODNAME, 
@@ -57,6 +58,8 @@ public class WildAnimals
 	// use a named channel to identify packets related to this mod
     public static final String NETWORK_CHANNEL_NAME = "WildAnimals";
 	public static FMLEventChannel channel;
+	// networking
+	public static SimpleNetworkWrapper network;
 
     // set up configuration properties (will be read from config file in preInit)
     public static File configFile;

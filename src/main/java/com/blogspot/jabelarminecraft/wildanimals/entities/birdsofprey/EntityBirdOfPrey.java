@@ -112,7 +112,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     public void initExtProps()
     {
         extPropsCompound.setFloat("scaleFactor", 1.0F);
-        extPropsCompound.setInteger("state", STATE_SOARING);
+        extPropsCompound.setInteger("state", STATE_TAKING_OFF);
         extPropsCompound.setInteger("stateCounter", 0);
         extPropsCompound.setDouble("anchorX", posX);
         extPropsCompound.setDouble("anchorY", posY);
@@ -176,8 +176,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         dataWatcher.updateObject(18, Float.valueOf(this.getHealth()));
         
-        // DEBUG
-        System.out.println("State = "+getState());
+//        // DEBUG
+//        System.out.println("State = "+getState());
         
         switch (getState())
         {
@@ -208,7 +208,14 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     /**
 	 * 
 	 */
-	private void processLanding() {
+	protected void processLanding() 
+	{
+	}
+
+	/**
+	 * 
+	 */
+	protected void processDiving() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -216,26 +223,80 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 	/**
 	 * 
 	 */
-	private void processDiving() {
-		// TODO Auto-generated method stub
-		
+	protected void processTakingOff() 
+	{
+        // climb to soaring height
+        if (posY < soarHeight)
+        {
+            motionY = 0.1D;
+        }
+        else if (posY > soarHeight)
+        {
+            motionY = -0.1D;
+        }
+
+        moveForward();
+        
+//        if (isCourseTraversable(this.waypointX, this.waypointY, this.waypointZ))
+//        {
+//            this.motionX += d0 / d3 * 0.1D;
+//            this.motionY += d1 / d3 * 0.1D;
+//            this.motionZ += d2 / d3 * 0.1D;
+//        }
+
+//        setMoveForward((float)this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
+        // turn
+        if (soarClockwise)
+        {
+            rotationYaw += 1.5F;
+        }
+        else
+        {
+            rotationYaw -= 1.5F;
+        }
 	}
 
 	/**
 	 * 
 	 */
-	private void processTakingOff() {
+	protected void processPerched() 
+	{
 		// TODO Auto-generated method stub
 		
 	}
+    
+    protected void processSoaring()
+    {
+        // climb to soaring height
+        if (posY < soarHeight)
+        {
+            motionY = 0.1D;
+        }
+        else if (posY > soarHeight)
+        {
+            motionY = -0.1D;
+        }
 
-	/**
-	 * 
-	 */
-	private void processPerched() {
-		// TODO Auto-generated method stub
-		
-	}
+        moveForward();
+        
+//        if (isCourseTraversable(this.waypointX, this.waypointY, this.waypointZ))
+//        {
+//            this.motionX += d0 / d3 * 0.1D;
+//            this.motionY += d1 / d3 * 0.1D;
+//            this.motionZ += d2 / d3 * 0.1D;
+//        }
+
+//        setMoveForward((float)this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
+        // turn
+        if (soarClockwise)
+        {
+            rotationYaw += 1.5F;
+        }
+        else
+        {
+            rotationYaw -= 1.5F;
+        }
+    }
 
 	/**
      * This checks whether state should change
@@ -275,7 +336,10 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             }
             case STATE_TAKING_OFF:
             {
-            	setState(STATE_SOARING);
+            	if (posY >= soarHeight)
+            	{
+            		setState(STATE_SOARING);
+            	}
                 break;
             }
             case STATE_SOARING:
@@ -446,39 +510,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     public void onUpdate()
     {
         super.onUpdate();
-    }
-    
-    protected void processSoaring()
-    {
-        // climb to soaring height
-        if (posY < soarHeight)
-        {
-            motionY = 0.1D;
-        }
-        else if (posY > soarHeight)
-        {
-            motionY = -0.1D;
-        }
-
-        moveForward();
-        
-//        if (isCourseTraversable(this.waypointX, this.waypointY, this.waypointZ))
-//        {
-//            this.motionX += d0 / d3 * 0.1D;
-//            this.motionY += d1 / d3 * 0.1D;
-//            this.motionZ += d2 / d3 * 0.1D;
-//        }
-
-//        setMoveForward((float)this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue());
-        // turn
-        if (soarClockwise)
-        {
-            rotationYaw += 1.5F;
-        }
-        else
-        {
-            rotationYaw -= 1.5F;
-        }
     }
     
     protected void moveForward()

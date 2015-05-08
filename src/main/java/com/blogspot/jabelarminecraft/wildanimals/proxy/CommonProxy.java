@@ -17,6 +17,7 @@
 package com.blogspot.jabelarminecraft.wildanimals.proxy;
 
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -44,6 +45,9 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.eggs.EntityWildAnimals
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityElephant;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
 import com.blogspot.jabelarminecraft.wildanimals.items.WildAnimalsMonsterPlacer;
+import com.blogspot.jabelarminecraft.wildanimals.networking.MessageSyncEntityToClient;
+import com.blogspot.jabelarminecraft.wildanimals.networking.MessageToClient;
+import com.blogspot.jabelarminecraft.wildanimals.networking.MessageToServer;
 import com.blogspot.jabelarminecraft.wildanimals.networking.ServerPacketHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -56,8 +60,10 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 public class CommonProxy 
 {
@@ -407,6 +413,26 @@ public class CommonProxy
         // some events, especially tick, is handled on FML bus
         FMLCommonHandler.instance().bus().register(new WildAnimalsFMLEventHandler());
     }
+    
+    /*
+     * Thanks to diesieben07 tutorial for this code
+     */
+    /**
+     * Registers the simple networking channel and messages for both sides
+     */
+    protected void registerSimpleNetworking() 
+    {
+        // DEBUG
+        System.out.println("registering simple networking");
+        WildAnimals.network = NetworkRegistry.INSTANCE.newSimpleChannel(WildAnimals.NETWORK_CHANNEL_NAME);
+
+        int packetId = 0;
+        // register messages from client to server
+        WildAnimals.network.registerMessage(MessageToServer.Handler.class, MessageToServer.class, packetId++, Side.SERVER);
+        // register messages from server to client
+        WildAnimals.network.registerMessage(MessageToClient.Handler.class, MessageToClient.class, packetId++, Side.CLIENT);
+        WildAnimals.network.registerMessage(MessageSyncEntityToClient.Handler.class, MessageSyncEntityToClient.class, packetId++, Side.CLIENT);
+    }
 
     public void sendMessageToPlayer(ChatComponentText msg) { }
 
@@ -452,4 +478,17 @@ public class CommonProxy
 		// TODO Auto-generated method stub
 		
 	}
+	
+    /*     
+     * Thanks to CoolAlias for this tip!
+     */
+    /**
+     * Returns a side-appropriate EntityPlayer for use during message handling
+     */
+    public EntityPlayer getPlayerEntityFromContext(MessageContext ctx) 
+    {
+        return ctx.getServerHandler().playerEntity;
+    }
+    
+
 }

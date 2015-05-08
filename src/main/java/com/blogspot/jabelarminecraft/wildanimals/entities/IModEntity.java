@@ -40,7 +40,11 @@ public interface IModEntity {
 	public void getExtPropsToBuffer(ByteBufOutputStream parBBOS);  
 	
 	public void setExtPropsFromBuffer(ByteBufInputStream parBBIS);
-
+		
+	NBTTagCompound getSyncDataCompound();
+	
+	void setSyncDataCompound(NBTTagCompound parCompound);
+	
 	// common encapsulation methods
     public void setScaleFactor(float parScaleFactor);
     

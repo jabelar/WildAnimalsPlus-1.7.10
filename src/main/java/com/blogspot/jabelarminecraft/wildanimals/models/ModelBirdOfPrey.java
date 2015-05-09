@@ -102,6 +102,34 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F },
 	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F }
     };
+    
+    protected float[][] travellingCycle = new float[][]
+    {
+        // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
+        { -5F, 5F, 70F, -10F, 0F, 20F, -20F },
+        { -4F, 4F, 70F, -10F, 0F, 15F, -15F },
+        { -2F, 2F, 70F, -10F, 0F, 10F, -10F },
+        { -1F, 1F, 70F, -10F, 0F, 5F, -5F },
+        { 0F, 0F, 70F, -10F, 0F, 0F, 0F },
+        { 1F, -1F, 70F, -10F, 0F, -5F, 5F },
+        { 2F, -2F, 70F, -10F, 0F, -10F, 10F },
+        { 4F, -4F, 70F, -10F, 0F, -15F, 15F },
+        { 5F, -5F, 70F, -10F, 0F, -20F, 20F },
+        { 6F, -6F, 70F, -10F, 0F, -25F, 20F },
+        { 7F, -7F, 70F, -10F, 0F, -30F, 20F },
+        { 4F, -4F, 70F, -10F, 0F, -15F, 15F },
+        { 0F, 0F, 70F, -10F, 0F, -0F, 0F },
+        { -3F, 3F, 70F, -10F, 0F, 10F, -10F },
+        { -5F, 5F, 70F, -10F, 0F, 20F, -20F },
+        { -7F, 7F, 70F, -10F, 0F, 30F, -20F },
+        { -10F, 10F, 70F, -10F, 0F, 40F, -20F },
+        { -12F, 12F, 70F, -10F, 0F, 50F, -20F },
+        { -10F, 10F, 70F, -10F, 0F, 45F, -20F },
+        { -10F, 10F, 70F, -10F, 0F, 40F, -20F },
+        { -8F, 8F, 70F, -10F, 0F, 35F, -20F },
+        { -7F, 7F, 70F, -10F, 0F, 30F, -20F },
+        { -6F, 6F, 70F, -10F, 0F, 25F, -20F }
+    };
   
 	public ModelBirdOfPrey()
 	{
@@ -250,6 +278,10 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 		{
 			doAnimate(parEntity, soaringCycle);
 		}
+        else if (parEntity.getState()==parEntity.STATE_TRAVELLING)
+        {
+            doAnimate(parEntity, travellingCycle);
+        }
 
 	}
 	

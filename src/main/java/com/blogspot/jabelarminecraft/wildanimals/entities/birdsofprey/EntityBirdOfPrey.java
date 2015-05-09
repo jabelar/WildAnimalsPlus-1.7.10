@@ -43,9 +43,6 @@ import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IModEntity
 {
-    public final static String extendedPropertiesName = "extendedPropertiesJabelar";
-    protected EntityBirdOfPrey theEntity;
-    protected World theWorld;
     protected NBTTagCompound syncDataCompound = new NBTTagCompound();
 
     // create state constants, did not use enum because need to cast to int anyway for packets
@@ -54,6 +51,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     public final int STATE_SOARING = 2;
     public final int STATE_DIVING = 3;
     public final int STATE_LANDING = 4;
+    public final int STATE_TRAVELLING = 5;
     
     // use fields for sounds to allow easy changes in child classes
     protected String soundHurt = "wildanimals:mob.birdofprey.death";
@@ -159,6 +157,9 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         case STATE_LANDING:
         	processLanding();
         	break;
+        case STATE_TRAVELLING:
+            processTravelling();
+            break;
     	default:
     		// DEBUG
     		System.out.println("Unknown state");
@@ -192,10 +193,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         if (posY < getSoarHeight())
         {
             motionY = 0.1D;
-        }
-        else if (posY > getSoarHeight())
-        {
-            motionY = -0.1D;
         }
 
         moveForward();
@@ -236,6 +233,17 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         {
             rotationYaw -= 1.5F;
         }
+    }
+    
+    protected void processTravelling()
+    {
+        // climb to soaring height
+        if (posY < getSoarHeight())
+        {
+            motionY = 0.1D;
+        }
+
+        moveForward();
     }
 
 	/**
@@ -278,6 +286,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             {
             	if (posY >= getSoarHeight())
             	{
+            	    // DEBUG
+            	    System.out.println("State changed to soaring");
             		setState(STATE_SOARING);
             	}
                 break;
@@ -290,7 +300,9 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 //                System.out.println("soar limt ="+(getSoarHeight()*0.9D));
                 if (posY < getSoarHeight()*0.9D)
                 {
-                    setState(STATE_TAKING_OFF);
+                    // DEBUG
+                    System.out.println("State changed to travelling");
+                    setState(STATE_TRAVELLING);
                 }
                 break;
             }
@@ -304,6 +316,16 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
                 {
                     setState(STATE_PERCHED);
+                }
+                break;
+            }
+            case STATE_TRAVELLING:
+            {
+                if (posY >= getSoarHeight())
+                {
+                    // DEBUG
+                    System.out.println("State changed to soaring");
+                    setState(STATE_SOARING);
                 }
                 break;
             }

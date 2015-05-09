@@ -43,6 +43,9 @@ import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IModEntity
 {
+    public final static String extendedPropertiesName = "extendedPropertiesJabelar";
+    protected EntityBirdOfPrey theEntity;
+    protected World theWorld;
     protected NBTTagCompound syncDataCompound = new NBTTagCompound();
 
     // create state constants, did not use enum because need to cast to int anyway for packets
@@ -376,24 +379,24 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */
     @Override
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
+    public void writeToNBT(NBTTagCompound parCompound)
     {
-        super.writeEntityToNBT(par1NBTTagCompound);
-
-        // to store additional custom fields use the extended properties interface
-        // rather than adding directly to this compound.
+        // DEBUG
+        System.out.println("Writing NBT");
+        super.writeToNBT(parCompound);
+        parCompound.setTag("extendedPropsJabelar", syncDataCompound);
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     @Override
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
+    public void readFromNBT(NBTTagCompound parCompound)
     {
-        super.readEntityFromNBT(par1NBTTagCompound);
-
-        // retrieve additional custom variables using extended properties interface
-        // rather than retrieving directly from this compound
+        // DEBUG
+        System.out.println("Reading NBT");
+        super.readFromNBT(parCompound);
+        syncDataCompound = (NBTTagCompound) parCompound.getTag("extendedPropsJabelar");
     }
 
     /**
@@ -733,4 +736,5 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         return randFactor;
     }
+
 }

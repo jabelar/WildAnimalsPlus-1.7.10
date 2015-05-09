@@ -137,6 +137,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         dataWatcher.updateObject(18, Float.valueOf(this.getHealth()));
         
+        if (ticksExisted == 1)
+        {
+            sendEntitySyncPacket();
+        }
+        
 //        // DEBUG
 //        System.out.println("State = "+getState());
         
@@ -419,6 +424,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         System.out.println("Reading NBT");
         super.readFromNBT(parCompound);
         syncDataCompound = (NBTTagCompound) parCompound.getTag("extendedPropsJabelar");
+        // DEBUG
+        System.out.println("State = "+getState());
     }
 
     /**

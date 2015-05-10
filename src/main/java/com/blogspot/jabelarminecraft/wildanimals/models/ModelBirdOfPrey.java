@@ -48,7 +48,7 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     protected float[][] perchedCycle = new float[][]
     {
     	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-	    { 0F, 0F, 0F, 0F, 90F, 0F, 0F }
+	    { -70F, 70F, 0F, 0F, 90F, 90F, 0F }
     };
     
     protected float[][] takingOffCycle = new float[][]
@@ -88,7 +88,7 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     protected float[][] divingCycle = new float[][]
     {
     	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-	    { 0F, 0F, 0F, 0F, 90F, 0F, 0F }
+	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F }
     };
     
     protected float[][] landingCycle = new float[][]

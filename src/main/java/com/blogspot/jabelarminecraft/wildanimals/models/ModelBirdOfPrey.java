@@ -32,6 +32,7 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 	//fields
     public ModelRenderer head;
     public ModelRenderer body;
+    public ModelRenderer bodyWingless;
     public ModelRenderer leg1;
     public ModelRenderer leg2;
     public ModelRenderer tail;
@@ -48,7 +49,7 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     protected float[][] perchedCycle = new float[][]
     {
     	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-	    { -70F, 70F, 0F, 0F, 90F, 90F, 0F }
+	    { -70F, 70F, 70F, 0F, 0F, 90F, 0F }
     };
     
     protected float[][] takingOffCycle = new float[][]
@@ -226,6 +227,17 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 		wingRight2.mirror = true;
 		setRotation(wingRight2, 0F, 20F, 0F);
 		wingRight1.addChild(wingRight2);
+			      
+        bodyWingless = new ModelRenderer(this, 76, 0);
+        bodyWingless.addBox(-3.5F, -3.5F, -9F, 7, 7, 18);
+        bodyWingless.setRotationPoint(0F, 14F, 0F);
+        bodyWingless.setTextureSize(textureWidth, textureHeight);
+        bodyWingless.mirror = true;
+        setRotation(bodyWingless, 0F, 0F, 0F);
+        bodyWingless.addChild(head);
+        bodyWingless.addChild(leg1);
+        bodyWingless.addChild(leg2);
+        bodyWingless.addChild(tail);
 	}
   
 	@Override
@@ -244,7 +256,14 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     	GL11.glScalef(parEntity.getScaleFactor(), parEntity.getScaleFactor(), parEntity.getScaleFactor());
 
 		// should only need to render body because all rest are children
-		body.render(parRenderFloat);
+    	if (parEntity.getState() == parEntity.STATE_PERCHED)
+    	{
+    	    bodyWingless.render(parRenderFloat);
+    	}
+    	else
+    	{
+    	    body.render(parRenderFloat);
+    	}
 
 		// don't forget to pop the matrix for overall scaling
         GL11.glPopMatrix();
@@ -290,7 +309,8 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 		cycleIndex = (int)Math.floor((parEntity.ticksExisted+parEntity.getRandFactor()*2)%parCycleArray.length)/2;
 		// will need to set based on entity state
     	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-		setRotation(body, parCycleArray[cycleIndex][0], 0, 0);
+        setRotation(body, parCycleArray[cycleIndex][0], 0, 0);
+        setRotation(bodyWingless, parCycleArray[cycleIndex][0], 0, 0);
 		setRotation(head, parCycleArray[cycleIndex][1], 0, 0);
 		// both legs have same angle
 		setRotation(leg1, parCycleArray[cycleIndex][2], 0, 0);

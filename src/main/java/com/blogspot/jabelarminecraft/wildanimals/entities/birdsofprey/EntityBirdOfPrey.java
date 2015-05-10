@@ -70,7 +70,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         System.out.println("EntityBirdOfPrey constructor(), "+"on Client="
                 +parWorld.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
 
-        setSize(2.0F, 3.0F);
+        setSize(1.0F, 1.0F);
         randFactor = rand.nextInt(10);
         // DEBUG
         System.out.println("randFactor = "+randFactor);
@@ -284,9 +284,10 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 else // still solidly perched
                 {
                     // can occasionally adjust or flap, look around, or play sound to create variety
-                    if (rand.nextInt(200) == 0)
+                    if (rand.nextInt(2400) == 0)
                     {
-                        rotationYawHead = rand.nextInt(360);
+                        setState(STATE_TAKING_OFF);
+                        // rotationYawHead = rand.nextInt(360);
                     }
 
                     // entity can get scared if player gets too close
@@ -362,8 +363,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         Block topBlock = worldObj.getTopBlock((int)posX, (int)posZ);
         if (topBlock instanceof BlockLeaves)
         {
-            setState(STATE_DIVING);
-            setAnchor(posX, worldObj.getHeightValue((int)posX,  (int)posZ), posZ);
+//            if (rand.nextInt(100) == 0)
+            {
+                setState(STATE_DIVING);
+                setAnchor(posX, worldObj.getHeightValue((int)posX, (int)posZ), posZ);
+            }
         }
     }
 

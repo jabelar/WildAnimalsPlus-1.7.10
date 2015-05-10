@@ -48,88 +48,88 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     // create an animation cycles
     protected float[][] perchedCycle = new float[][]
     {
-    	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-	    { -70F, 70F, 70F, 0F, 0F, 90F, 0F }
+        // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleY, wing1AngleZ, wing2AngleZ
+	    { -70F, 70F, 70F, 0F, 0F, 0F, 90F, 0F }
     };
     
     protected float[][] takingOffCycle = new float[][]
     {
-    	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-	    { -5F, 5F, 70F, -10F, 0F, 20F, -20F },
-	    { -4F, 4F, 70F, -10F, 0F, 15F, -15F },
-	    { -2F, 2F, 70F, -10F, 0F, 10F, -10F },
-	    { -1F, 1F, 70F, -10F, 0F, 5F, -5F },
-	    { 0F, 0F, 70F, -10F, 0F, 0F, 0F },
-	    { 1F, -1F, 70F, -10F, 0F, -5F, 5F },
-	    { 2F, -2F, 70F, -10F, 0F, -10F, 10F },
-	    { 4F, -4F, 70F, -10F, 0F, -15F, 15F },
-	    { 5F, -5F, 70F, -10F, 0F, -20F, 20F },
-	    { 6F, -6F, 70F, -10F, 0F, -25F, 20F },
-	    { 7F, -7F, 70F, -10F, 0F, -30F, 20F },
-	    { 4F, -4F, 70F, -10F, 0F, -15F, 15F },
-	    { 0F, 0F, 70F, -10F, 0F, -0F, 0F },
-	    { -3F, 3F, 70F, -10F, 0F, 10F, -10F },
-	    { -5F, 5F, 70F, -10F, 0F, 20F, -20F },
-	    { -7F, 7F, 70F, -10F, 0F, 30F, -20F },
-	    { -10F, 10F, 70F, -10F, 0F, 40F, -20F },
-	    { -12F, 12F, 70F, -10F, 0F, 50F, -20F },
-	    { -10F, 10F, 70F, -10F, 0F, 45F, -20F },
-	    { -10F, 10F, 70F, -10F, 0F, 40F, -20F },
-	    { -8F, 8F, 70F, -10F, 0F, 35F, -20F },
-	    { -7F, 7F, 70F, -10F, 0F, 30F, -20F },
-	    { -6F, 6F, 70F, -10F, 0F, 25F, -20F }
+    	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleY, wing1AngleZ, wing2AngleZ
+	    { -5F, 5F, 70F, -10F, 0F, 0F, 20F, -20F },
+	    { -4F, 4F, 70F, -10F, 0F, 0F, 15F, -15F },
+	    { -2F, 2F, 70F, -10F, 0F, 0F, 10F, -10F },
+	    { -1F, 1F, 70F, -10F, 0F, 0F, 5F, -5F },
+	    { 0F, 0F, 70F, -10F, 0F, 0F, 0F, 0F },
+	    { 1F, -1F, 70F, -10F, 0F, 0F, -5F, 5F },
+	    { 2F, -2F, 70F, -10F, 0F, 0F, -10F, 10F },
+	    { 4F, -4F, 70F, -10F, 0F, 0F, -15F, 15F },
+	    { 5F, -5F, 70F, -10F, 0F, 0F, -20F, 20F },
+	    { 6F, -6F, 70F, -10F, 0F, 0F, -25F, 20F },
+	    { 7F, -7F, 70F, -10F, 0F, 0F, -30F, 20F },
+	    { 4F, -4F, 70F, -10F, 0F, 0F, -15F, 15F },
+	    { 0F, 0F, 70F, -10F, 0F, 0F, -0F, 0F },
+	    { -3F, 3F, 70F, -10F, 0F, 0F, 10F, -10F },
+	    { -5F, 5F, 70F, -10F, 0F, 0F, 20F, -20F },
+	    { -7F, 7F, 70F, -10F, 0F, 0F, 30F, -20F },
+	    { -10F, 10F, 70F, -10F, 0F, 0F, 40F, -20F },
+	    { -12F, 12F, 70F, -10F, 0F, 0F, 50F, -20F },
+	    { -10F, 10F, 70F, -10F, 0F, 0F, 45F, -20F },
+	    { -10F, 10F, 70F, -10F, 0F, 0F, 40F, -20F },
+	    { -8F, 8F, 70F, -10F, 0F, 0F, 35F, -20F },
+	    { -7F, 7F, 70F, -10F, 0F, 0F, 30F, -20F },
+	    { -6F, 6F, 70F, -10F, 0F, 0F, 25F, -20F }
     };
     
     protected float[][] soaringCycle = new float[][]
     {
-    	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F }
+        // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleY, wing1AngleZ, wing2AngleZ
+	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F }
     };
     
     protected float[][] divingCycle = new float[][]
     {
-    	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-	    { 90F, 0F, 0F, 0F, 0F, 0F, 0F }
+        // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleY, wing1AngleZ, wing2AngleZ
+	    { 90F, 0F, 0F, 0F, 0F, -50F, 0F, 0F }
     };
     
     protected float[][] landingCycle = new float[][]
     {
-    	// bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F }
+            // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleY, wing1AngleZ, wing2AngleZ
+	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
+	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
+	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
+	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
+	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
+	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
+	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F }
     };
     
     protected float[][] travellingCycle = new float[][]
     {
-        // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleZ, wing2AngleZ
-        { -5F, 5F, 70F, -10F, 0F, 20F, -20F },
-        { -4F, 4F, 70F, -10F, 0F, 15F, -15F },
-        { -2F, 2F, 70F, -10F, 0F, 10F, -10F },
-        { -1F, 1F, 70F, -10F, 0F, 5F, -5F },
-        { 0F, 0F, 70F, -10F, 0F, 0F, 0F },
-        { 1F, -1F, 70F, -10F, 0F, -5F, 5F },
-        { 2F, -2F, 70F, -10F, 0F, -10F, 10F },
-        { 4F, -4F, 70F, -10F, 0F, -15F, 15F },
-        { 5F, -5F, 70F, -10F, 0F, -20F, 20F },
-        { 6F, -6F, 70F, -10F, 0F, -25F, 20F },
-        { 7F, -7F, 70F, -10F, 0F, -30F, 20F },
-        { 4F, -4F, 70F, -10F, 0F, -15F, 15F },
-        { 0F, 0F, 70F, -10F, 0F, -0F, 0F },
-        { -3F, 3F, 70F, -10F, 0F, 10F, -10F },
-        { -5F, 5F, 70F, -10F, 0F, 20F, -20F },
-        { -7F, 7F, 70F, -10F, 0F, 30F, -20F },
-        { -10F, 10F, 70F, -10F, 0F, 40F, -20F },
-        { -12F, 12F, 70F, -10F, 0F, 50F, -20F },
-        { -10F, 10F, 70F, -10F, 0F, 45F, -20F },
-        { -10F, 10F, 70F, -10F, 0F, 40F, -20F },
-        { -8F, 8F, 70F, -10F, 0F, 35F, -20F },
-        { -7F, 7F, 70F, -10F, 0F, 30F, -20F },
-        { -6F, 6F, 70F, -10F, 0F, 25F, -20F }
+            // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleY, wing1AngleZ, wing2AngleZ
+        { -5F, 5F, 70F, -10F, 0F, 0F, 20F, -20F },
+        { -4F, 4F, 70F, -10F, 0F, 0F, 15F, -15F },
+        { -2F, 2F, 70F, -10F, 0F, 0F, 10F, -10F },
+        { -1F, 1F, 70F, -10F, 0F, 0F, 5F, -5F },
+        { 0F, 0F, 70F, -10F, 0F, 0F, 0F, 0F },
+        { 1F, -1F, 70F, -10F, 0F, 0F, -5F, 5F },
+        { 2F, -2F, 70F, -10F, 0F, 0F, -10F, 10F },
+        { 4F, -4F, 70F, -10F, 0F, 0F, -15F, 15F },
+        { 5F, -5F, 70F, -10F, 0F, 0F, -20F, 20F },
+        { 6F, -6F, 70F, -10F, 0F, 0F, -25F, 20F },
+        { 7F, -7F, 70F, -10F, 0F, 0F, -30F, 20F },
+        { 4F, -4F, 70F, -10F, 0F, 0F, -15F, 15F },
+        { 0F, 0F, 70F, -10F, 0F, 0F, -0F, 0F },
+        { -3F, 3F, 70F, -10F, 0F, 0F, 10F, -10F },
+        { -5F, 5F, 70F, -10F, 0F, 0F, 20F, -20F },
+        { -7F, 7F, 70F, -10F, 0F, 0F, 30F, -20F },
+        { -10F, 10F, 70F, -10F, 0F, 0F, 40F, -20F },
+        { -12F, 12F, 70F, -10F, 0F, 0F, 50F, -20F },
+        { -10F, 10F, 70F, -10F, 0F, 0F, 45F, -20F },
+        { -10F, 10F, 70F, -10F, 0F, 0F, 40F, -20F },
+        { -8F, 8F, 70F, -10F, 0F, 0F, 35F, -20F },
+        { -7F, 7F, 70F, -10F, 0F, 0F, 30F, -20F },
+        { -6F, 6F, 70F, -10F, 0F, 0F, 25F, -20F }
     };
   
 	public ModelBirdOfPrey()
@@ -317,9 +317,9 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 		setRotation(leg2, parCycleArray[cycleIndex][2], 0, 0);
 		setRotation(tail, parCycleArray[cycleIndex][3], 0, 0);
 		// both legs have same (well negative) angle
-		setRotation(wingLeft1, parCycleArray[cycleIndex][4], 0, parCycleArray[cycleIndex][5]);
-		setRotation(wingRight1, parCycleArray[cycleIndex][4], 0, -parCycleArray[cycleIndex][5]);
-		setRotation(wingLeft2, 0, -21F, -parCycleArray[cycleIndex][6]);
-		setRotation(wingRight2, 0, 21F, parCycleArray[cycleIndex][6]);
+		setRotation(wingLeft1, parCycleArray[cycleIndex][4], parCycleArray[cycleIndex][5], parCycleArray[cycleIndex][6]);
+		setRotation(wingRight1, parCycleArray[cycleIndex][4], -parCycleArray[cycleIndex][5], -parCycleArray[cycleIndex][6]);
+		setRotation(wingLeft2, 0, -21F, -parCycleArray[cycleIndex][7]);
+		setRotation(wingRight2, 0, 21F, parCycleArray[cycleIndex][7]);
 	}
 }

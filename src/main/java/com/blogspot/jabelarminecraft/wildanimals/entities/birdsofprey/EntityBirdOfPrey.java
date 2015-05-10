@@ -275,8 +275,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             case STATE_PERCHED:
             {
                 // check if block perched upon has disappeared
-                // DEBUG
-                System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
+//                // DEBUG
+//                System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
                 if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)) == Blocks.air)
                 {
                     setState(STATE_TAKING_OFF);
@@ -293,7 +293,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                     if (worldObj.getClosestPlayerToEntity(this, 4.0D) != null)
                     {
                         setState(STATE_TAKING_OFF);
-                        worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
                     }
                 }
                 break;            
@@ -322,8 +321,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             case STATE_DIVING:
             {
                 // see if made it to perch
-                // DEBUG
-                System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
+//                // DEBUG
+//                System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
                 if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)) != Blocks.air)
                 {
                     setState(STATE_PERCHED);

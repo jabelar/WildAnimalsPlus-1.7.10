@@ -124,5 +124,25 @@
     [
       "mob/serpent/snake_die"
     ]
+  },
+  "mob.birdsofprey.cry": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/birdsofprey/cry0",
+      "mob/birdsofprey/cry1",
+      "mob/birdsofprey/cry2",
+      "mob/birdsofprey/cry3"
+    ]
+  },
+  "mob.birdsofprey.death": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/birdsofprey/death"
+    ]
   }
+  
  }

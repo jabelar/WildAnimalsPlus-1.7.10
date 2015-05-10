@@ -16,11 +16,9 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey;
 
-import java.io.IOException;
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
@@ -54,15 +52,15 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     public final int STATE_TRAVELLING = 5;
     
     // use fields for sounds to allow easy changes in child classes
-    protected String soundHurt = "wildanimals:mob.birdofprey.death";
-    protected String soundDeath = "wildanimals:mob.birdofprey.death";
-    protected String soundCall = "wildanimals:mob.birdofprey.hiss";
+    protected String soundHurt = "wildanimals:mob.birdsofprey.death";
+    protected String soundDeath = "wildanimals:mob.birdsofprey.death";
+    protected String soundCall = "wildanimals:mob.birdsofprey.cry";
     
     // to ensure that multiple entities don't get synced
     // create a random factor per entity
     protected int randFactor;
 
-    public EntityBirdOfPrey(World parWorld) throws IOException
+    public EntityBirdOfPrey(World parWorld)
     {
         super(parWorld);
         
@@ -71,7 +69,9 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 +parWorld.isRemote+", EntityID = "+getEntityId()+", ModEntityID = "+entityUniqueID);
 
         setSize(2.0F, 3.0F);
-        randFactor = new Random().nextInt(10);
+        randFactor = rand.nextInt(10);
+        // DEBUG
+        System.out.println("randFactor = "+randFactor);
         initSyncDataCompound();
         setupAI();
      }
@@ -85,8 +85,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         syncDataCompound.setBoolean("soarClockwise", worldObj.rand.nextBoolean());
         syncDataCompound.setDouble("soarHeight", 126-randFactor);
         // DEBUG
-        System.out.println("Soar height ="+getSoarHeight());
-        System.out.println("Rand ="+randFactor);
+//        System.out.println("Soar height ="+getSoarHeight());
+//        System.out.println("Rand ="+randFactor);
         syncDataCompound.setInteger("stateCounter", 0);
         syncDataCompound.setDouble("anchorX", posX);
         syncDataCompound.setDouble("anchorY", posY);
@@ -184,11 +184,22 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 	/**
 	 * 
 	 */
-	protected void processDiving() {
-		// TODO Auto-generated method stub
-		
+	protected void processDiving() 
+	{
+	    stopMoving();
+	    motionY = -1.0D;
+	    
+	    rotationPitch = -90F;
+	    
+	    // see if made it to perch
+	    
 	}
-
+	
+//	protected MovingObjectPosition isSomethingWithinReach()
+//	{
+//	    
+//	}
+//
 	/**
 	 * 
 	 */
@@ -200,7 +211,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             motionY = 0.1D;
         }
 
-        moveForward();
+        moveForward(1.0D);
 
         // turn
         if (getSoarClockwise())
@@ -227,7 +238,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         // drift down slowly
         motionY = -0.01D;
 
-        moveForward();
+        moveForward(1.0D);
         
         // turn
         if (getSoarClockwise())
@@ -248,7 +259,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             motionY = 0.1D;
         }
 
-        moveForward();
+        moveForward(1.0D);
     }
 
 	/**
@@ -259,7 +270,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         super.updateAITasks();
         
-        // should reorganize this as a switch statement based on state
         switch (getState())
         {
             case STATE_PERCHED:
@@ -309,6 +319,9 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                     System.out.println("State changed to travelling");
                     setState(STATE_TRAVELLING);
                 }
+                
+                considerPerching();
+                
                 break;
             }
             case STATE_DIVING:
@@ -340,6 +353,16 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 System.out.println("EntityBirdOfPrey OnLivingUpdate() **ERROR** unhandled state");
                 break;
             }
+        }
+    }
+    
+    public void considerPerching()
+    {
+        Block topBlock = worldObj.getTopBlock((int)posX, (int)posZ);
+        if (topBlock instanceof BlockLeaves)
+        {
+            setState(STATE_DIVING);
+            setAnchor(posX, worldObj.getHeightValue((int)posX,  (int)posZ), posZ);
         }
     }
 
@@ -403,32 +426,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     }
 
     /**
-     * (abstract) Protected helper method to write subclass entity data to NBT.
-     */
-    @Override
-    public void writeToNBT(NBTTagCompound parCompound)
-    {
-        // DEBUG
-        System.out.println("Writing NBT");
-        super.writeToNBT(parCompound);
-        parCompound.setTag("extendedPropsJabelar", syncDataCompound);
-    }
-
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
-    @Override
-    public void readFromNBT(NBTTagCompound parCompound)
-    {
-        // DEBUG
-        System.out.println("Reading NBT");
-        super.readFromNBT(parCompound);
-        syncDataCompound = (NBTTagCompound) parCompound.getTag("extendedPropsJabelar");
-        // DEBUG
-        System.out.println("State = "+getState());
-    }
-
-    /**
      * Returns the sound this mob makes while it's alive.
      */
     @Override
@@ -489,11 +486,10 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         super.onUpdate();
     }
     
-    protected void moveForward()
+    protected void moveForward(double parSpeedFactor)
     {
-        motionX = getLookVec().xCoord * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
-        motionZ = getLookVec().zCoord * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
-
+        motionX = getLookVec().xCoord * parSpeedFactor * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        motionZ = getLookVec().zCoord * parSpeedFactor * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
     }
     
     protected void stopMoving()
@@ -619,6 +615,32 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         {
             return false;
         }
+    }
+
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    @Override
+    public void writeToNBT(NBTTagCompound parCompound)
+    {
+        // DEBUG
+        System.out.println("Writing NBT");
+        super.writeToNBT(parCompound);
+        parCompound.setTag("extendedPropsJabelar", syncDataCompound);
+    }
+
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    @Override
+    public void readFromNBT(NBTTagCompound parCompound)
+    {
+        // DEBUG
+        System.out.println("Reading NBT");
+        super.readFromNBT(parCompound);
+        syncDataCompound = (NBTTagCompound) parCompound.getTag("extendedPropsJabelar");
+        // DEBUG
+        System.out.println("State = "+getState());
     }
 
     // *****************************************************

@@ -280,10 +280,6 @@ public class Utilities
                     blockSnapshot = null;
                 }
 
-//                parWorld.theProfiler.startSection("checkLight");
-//                parWorld.func_147451_t(parX, parY, parZ);
-//                parWorld.theProfiler.endSection();
-
                 if (setBlockSuceeded && blockSnapshot == null) // Don't notify clients or update physics while capturing blockstates
                 {
                     // Modularize client and physic updates
@@ -308,7 +304,6 @@ public class Utilities
             parChunk.precipitationHeightMap[mapKey] = -999;
         }
 
-        int currentHeight = parChunk.heightMap[mapKey];
         Block existingBlock = parChunk.getBlock(parX, parY, parZ);
         int existingMetaData = parChunk.getBlockMetadata(parX, parY, parZ);
 
@@ -319,7 +314,6 @@ public class Utilities
         else
         {
             ExtendedBlockStorage extendedblockstorage = parChunk.getBlockStorageArray()[parY >> 4];
-            boolean flag = false;
 
             if (extendedblockstorage == null)
             {
@@ -329,13 +323,10 @@ public class Utilities
                 }
 
                 extendedblockstorage = parChunk.getBlockStorageArray()[parY >> 4] = new ExtendedBlockStorage(parY >> 4 << 4, !parChunk.worldObj.provider.hasNoSky);
-                flag = parY >= currentHeight;
             }
 
             int worldPosX = parChunk.xPosition * 16 + parX;
             int worldPosZ = parChunk.zPosition * 16 + parZ;
-
-//            int existingLightOpacity = existingBlock.getLightOpacity(parChunk.worldObj, worldPosX, parY, worldPosZ);
 
             if (!parChunk.worldObj.isRemote)
             {
@@ -372,32 +363,6 @@ public class Utilities
             {
                 extendedblockstorage.setExtBlockMetadata(parX, parY & 15, parZ, parMetaData);
 
-//                if (flag)
-//                {
-//                    parChunk.generateSkylightMap();
-//                }
-//                else
-//                {
-//                    int newLightOpacity = parBlock.getLightOpacity(parChunk.worldObj, worldPosX, parY, worldPosZ);
-//
-//                    if (newLightOpacity > 0)
-//                    {
-//                        if (parY >= currentHeight)
-//                        {
-//                            parChunk.relightBlock(parX, parY + 1, parZ);
-//                        }
-//                    }
-//                    else if (parY == currentHeight - 1)
-//                    {
-//                        parChunk.relightBlock(parX, parY, parZ);
-//                    }
-//
-//                    if (newLightOpacity != existingLightOpacity && (newLightOpacity < existingLightOpacity || parChunk.getSavedLightValue(EnumSkyBlock.Sky, parX, parY, parZ) > 0 || parChunk.getSavedLightValue(EnumSkyBlock.Block, parX, parY, parZ) > 0))
-//                    {
-//                        parChunk.propagateSkylightOcclusion(parX, parZ);
-//                    }
-//                }
-
                 TileEntity tileentity;
 
                 if (!parChunk.worldObj.isRemote)
@@ -421,4 +386,74 @@ public class Utilities
             }
         }
     }
+    
+//    // This is mostly copied from the EntityRenderer#getMouseOver() method
+//    public static MovingObjectPosition getMouseOverExtended(float parDist)
+//    {
+//        double dist = parDist;
+//        Minecraft mc = FMLClientHandler.instance().getClient();
+//        EntityLivingBase theRenderViewEntity = mc.renderViewEntity;
+//        AxisAlignedBB theViewBoundingBox = AxisAlignedBB.getBoundingBox(
+//                theRenderViewEntity.posX-0.5D,
+//                theRenderViewEntity.posY-0.0D,
+//                theRenderViewEntity.posZ-0.5D,
+//                theRenderViewEntity.posX+0.5D,
+//                theRenderViewEntity.posY+1.5D,
+//                theRenderViewEntity.posZ+0.5D
+//                );
+//        MovingObjectPosition returnMOP = null;
+//        if (mc.theWorld != null)
+//        {
+//            returnMOP = theRenderViewEntity.rayTrace(parDist, 0);
+//            Vec3 pos = theRenderViewEntity.getPosition(0).addVector(0.0D, theRenderViewEntity.getEyeHeight(), 0.0D);
+//            if (returnMOP != null)
+//            {
+//                dist = returnMOP.hitVec.distanceTo(pos);
+//            }
+//            
+//            Vec3 lookvec = theRenderViewEntity.getLook(0);
+//            Vec3 var8 = pos.addVector(lookvec.xCoord * dist, lookvec.yCoord * dist, lookvec.zCoord * dist);
+//            Entity pointedEntity = null;
+//            float var9 = 1.0F;
+//            @SuppressWarnings("unchecked")
+//            List<Entity> list = mc.theWorld.getEntitiesWithinAABBExcludingEntity(theRenderViewEntity, theViewBoundingBox.addCoord(lookvec.xCoord * dist, lookvec.yCoord * dist, lookvec.zCoord * dist).expand(var9, var9, var9));
+//            
+//            for (Entity entity : list)
+//            {
+//                if (entity.canBeCollidedWith())
+//                {
+//                    float bordersize = entity.getCollisionBorderSize();
+//                    AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(entity.posX-entity.width/2, entity.posY, entity.posZ-entity.width/2, entity.posX+entity.width/2, entity.posY+entity.height, entity.posZ+entity.width/2);
+//                    aabb.expand(bordersize, bordersize, bordersize);
+//                    MovingObjectPosition mop0 = aabb.calculateIntercept(pos, var8);
+//                    
+//                    if (aabb.isVecInside(pos))
+//                    {
+//                        if (0.0D < dist || dist == 0.0D)
+//                        {
+//                            pointedEntity = entity;
+//                            dist = 0.0D;
+//                        }
+//                    } else if (mop0 != null)
+//                    {
+//                        double d1 = pos.distanceTo(mop0.hitVec);
+//                        
+//                        if (d1 < d || d == 0.0D)
+//                        {
+//                            pointedEntity = entity;
+//                            d = d1;
+//                        }
+//                    }
+//                }
+//            }
+//            
+//            if (pointedEntity != null && (d < calcdist || returnMOP == null))
+//            {
+//                returnMOP = new MovingObjectPosition(pointedEntity);
+//            }
+//        
+//        }
+//        return returnMOP;
+//    }
+
 }

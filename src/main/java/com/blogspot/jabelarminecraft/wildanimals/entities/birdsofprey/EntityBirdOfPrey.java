@@ -29,6 +29,7 @@ import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -55,6 +56,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     protected String soundHurt = "wildanimals:mob.birdsofprey.death";
     protected String soundDeath = "wildanimals:mob.birdsofprey.death";
     protected String soundCall = "wildanimals:mob.birdsofprey.cry";
+    protected String soundFlapping = "wildanimals:mob.birdsofprey.flapping";
     
     // to ensure that multiple entities don't get synced
     // create a random factor per entity
@@ -186,13 +188,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 	 */
 	protected void processDiving() 
 	{
-	    stopMoving();
+	    motionX = getAnchorX() - posX;
+	    motionZ = getAnchorZ() - posZ;
 	    motionY = -1.0D;
 	    
 	    rotationPitch = -90F;
-	    
-	    // see if made it to perch
-	    
 	}
 	
 //	protected MovingObjectPosition isSomethingWithinReach()
@@ -275,10 +275,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             case STATE_PERCHED:
             {
                 // check if block perched upon has disappeared
-                if (!worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
+                // DEBUG
+                System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
+                if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)) == Blocks.air)
                 {
                     setState(STATE_TAKING_OFF);
-                    worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1015, (int)posX, (int)posY, (int)posZ, 0);
                 }
                 else // still solidly perched
                 {
@@ -301,8 +302,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             {
             	if (posY >= getSoarHeight())
             	{
-            	    // DEBUG
-            	    System.out.println("State changed to soaring");
             		setState(STATE_SOARING);
             	}
                 break;
@@ -311,12 +310,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             {
                 // climb again if drifting too low
                 // put some randomness in so entities aren't synced after loading save game
-//                // DEBUG
-//                System.out.println("soar limt ="+(getSoarHeight()*0.9D));
                 if (posY < getSoarHeight()*0.9D)
                 {
-                    // DEBUG
-                    System.out.println("State changed to travelling");
                     setState(STATE_TRAVELLING);
                 }
                 
@@ -326,6 +321,13 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             }
             case STATE_DIVING:
             {
+                // see if made it to perch
+                // DEBUG
+                System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
+                if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)) != Blocks.air)
+                {
+                    setState(STATE_PERCHED);
+                }
                 break;
             }
             case STATE_LANDING:
@@ -431,7 +433,14 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     @Override
     protected String getLivingSound()
     {
-        return soundCall;
+        if (getState() == STATE_TAKING_OFF || getState() == STATE_TRAVELLING)
+        {
+            return soundFlapping;
+        }
+        else
+        {
+            return soundCall;
+        }
     }
 
     /**

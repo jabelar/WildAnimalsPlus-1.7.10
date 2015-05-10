@@ -143,6 +143,13 @@
     [
       "mob/birdsofprey/death"
     ]
-  }
-  
+  },
+  "mob.birdsofprey.flapping": 
+  {
+    "category": "neutral",
+    "sounds": 
+    [
+      "mob/birdsofprey/flapping"
+    ]
+  } 
  }

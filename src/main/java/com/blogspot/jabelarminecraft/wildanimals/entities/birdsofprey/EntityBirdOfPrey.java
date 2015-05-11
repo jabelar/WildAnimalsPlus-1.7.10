@@ -276,7 +276,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         if (getAttackTarget() != null)
         {
-            motionY = -1.0D;
+            motionY = -2.0D;
             double ticksToHitTarget = (posY - getAttackTarget().posY) / Math.abs(motionY);
             motionX = (getAttackTarget().posX - posX) / ticksToHitTarget;
             motionZ = (getAttackTarget().posZ - posZ) / ticksToHitTarget;
@@ -437,10 +437,20 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     {
         AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(posX - 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) - 5.0D, posZ - 5.0D, posX + 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) + 5.0D, posZ + 5.0D);
 
-        List possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
-        // DEBUG
-        System.out.println("Found "+possibleTargetEntities.size()+" in bounding box = "+attackRegion.toString());
+        List possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntitySerpent.class, attackRegion);
         Iterator<Object> targetIterator = possibleTargetEntities.iterator();
+        while (targetIterator.hasNext())
+        {
+            setAttackTarget((EntityLivingBase) targetIterator.next());
+        }
+        possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
+        targetIterator = possibleTargetEntities.iterator();
+        while (targetIterator.hasNext())
+        {
+            setAttackTarget((EntityLivingBase) targetIterator.next());
+        }
+        possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion);
+        targetIterator = possibleTargetEntities.iterator();
         while (targetIterator.hasNext())
         {
             setAttackTarget((EntityLivingBase) targetIterator.next());

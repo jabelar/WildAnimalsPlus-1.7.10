@@ -176,6 +176,9 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         case STATE_TRAVELLING:
             processTravelling();
             break;
+        case STATE_ATTACKING:
+            processAttacking();
+            break;
     	default:
     		// DEBUG
     		System.out.println("Unknown state");
@@ -200,8 +203,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
 	    motionX = getAnchorX() - posX;
 	    motionZ = getAnchorZ() - posZ;
 	    motionY = -1.0D;
-	    
-	    rotationPitch = -90F;
 	}
 	
 //	protected MovingObjectPosition isSomethingWithinReach()
@@ -269,6 +270,17 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         }
 
         moveForward(1.0D);
+    }
+    
+    protected void processAttacking()
+    {
+        if (getAttackTarget() != null)
+        {
+            motionY = -1.0D;
+            double ticksToHitTarget = (posY - getAttackTarget().posY) / Math.abs(motionY);
+            motionX = (getAttackTarget().posX - posX) / ticksToHitTarget;
+            motionZ = (getAttackTarget().posZ - posZ) / ticksToHitTarget;
+        }        
     }
 
 	/**
@@ -369,6 +381,22 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             }
             case STATE_ATTACKING:
             {
+                // check if target has been killed or despawned
+                if (getAttackTarget() == null)
+                {
+                    setState(STATE_TAKING_OFF);
+                }
+                else if (getAttackTarget().isDead)
+                {
+                    setAttackTarget(null);
+                    setState(STATE_TAKING_OFF);
+                }
+                // check for hitting target
+                else if (getDistanceToEntity(getAttackTarget())<2.0F)
+                {
+                    getAttackTarget().attackEntityFrom(DamageSource.causeMobDamage(this), (float) getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue());
+                    setState(STATE_TAKING_OFF);
+                }
                 break;
             }
             default:
@@ -379,6 +407,18 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
             }
         }
     }
+    
+    @Override
+    public AxisAlignedBB getBoundingBox()
+    {
+        return AxisAlignedBB.getBoundingBox(boundingBox.minX, boundingBox.minY, boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
+    }
+//    
+//    @Override
+//    public AxisAlignedBB getCollisionBox(Entity parEntity)
+//    {
+//        return getBoundingBox();
+//    }
     
     public void considerPerching()
     {

@@ -89,7 +89,13 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     protected float[][] divingCycle = new float[][]
     {
         // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleY, wing1AngleZ, wing2AngleZ
-	    { 90F, 0F, 0F, 0F, 0F, -50F, 0F, 0F }
+        { 90F, 0F, 0F, 0F, 0F, -50F, 0F, 0F }
+    };
+    
+    protected float[][] attackingCycle = new float[][]
+    {
+        // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleY, wing1AngleZ, wing2AngleZ
+        { 90F, 0F, 0F, 0F, 0F, -50F, 0F, 0F }
     };
     
     protected float[][] landingCycle = new float[][]
@@ -294,6 +300,10 @@ public class ModelBirdOfPrey extends ModelWildAnimals
         else if (parEntity.getState()==parEntity.STATE_TRAVELLING)
         {
             doAnimate(parEntity, travellingCycle);
+        }
+        else if (parEntity.getState()==parEntity.STATE_ATTACKING)
+        {
+            doAnimate(parEntity, attackingCycle);
         }
 
 	}

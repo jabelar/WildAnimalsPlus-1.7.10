@@ -95,13 +95,7 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     protected float[][] landingCycle = new float[][]
     {
             // bodyAngleX, headAngleX, legsAngleX, tailAngleX, wing1AngleX, wing1AngleY, wing1AngleZ, wing2AngleZ
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F },
-	    { 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F }
+	    { -70F, 70F, 70F, 0F, 0F, 50F, 0F, 0F }
     };
     
     protected float[][] travellingCycle = new float[][]

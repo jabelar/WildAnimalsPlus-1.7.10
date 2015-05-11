@@ -16,6 +16,9 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey;
 
+import java.util.Iterator;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockLeaves;
@@ -26,6 +29,8 @@ import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -38,6 +43,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
 import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IModEntity
@@ -51,6 +57,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     public final int STATE_DIVING = 3;
     public final int STATE_LANDING = 4;
     public final int STATE_TRAVELLING = 5;
+    public final int STATE_ATTACKING = 6;
     
     // use fields for sounds to allow easy changes in child classes
     protected String soundHurt = "wildanimals:mob.birdsofprey.death";
@@ -61,6 +68,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     // to ensure that multiple entities don't get synced
     // create a random factor per entity
     protected int randFactor;
+    
+    Class[] preyArray = new Class[] {EntityChicken.class, EntityBat.class, EntitySerpent.class};
 
     public EntityBirdOfPrey(World parWorld)
     {
@@ -315,7 +324,16 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                     setState(STATE_TRAVELLING);
                 }
                 
-                considerPerching();
+                considerAttacking();
+                
+                if (this.getAttackTarget() == null)
+                {
+                    considerPerching();
+                }
+                else
+                {
+                    setState(STATE_ATTACKING);
+                }
                 
                 break;
             }
@@ -349,6 +367,10 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 }
                 break;
             }
+            case STATE_ATTACKING:
+            {
+                break;
+            }
             default:
             {
                 // DEBUG
@@ -363,11 +385,25 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         Block topBlock = worldObj.getTopBlock((int)posX, (int)posZ);
         if (topBlock instanceof BlockLeaves)
         {
-//            if (rand.nextInt(100) == 0)
+            if (rand.nextInt(100) == 0)
             {
                 setState(STATE_DIVING);
                 setAnchor(posX, worldObj.getHeightValue((int)posX, (int)posZ), posZ);
             }
+        }
+    }
+    
+    public void considerAttacking()
+    {
+        AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(posX - 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) - 5.0D, posZ - 5.0D, posX + 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) + 5.0D, posZ + 5.0D);
+
+        List possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
+        // DEBUG
+        System.out.println("Found "+possibleTargetEntities.size()+" in bounding box = "+attackRegion.toString());
+        Iterator<Object> targetIterator = possibleTargetEntities.iterator();
+        while (targetIterator.hasNext())
+        {
+            setAttackTarget((EntityLivingBase) targetIterator.next());
         }
     }
 

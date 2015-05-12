@@ -16,9 +16,12 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.utilities;
 
+import java.util.UUID;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
@@ -385,6 +388,12 @@ public class Utilities
                 return true;
             }
         }
+    }
+
+    // just putting a human-readable name to the function
+    public static EntityPlayer getPlayerFromUUID(World parWorld, UUID parUUID)
+    {
+        return parWorld.func_152378_a(parUUID);    
     }
     
 //    // This is mostly copied from the EntityRenderer#getMouseOver() method

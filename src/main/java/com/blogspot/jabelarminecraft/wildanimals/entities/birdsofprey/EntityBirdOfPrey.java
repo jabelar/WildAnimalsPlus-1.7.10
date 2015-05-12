@@ -18,6 +18,7 @@ package com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
@@ -25,17 +26,15 @@ import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
@@ -46,7 +45,10 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
 import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
-public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IModEntity
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+public class EntityBirdOfPrey extends EntityFlying implements IModEntity
 {
     protected NBTTagCompound syncDataCompound = new NBTTagCompound();
 
@@ -95,13 +97,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         syncDataCompound.setInteger("stateCounter", 0);
         syncDataCompound.setBoolean("soarClockwise", worldObj.rand.nextBoolean());
         syncDataCompound.setDouble("soarHeight", 126-randFactor);
-        // DEBUG
-//        System.out.println("Soar height ="+getSoarHeight());
-//        System.out.println("Rand ="+randFactor);
         syncDataCompound.setInteger("stateCounter", 0);
         syncDataCompound.setDouble("anchorX", posX);
         syncDataCompound.setDouble("anchorY", posY);
         syncDataCompound.setDouble("anchorZ", posZ);
+        syncDataCompound.setString("ownerUUIDString", "");
     }
     
     // use clear tasks then build up their custom ai task list specifically
@@ -312,9 +312,18 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                     }
 
                     // entity can get scared if player gets too close
-                    if (worldObj.getClosestPlayerToEntity(this, 4.0D) != null)
+                    EntityPlayer closestPlayer = worldObj.getClosestPlayerToEntity(this, 4.0D);
+                    if (closestPlayer != null)
                     {
-                        setState(STATE_TAKING_OFF);
+                        ItemStack theHeldItemStack = closestPlayer.inventory.getCurrentItem();
+                        if (theHeldItemStack != null)
+                        {
+                            // if not holding taming food, bird will get spooked
+                            if (!isTamingFood(theHeldItemStack))
+                            {
+                                setState(STATE_TAKING_OFF);
+                            }
+                        }
                     }
                 }
                 break;            
@@ -338,7 +347,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
                 
                 considerAttacking();
                 
-                if (this.getAttackTarget() == null)
+                if (getAttackTarget() == null)
                 {
                     considerPerching();
                 }
@@ -455,6 +464,13 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         {
             setAttackTarget((EntityLivingBase) targetIterator.next());
         }
+    }
+    
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean isInRangeToRenderDist(double parDistance)
+    {
+        return true;
     }
 
     /**
@@ -662,11 +678,25 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         // DEBUG
         System.out.println("EntityBirdOfPrey interact()");
         
-        par1EntityPlayer.inventory.getCurrentItem();
+        ItemStack theHeldItemStack = par1EntityPlayer.inventory.getCurrentItem();
+        if (theHeldItemStack != null)
+        {
+            // check if raw salmon
+            if (isTamingFood(theHeldItemStack))
+            {
+                // DEBUG
+                System.out.println("It likes the raw salmon");
+            }
+        }
 
         return super.interact(par1EntityPlayer);
     }
-
+    
+    public boolean isTamingFood(ItemStack parItemStack)
+    {
+        // check for raw salmon
+        return (parItemStack.getItem() == Items.fish && parItemStack.getItemDamage() == 1);
+    }
     /**
      * Will return how many at most can spawn in a chunk at once.
      */
@@ -676,43 +706,18 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         return 8;
     }
 
-    public void func_70918_i(boolean par1)
-    {
-        if (par1)
-        {
-            dataWatcher.updateObject(19, Byte.valueOf((byte)1));
-        }
-        else
-        {
-            dataWatcher.updateObject(19, Byte.valueOf((byte)0));
-        }
-    }
-
-
-    public boolean func_70922_bv()
-    {
-        return dataWatcher.getWatchableObjectByte(19) == 1;
-    }
-
     /**
      * Determines if an entity can be despawned, used on idle far away entities
      */
     @Override
     protected boolean canDespawn()
     {
-        return ticksExisted > 2400;
-    }
-
-    public boolean func_142018_a(EntityLivingBase par1EntityLivingBase, EntityLivingBase par2EntityLivingBase)
-    {
-        if (!(par1EntityLivingBase instanceof EntityCreeper) && !(par1EntityLivingBase instanceof EntityGhast))
-        { 
-            return par1EntityLivingBase instanceof EntityPlayer && par2EntityLivingBase instanceof EntityPlayer && !((EntityPlayer)par2EntityLivingBase).canAttackPlayer((EntityPlayer)par1EntityLivingBase) ? false : !(par1EntityLivingBase instanceof EntityHorse) || !((EntityHorse)par1EntityLivingBase).isTame();
-        }
-        else
+        // don't despawn owned entities!
+        if (getOwner() != null)
         {
             return false;
         }
+        return ticksExisted > 2400;
     }
 
     /**
@@ -759,6 +764,19 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
     public float getScaleFactor()
     {
         return syncDataCompound.getFloat("scaleFactor");
+    }
+    
+    public void setOwnerUUIDString(String parOwnerUUIDString)
+    {
+        syncDataCompound.setString("ownerUUIDString", parOwnerUUIDString);
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
+    }
+    
+    public String getOwnerUUIDString()
+    {
+        return syncDataCompound.getString("ownerUUIDString");
     }
 
     public void setState(int parState)
@@ -823,19 +841,19 @@ public class EntityBirdOfPrey extends EntityFlying implements IEntityOwnable, IM
         return syncDataCompound.getDouble("anchorZ");
     } 
 
-    @Override
-    public String func_152113_b() // used to be getOwnerName()
+    public EntityPlayer getOwner()
     {
-        // TODO Auto-generated method stub
-        return null;
+        try
+        {
+            UUID uuid = UUID.fromString(getOwnerUUIDString());
+            return uuid == null ? null : Utilities.getPlayerFromUUID(worldObj, uuid);
+        }
+        catch (IllegalArgumentException illegalargumentexception)
+        {
+            return null;
+        }
     }
 
-    @Override
-    public Entity getOwner() 
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
     
     @Override
     public void sendEntitySyncPacket()

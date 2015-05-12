@@ -21,6 +21,8 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -395,6 +397,82 @@ public class Utilities
     {
         return parWorld.func_152378_a(parUUID);    
     }
+    
+    /**
+     * A method used to see if an entity is a suitable target through a number of checks.
+     */
+    public static boolean isSuitableTarget(EntityLiving parAttackingEntity, 
+            EntityLivingBase parPossibleTargetEntity,
+            boolean parShouldCheckSight)
+    {
+        if (parPossibleTargetEntity == null)
+        {
+            return false;
+        }
+        else if (parPossibleTargetEntity == parAttackingEntity)
+        {
+            return false;
+        }
+        else if (!parPossibleTargetEntity.isEntityAlive())
+        {
+            return false;
+        }
+        else if (!parAttackingEntity.canAttackClass(parPossibleTargetEntity.getClass()))
+        {
+            return false;
+        }
+        else
+        {
+//            if (parAttackingEntity instanceof IEntityOwnable && StringUtils.isNotEmpty(((IEntityOwnable)parAttackingEntity).func_152113_b()))
+//            {
+//                if (parPossibleTargetEntity instanceof IEntityOwnable && ((IEntityOwnable)parAttackingEntity).func_152113_b().equals(((IEntityOwnable)parPossibleTargetEntity).func_152113_b()))
+//                {
+//                    return false;
+//                }
+//
+//                if (parPossibleTargetEntity == ((IEntityOwnable)parAttackingEntity).getOwner())
+//                {
+//                    return false;
+//                }
+//            }
+            if (parAttackingEntity.getTeam() == parPossibleTargetEntity.getTeam())
+            {
+                return false;
+            }
+            else if (parPossibleTargetEntity instanceof EntityPlayer && ((EntityPlayer)parPossibleTargetEntity).capabilities.disableDamage)
+            {
+                return false;
+            }
+
+           if (parShouldCheckSight && !parAttackingEntity.getEntitySenses().canSee(parPossibleTargetEntity))
+            {
+                return false;
+            }
+            else
+            {
+//                if (this.nearbyOnly)
+//                {
+//                    if (--this.targetSearchDelay <= 0)
+//                    {
+//                        this.targetSearchStatus = 0;
+//                    }
+//
+//                    if (this.targetSearchStatus == 0)
+//                    {
+//                        this.targetSearchStatus = this.canEasilyReach(parPossibleTargetEntity) ? 1 : 2;
+//                    }
+//
+//                    if (this.targetSearchStatus == 2)
+//                    {
+//                        return false;
+//                    }
+//                }
+
+                return true;
+            }
+        }
+    }
+
     
 //    // This is mostly copied from the EntityRenderer#getMouseOver() method
 //    public static MovingObjectPosition getMouseOverExtended(float parDist)

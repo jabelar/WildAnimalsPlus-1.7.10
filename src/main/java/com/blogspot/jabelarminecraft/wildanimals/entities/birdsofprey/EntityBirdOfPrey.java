@@ -25,6 +25,7 @@ import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityBat;
@@ -36,6 +37,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -146,7 +148,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     @Override
     protected void updateAITick()
     {
-        dataWatcher.updateObject(18, Float.valueOf(this.getHealth()));
+        dataWatcher.updateObject(18, Float.valueOf(getHealth()));
         
         if (ticksExisted == 1)
         {
@@ -431,38 +433,59 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     
     public void considerPerching()
     {
-        Block topBlock = worldObj.getTopBlock((int)posX, (int)posZ);
-        if (topBlock instanceof BlockLeaves)
+        if (isTamed())
         {
-            if (rand.nextInt(100) == 0)
+            return;
+        }
+        else
+        {
+            Block topBlock = worldObj.getTopBlock((int)posX, (int)posZ);
+            if (topBlock instanceof BlockLeaves)
             {
-                setState(STATE_DIVING);
-                setAnchor(posX, worldObj.getHeightValue((int)posX, (int)posZ), posZ);
+                // if (rand.nextInt(100) == 0)
+                {
+                    setState(STATE_DIVING);
+                    setAnchor(posX, worldObj.getHeightValue((int)posX, (int)posZ), posZ);
+                }
             }
         }
     }
     
     public void considerAttacking()
     {
-        AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(posX - 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) - 5.0D, posZ - 5.0D, posX + 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) + 5.0D, posZ + 5.0D);
-
-        List possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntitySerpent.class, attackRegion);
-        Iterator<Object> targetIterator = possibleTargetEntities.iterator();
-        while (targetIterator.hasNext())
+        if (isTamed())
         {
-            setAttackTarget((EntityLivingBase) targetIterator.next());
+            processOwnerAttack();
         }
-        possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
-        targetIterator = possibleTargetEntities.iterator();
-        while (targetIterator.hasNext())
+        else
         {
-            setAttackTarget((EntityLivingBase) targetIterator.next());
-        }
-        possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion);
-        targetIterator = possibleTargetEntities.iterator();
-        while (targetIterator.hasNext())
-        {
-            setAttackTarget((EntityLivingBase) targetIterator.next());
+            // find target on ground
+            AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(posX - 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) - 5.0D, posZ - 5.0D, posX + 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) + 5.0D, posZ + 5.0D);
+    
+            List possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntitySerpent.class, attackRegion);
+            possibleTargetEntities.add(worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion));
+            possibleTargetEntities.add(worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion));
+            Iterator<Object> targetIterator = possibleTargetEntities.iterator();
+            while (targetIterator.hasNext())
+            {
+                EntityLivingBase possibleTarget = (EntityLivingBase) targetIterator.next();
+                if (getEntitySenses().canSee(possibleTarget))
+                {
+                    setAttackTarget((EntityLivingBase) targetIterator.next());
+                }
+            }
+//            possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
+//            targetIterator = possibleTargetEntities.iterator();
+//            while (targetIterator.hasNext())
+//            {
+//                setAttackTarget((EntityLivingBase) targetIterator.next());
+//            }
+//            possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion);
+//            targetIterator = possibleTargetEntities.iterator();
+//            while (targetIterator.hasNext())
+//            {
+//                setAttackTarget((EntityLivingBase) targetIterator.next());
+//            }
         }
     }
     
@@ -520,7 +543,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     protected void entityInit()
     {
         super.entityInit();
-        dataWatcher.addObject(18, new Float(this.getHealth()));
+        dataWatcher.addObject(18, new Float(getHealth()));
         dataWatcher.addObject(19, new Byte((byte)0));
         dataWatcher.addObject(20, new Byte((byte)BlockColored.func_150032_b(1)));
     }
@@ -620,16 +643,16 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     {
         double theDistance = MathHelper.sqrt_double(parX * parX + parY * parY + parZ * parZ);
 
-        double incrementX = (parX - this.posX) / theDistance;
-        double incrementY = (parY - this.posY) / theDistance;
-        double incrementZ = (parZ - this.posZ) / theDistance;
-        AxisAlignedBB axisalignedbb = this.boundingBox.copy();
+        double incrementX = (parX - posX) / theDistance;
+        double incrementY = (parY - posY) / theDistance;
+        double incrementZ = (parZ - posZ) / theDistance;
+        AxisAlignedBB axisalignedbb = boundingBox.copy();
 
         for (int i = 1; i < theDistance; ++i)
         {
             axisalignedbb.offset(incrementX, incrementY, incrementZ);
 
-            if (!this.worldObj.getCollidingBoundingBoxes(this, axisalignedbb).isEmpty())
+            if (!worldObj.getCollidingBoundingBoxes(this, axisalignedbb).isEmpty())
             {
                 return false;
             }
@@ -672,24 +695,37 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
      * Called when a player interacts with a mob. e.g. gets milk from a cow, gets into the saddle on a pig.
      */
     @Override
-    public boolean interact(EntityPlayer par1EntityPlayer)
+    public boolean interact(EntityPlayer parPlayer)
     {
         
         // DEBUG
         System.out.println("EntityBirdOfPrey interact()");
         
-        ItemStack theHeldItemStack = par1EntityPlayer.inventory.getCurrentItem();
+        ItemStack theHeldItemStack = parPlayer.inventory.getCurrentItem();
         if (theHeldItemStack != null)
         {
             // check if raw salmon
             if (isTamingFood(theHeldItemStack))
             {
-                // DEBUG
-                System.out.println("It likes the raw salmon");
+                if (rand.nextInt(3) == 0)
+                {
+                    spawnTamingParticles(true);
+                    setAttackTarget(null);
+                    setHealth((float)getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue());
+                    setOwner(parPlayer);
+    
+                    // DEBUG
+                    System.out.println("It likes the raw salmon");
+                    --theHeldItemStack.stackSize;
+                }
+                else
+                {
+                    spawnTamingParticles(false);
+                }
             }
         }
 
-        return super.interact(par1EntityPlayer);
+        return super.interact(parPlayer);
     }
     
     public boolean isTamingFood(ItemStack parItemStack)
@@ -720,6 +756,99 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         return ticksExisted > 2400;
     }
 
+    @Override
+    public Team getTeam()
+    {
+        if (getOwner() != null)
+        {
+            EntityLivingBase entityLivingBase = getOwner();
+
+            if (entityLivingBase != null)
+            {
+                return entityLivingBase.getTeam();
+            }
+        }
+
+        return super.getTeam();
+    }
+
+    @Override
+    public boolean isOnSameTeam(EntityLivingBase parEntityLivingBase)
+    {
+        if (getOwner() != null)
+        {
+            EntityLivingBase entityOwner = getOwner();
+
+            if (parEntityLivingBase == entityOwner)
+            {
+                return true;
+            }
+
+            if (entityOwner != null)
+            {
+                return entityOwner.isOnSameTeam(parEntityLivingBase);
+            }
+        }
+
+        return super.isOnSameTeam(parEntityLivingBase);
+    }
+    
+    /**
+     * Play the taming effect, will either be hearts or smoke depending on status
+     */
+    protected void spawnTamingParticles(boolean shouldSpawnHearts)
+    {
+        if (worldObj.isRemote)
+        {
+            return;
+        }
+        
+        String particleType = "heart";
+
+        if (!shouldSpawnHearts)
+        {
+            particleType = "smoke";
+        }
+
+        for (int i = 0; i < 7; ++i)
+        {
+            double d0 = rand.nextGaussian() * 0.02D;
+            double d1 = rand.nextGaussian() * 0.02D;
+            double d2 = rand.nextGaussian() * 0.02D;
+            worldObj.spawnParticle(particleType, posX + rand.nextFloat() * width * 2.0F - width, posY + 0.5D + rand.nextFloat() * height, posZ + rand.nextFloat() * width * 2.0F - width, d0, d1, d2);
+        }
+    }
+    
+    public boolean isTamed()
+    {
+        return (getOwner() != null);
+    }
+    
+    public void processOwnerAttack()
+    {
+        if (!isTamed())
+        {
+            return;
+        }
+        else
+        {
+            EntityLivingBase theOwner = getOwner();
+
+            if (theOwner == null)
+            {
+                return;
+            }
+            else
+            {
+                if (Utilities.isSuitableTarget((EntityLiving) theOwner, theOwner.getLastAttacker(), true))
+                {
+                    setAttackTarget(theOwner.getLastAttacker()); // note the get last attacker actually returns last attacked
+                }
+           }
+        }
+    }
+
+    
     /**
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */
@@ -768,6 +897,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     
     public void setOwnerUUIDString(String parOwnerUUIDString)
     {
+        // DEBUG
+        System.out.println("Setting new owner with UUID ="+parOwnerUUIDString);
         syncDataCompound.setString("ownerUUIDString", parOwnerUUIDString);
         
         // don't forget to sync client and server
@@ -852,6 +983,28 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         {
             return null;
         }
+    }
+    
+    public boolean setOwner(EntityLivingBase parNewOwner)
+    {
+        if (getOwner() != null)
+        {
+            return false;
+        }
+        else if (parNewOwner == null)
+        {
+            return false;
+        }
+        else
+        {
+            setOwnerUUIDString(parNewOwner.getUniqueID().toString());
+            return true;
+        }
+    }
+    
+    public boolean isOwner(EntityLivingBase parEntity)
+    {
+        return parEntity == getOwner();
     }
 
     

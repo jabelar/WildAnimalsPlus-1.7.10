@@ -25,14 +25,12 @@ import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -44,6 +42,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.ProcessStateBirdOfPrey;
+import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.UpdateStateBirdOfPrey;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
 import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
@@ -54,14 +54,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
 {
     protected NBTTagCompound syncDataCompound = new NBTTagCompound();
 
-    // create state constants, did not use enum because need to cast to int anyway for packets
-    public final int STATE_PERCHED = 0;
-    public final int STATE_TAKING_OFF = 1;
-    public final int STATE_SOARING = 2;
-    public final int STATE_DIVING = 3;
-    public final int STATE_LANDING = 4;
-    public final int STATE_TRAVELLING = 5;
-    public final int STATE_ATTACKING = 6;
+    public ProcessStateBirdOfPrey aiHelper;
+    public UpdateStateBirdOfPrey aiUpdateState;
     
     // use fields for sounds to allow easy changes in child classes
     protected String soundHurt = "wildanimals:mob.birdsofprey.death";
@@ -72,6 +66,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     // to ensure that multiple entities don't get synced
     // create a random factor per entity
     protected int randFactor;
+    
+    protected static float turnRate = 1.5F;
     
     Class[] preyArray = new Class[] {EntityChicken.class, EntityBat.class, EntitySerpent.class};
 
@@ -87,15 +83,16 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         randFactor = rand.nextInt(10);
         // DEBUG
         System.out.println("randFactor = "+randFactor);
-        initSyncDataCompound();
         setupAI();
+        
+        initSyncDataCompound();
      }
         
     @Override
     public void initSyncDataCompound()
     {
         syncDataCompound.setFloat("scaleFactor", 1.0F);
-        syncDataCompound.setInteger("state", STATE_TAKING_OFF);
+        syncDataCompound.setInteger("state", aiHelper.STATE_TAKING_OFF);
         syncDataCompound.setInteger("stateCounter", 0);
         syncDataCompound.setBoolean("soarClockwise", worldObj.rand.nextBoolean());
         syncDataCompound.setDouble("soarHeight", 126-randFactor);
@@ -119,6 +116,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     {
         getNavigator().setAvoidsWater(true);
         clearAITasks(); // clear any tasks assigned in super classes
+        aiHelper = new ProcessStateBirdOfPrey(this);
+        aiUpdateState = new UpdateStateBirdOfPrey(this);
     }
 
     // you don't have to call this as it is called automatically during entityLiving subclass creation
@@ -155,134 +154,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
             sendEntitySyncPacket();
         }
         
-//        // DEBUG
-//        System.out.println("State = "+getState());
-        
-        switch (getState())
-        {
-        case STATE_PERCHED:
-        	processPerched();
-        	break;
-        case STATE_TAKING_OFF:
-        	processTakingOff();
-        	break;
-        case STATE_SOARING:
-        	processSoaring();
-        	break;
-        case STATE_DIVING:
-        	processDiving();
-        	break;
-        case STATE_LANDING:
-        	processLanding();
-        	break;
-        case STATE_TRAVELLING:
-            processTravelling();
-            break;
-        case STATE_ATTACKING:
-            processAttacking();
-            break;
-    	default:
-    		// DEBUG
-    		System.out.println("Unknown state");
-    		break;
-        		
-        }
-
-    }
-
-    /**
-	 * 
-	 */
-	protected void processLanding() 
-	{
-	}
-
-	/**
-	 * 
-	 */
-	protected void processDiving() 
-	{
-	    motionX = getAnchorX() - posX;
-	    motionZ = getAnchorZ() - posZ;
-	    motionY = -1.0D;
-	}
-	
-//	protected MovingObjectPosition isSomethingWithinReach()
-//	{
-//	    
-//	}
-//
-	/**
-	 * 
-	 */
-	protected void processTakingOff() 
-	{
-        // climb to soaring height
-        if (posY < getSoarHeight())
-        {
-            motionY = 0.1D;
-        }
-
-        moveForward(1.0D);
-
-        // turn
-        if (getSoarClockwise())
-        {
-            rotationYaw += 1.5F;
-        }
-        else
-        {
-            rotationYaw -= 1.5F;
-        }
-	}
-
-	/**
-	 * 
-	 */
-	protected void processPerched() 
-	{
-		// TODO Auto-generated method stub
-		
-	}
-    
-    protected void processSoaring()
-    {
-        // drift down slowly
-        motionY = -0.01D;
-
-        moveForward(1.0D);
-        
-        // turn
-        if (getSoarClockwise())
-        {
-            rotationYaw += 1.5F;
-        }
-        else
-        {
-            rotationYaw -= 1.5F;
-        }
-    }
-    
-    protected void processTravelling()
-    {
-        // climb to soaring height
-        if (posY < getSoarHeight())
-        {
-            motionY = 0.1D;
-        }
-
-        moveForward(1.0D);
-    }
-    
-    protected void processAttacking()
-    {
-        if (getAttackTarget() != null)
-        {
-            motionY = -2.0D;
-            double ticksToHitTarget = (posY - getAttackTarget().posY) / Math.abs(motionY);
-            motionX = (getAttackTarget().posX - posX) / ticksToHitTarget;
-            motionZ = (getAttackTarget().posZ - posZ) / ticksToHitTarget;
-        }        
+        aiHelper.updateAITick();
     }
 
 	/**
@@ -293,130 +165,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     {
         super.updateAITasks();
         
-        switch (getState())
-        {
-            case STATE_PERCHED:
-            {
-                // check if block perched upon has disappeared
-//                // DEBUG
-//                System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
-                if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)) == Blocks.air)
-                {
-                    setState(STATE_TAKING_OFF);
-                }
-                else // still solidly perched
-                {
-                    // can occasionally adjust or flap, look around, or play sound to create variety
-                    if (rand.nextInt(2400) == 0)
-                    {
-                        setState(STATE_TAKING_OFF);
-                        // rotationYawHead = rand.nextInt(360);
-                    }
-
-                    // entity can get scared if player gets too close
-                    EntityPlayer closestPlayer = worldObj.getClosestPlayerToEntity(this, 4.0D);
-                    if (closestPlayer != null)
-                    {
-                        ItemStack theHeldItemStack = closestPlayer.inventory.getCurrentItem();
-                        if (theHeldItemStack != null)
-                        {
-                            // if not holding taming food, bird will get spooked
-                            if (!isTamingFood(theHeldItemStack))
-                            {
-                                setState(STATE_TAKING_OFF);
-                            }
-                        }
-                    }
-                }
-                break;            
-            }
-            case STATE_TAKING_OFF:
-            {
-            	if (posY >= getSoarHeight())
-            	{
-            		setState(STATE_SOARING);
-            	}
-                break;
-            }
-            case STATE_SOARING:
-            {
-                // climb again if drifting too low
-                // put some randomness in so entities aren't synced after loading save game
-                if (posY < getSoarHeight()*0.9D)
-                {
-                    setState(STATE_TRAVELLING);
-                }
-                
-                considerAttacking();
-                
-                if (getAttackTarget() == null)
-                {
-                    considerPerching();
-                }
-                else
-                {
-                    setState(STATE_ATTACKING);
-                }
-                
-                break;
-            }
-            case STATE_DIVING:
-            {
-                // see if made it to perch
-//                // DEBUG
-//                System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
-                if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)) != Blocks.air)
-                {
-                    setState(STATE_PERCHED);
-                }
-                break;
-            }
-            case STATE_LANDING:
-            {
-                // check if actually landed on a block
-                if (worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).isNormalCube())
-                {
-                    setState(STATE_PERCHED);
-                }
-                break;
-            }
-            case STATE_TRAVELLING:
-            {
-                if (posY >= getSoarHeight())
-                {
-                    // DEBUG
-                    System.out.println("State changed to soaring");
-                    setState(STATE_SOARING);
-                }
-                break;
-            }
-            case STATE_ATTACKING:
-            {
-                // check if target has been killed or despawned
-                if (getAttackTarget() == null)
-                {
-                    setState(STATE_TAKING_OFF);
-                }
-                else if (getAttackTarget().isDead)
-                {
-                    setAttackTarget(null);
-                    setState(STATE_TAKING_OFF);
-                }
-                // check for hitting target
-                else if (getDistanceToEntity(getAttackTarget())<2.0F)
-                {
-                    getAttackTarget().attackEntityFrom(DamageSource.causeMobDamage(this), (float) getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue());
-                    setState(STATE_TAKING_OFF);
-                }
-                break;
-            }
-            default:
-            {
-                // DEBUG
-                System.out.println("EntityBirdOfPrey OnLivingUpdate() **ERROR** unhandled state");
-                break;
-            }
-        }
+        aiUpdateState.updateAITasks();
+        
     }
     
     @Override
@@ -463,12 +213,30 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
             AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(posX - 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) - 5.0D, posZ - 5.0D, posX + 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) + 5.0D, posZ + 5.0D);
     
             List possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntitySerpent.class, attackRegion);
-            possibleTargetEntities.add(worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion));
-            possibleTargetEntities.add(worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion));
             Iterator<Object> targetIterator = possibleTargetEntities.iterator();
             while (targetIterator.hasNext())
             {
-                EntityLivingBase possibleTarget = (EntityLivingBase) targetIterator.next();
+                EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
+                if (getEntitySenses().canSee(possibleTarget))
+                {
+                    setAttackTarget((EntityLivingBase) targetIterator.next());
+                }
+            }
+            possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
+            targetIterator = possibleTargetEntities.iterator();
+            while (targetIterator.hasNext())
+            {
+                EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
+                if (getEntitySenses().canSee(possibleTarget))
+                {
+                    setAttackTarget((EntityLivingBase) targetIterator.next());
+                }
+            }
+            possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion);
+            targetIterator = possibleTargetEntities.iterator();
+            while (targetIterator.hasNext())
+            {
+                EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
                 if (getEntitySenses().canSee(possibleTarget))
                 {
                     setAttackTarget((EntityLivingBase) targetIterator.next());
@@ -823,7 +591,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     {
         return (getOwner() != null);
     }
-    
+
+    // detect if owner has attacked something, if so set attack target to owner's target
     public void processOwnerAttack()
     {
         if (!isTamed())
@@ -840,7 +609,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
             }
             else
             {
-                if (Utilities.isSuitableTarget((EntityLiving) theOwner, theOwner.getLastAttacker(), true))
+                if (Utilities.isSuitableTarget(theOwner, theOwner.getLastAttacker(), true))
                 {
                     setAttackTarget(theOwner.getLastAttacker()); // note the get last attacker actually returns last attacked
                 }
@@ -848,10 +617,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         }
     }
 
-    
-    /**
-     * (abstract) Protected helper method to write subclass entity data to NBT.
-     */
     @Override
     public void writeToNBT(NBTTagCompound parCompound)
     {
@@ -861,9 +626,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         parCompound.setTag("extendedPropsJabelar", syncDataCompound);
     }
 
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
     @Override
     public void readFromNBT(NBTTagCompound parCompound)
     {

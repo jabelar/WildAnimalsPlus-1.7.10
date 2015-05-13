@@ -21,7 +21,6 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -401,7 +400,7 @@ public class Utilities
     /**
      * A method used to see if an entity is a suitable target through a number of checks.
      */
-    public static boolean isSuitableTarget(EntityLiving parAttackingEntity, 
+    public static boolean isSuitableTarget(EntityLivingBase theOwner, 
             EntityLivingBase parPossibleTargetEntity,
             boolean parShouldCheckSight)
     {
@@ -409,7 +408,7 @@ public class Utilities
         {
             return false;
         }
-        else if (parPossibleTargetEntity == parAttackingEntity)
+        else if (parPossibleTargetEntity == theOwner)
         {
             return false;
         }
@@ -417,10 +416,10 @@ public class Utilities
         {
             return false;
         }
-        else if (!parAttackingEntity.canAttackClass(parPossibleTargetEntity.getClass()))
-        {
-            return false;
-        }
+//        else if (!theOwner.canAttackClass(parPossibleTargetEntity.getClass()))
+//        {
+//            return false;
+//        }
         else
         {
 //            if (parAttackingEntity instanceof IEntityOwnable && StringUtils.isNotEmpty(((IEntityOwnable)parAttackingEntity).func_152113_b()))
@@ -435,7 +434,7 @@ public class Utilities
 //                    return false;
 //                }
 //            }
-            if (parAttackingEntity.getTeam() == parPossibleTargetEntity.getTeam())
+            if (theOwner.isOnSameTeam(parPossibleTargetEntity))
             {
                 return false;
             }
@@ -443,12 +442,12 @@ public class Utilities
             {
                 return false;
             }
-
-           if (parShouldCheckSight && !parAttackingEntity.getEntitySenses().canSee(parPossibleTargetEntity))
-            {
-                return false;
-            }
-            else
+//
+//           if (parShouldCheckSight && !theOwner.getEntitySenses().canSee(parPossibleTargetEntity))
+//            {
+//                return false;
+//            }
+//            else
             {
 //                if (this.nearbyOnly)
 //                {
@@ -542,5 +541,4 @@ public class Utilities
 //        }
 //        return returnMOP;
 //    }
-
 }

@@ -16,6 +16,9 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey;
 
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
@@ -27,17 +30,6 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBird
 public class ProcessStateBirdOfPrey
 {
     EntityBirdOfPrey theBird;
-    
-    // create state constants, did not use enum because need to cast to int anyway for packets
-    public final int STATE_PERCHED = 0;
-    public final int STATE_TAKING_OFF = 1;
-    public final int STATE_SOARING = 2;
-    public final int STATE_DIVING = 3;
-    public final int STATE_LANDING = 4;
-    public final int STATE_TRAVELLING = 5;
-    public final int STATE_ATTACKING = 6;
-    public final int STATE_SOARING_TAMED = 7;
-    public final int STATE_PERCHED_TAMED = 8;
     
     public ProcessStateBirdOfPrey(EntityBirdOfPrey parBirdOfPrey)
     {
@@ -51,25 +43,31 @@ public class ProcessStateBirdOfPrey
         
         switch (theBird.getState())
         {
-        case STATE_PERCHED:
+        case AIStates.STATE_PERCHED:
             processPerched();
             break;
-        case STATE_TAKING_OFF:
+        case AIStates.STATE_TAKING_OFF:
             processTakingOff();
             break;
-        case STATE_SOARING:
+        case AIStates.STATE_SOARING:
             processSoaring();
             break;
-        case STATE_DIVING:
+        case AIStates.STATE_DIVING:
             processDiving();
             break;
-        case STATE_LANDING:
+        case AIStates.STATE_LANDING:
             processLanding();
             break;
-        case STATE_TRAVELLING:
+        case AIStates.STATE_TRAVELLING:
             processTravelling();
             break;
-        case STATE_ATTACKING:
+        case AIStates.STATE_ATTACKING:
+            processAttacking();
+            break;
+        case AIStates.STATE_SOARING_TAMED:
+            processAttacking();
+            break;
+        case AIStates.STATE_PERCHED_TAMED:
             processAttacking();
             break;
         default:
@@ -93,9 +91,9 @@ public class ProcessStateBirdOfPrey
      */
     protected void processDiving() 
     {
-        motionX = getAnchorX() - posX;
-        motionZ = getAnchorZ() - posZ;
-        motionY = -1.0D;
+        theBird.motionX = theBird.getAnchorX() - theBird.posX;
+        theBird.motionZ = theBird.getAnchorZ() - theBird.posZ;
+        theBird.motionY = -1.0D;
     }
     
 //  protected MovingObjectPosition isSomethingWithinReach()
@@ -109,21 +107,21 @@ public class ProcessStateBirdOfPrey
     protected void processTakingOff() 
     {
         // climb to soaring height
-        if (posY < getSoarHeight())
+        if (theBird.posY < theBird.getSoarHeight())
         {
-            motionY = 0.1D;
+            theBird.motionY = 0.1D;
         }
 
         moveForward(1.0D);
 
         // turn
-        if (getSoarClockwise())
+        if (theBird.getSoarClockwise())
         {
-            rotationYaw += turnRate;
+            theBird.rotationYaw += theBird.turnRate;
         }
         else
         {
-            rotationYaw -= turnRate;
+            theBird.rotationYaw -= theBird.turnRate;
         }
     }
 
@@ -132,41 +130,43 @@ public class ProcessStateBirdOfPrey
      */
     protected void processPerched() 
     {
-        // TODO Auto-generated method stub
-        
+        stopMoving();
     }
     
     protected void processSoaring()
     {
         // drift down slowly
-        motionY = -0.01D;
+        theBird.motionY = -0.01D;
 
         moveForward(1.0D);
         
         // turn
-        if (isTamed())
+        if (theBird.isTamed())
         {
             // turn towards owner
             // got the dot product idea from https://github.com/chraft/c-raft/wiki/Vectors,-Location,-Yaw-and-Pitch-in-C%23raft
-            Vec3 vecToOwner = Vec3.createVectorHelper(getOwner().posX - posX, 0, getOwner().posZ - posZ).normalize();
-            if (getLookVec().dotProduct(vecToOwner) > 0.0D)
+            Vec3 vecToOwner = Vec3.createVectorHelper(
+                    theBird.getOwner().posX - theBird.posX, 
+                    0, 
+                    theBird.getOwner().posZ - theBird.posZ).normalize();
+            if (theBird.getLookVec().dotProduct(vecToOwner) > 0.0D)
             {
-                rotationYaw -= turnRate;
+                theBird.rotationYaw -= theBird.turnRate;
             }
             else
             {
-                rotationYaw += turnRate;
+                theBird.rotationYaw += theBird.turnRate;
             }
         }
         else
         {
-            if (getSoarClockwise())
+            if (theBird.getSoarClockwise())
             {
-                rotationYaw += turnRate;
+                theBird.rotationYaw += theBird.turnRate;
             }
             else
             {
-                rotationYaw -= turnRate;
+                theBird.rotationYaw -= theBird.turnRate;
             }
         }
     }
@@ -174,9 +174,9 @@ public class ProcessStateBirdOfPrey
     protected void processTravelling()
     {
         // climb to soaring height
-        if (posY < getSoarHeight())
+        if (theBird.posY < theBird.getSoarHeight())
         {
-            motionY = 0.1D;
+            theBird.motionY = 0.1D;
         }
 
         moveForward(1.0D);
@@ -184,13 +184,53 @@ public class ProcessStateBirdOfPrey
     
     protected void processAttacking()
     {
-        if (getAttackTarget() != null)
+        if (theBird.getAttackTarget() != null)
         {
-            motionY = -2.0D;
-            double ticksToHitTarget = (posY - getAttackTarget().posY) / Math.abs(motionY);
-            motionX = (getAttackTarget().posX - posX) / ticksToHitTarget;
-            motionZ = (getAttackTarget().posZ - posZ) / ticksToHitTarget;
+            theBird.motionY = -2.0D;
+            double ticksToHitTarget = (theBird.posY - theBird.getAttackTarget().posY) / Math.abs(theBird.motionY);
+            theBird.motionX = (theBird.getAttackTarget().posX - theBird.posX) / ticksToHitTarget;
+            theBird.motionZ = (theBird.getAttackTarget().posZ - theBird.posZ) / ticksToHitTarget;
         }        
     }
+    
+    
+    public void moveForward(double parSpeedFactor)
+    {
+        theBird.motionX = theBird.getLookVec().xCoord * parSpeedFactor * theBird.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+        theBird.motionZ = theBird.getLookVec().zCoord * parSpeedFactor * theBird.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
+    }
+    
+    protected void stopMoving()
+    {
+        theBird.motionX = 0;
+        theBird.motionY = 0;
+        theBird.motionZ = 0;
+    }
+    
+    /**
+     * True if the entity has an unobstructed line of travel to the waypoint.
+     */
+    public boolean isCourseTraversable(double parX, double parY, double parZ)
+    {
+        double theDistance = MathHelper.sqrt_double(parX * parX + parY * parY + parZ * parZ);
+
+        double incrementX = (parX - theBird.posX) / theDistance;
+        double incrementY = (parY - theBird.posY) / theDistance;
+        double incrementZ = (parZ - theBird.posZ) / theDistance;
+        AxisAlignedBB axisalignedbb = theBird.boundingBox.copy();
+
+        for (int i = 1; i < theDistance; ++i)
+        {
+            axisalignedbb.offset(incrementX, incrementY, incrementZ);
+
+            if (!theBird.worldObj.getCollidingBoundingBoxes(theBird, axisalignedbb).isEmpty())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
 }

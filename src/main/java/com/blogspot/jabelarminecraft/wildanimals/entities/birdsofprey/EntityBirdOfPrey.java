@@ -16,13 +16,10 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
-import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
@@ -38,10 +35,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
+import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.AIStates;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.ProcessStateBirdOfPrey;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.UpdateStateBirdOfPrey;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
@@ -67,7 +64,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     // create a random factor per entity
     protected int randFactor;
     
-    protected static float turnRate = 1.5F;
+    public float turnRate = 1.5F;
     
     Class[] preyArray = new Class[] {EntityChicken.class, EntityBat.class, EntitySerpent.class};
 
@@ -92,7 +89,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     public void initSyncDataCompound()
     {
         syncDataCompound.setFloat("scaleFactor", 1.0F);
-        syncDataCompound.setInteger("state", aiHelper.STATE_TAKING_OFF);
+        syncDataCompound.setInteger("state", AIStates.STATE_TAKING_OFF);
         syncDataCompound.setInteger("stateCounter", 0);
         syncDataCompound.setBoolean("soarClockwise", worldObj.rand.nextBoolean());
         syncDataCompound.setDouble("soarHeight", 126-randFactor);
@@ -165,7 +162,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     {
         super.updateAITasks();
         
-        aiUpdateState.updateAITasks();
+        aiUpdateState.updateAIState();
         
     }
     
@@ -173,88 +170,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     public AxisAlignedBB getBoundingBox()
     {
         return AxisAlignedBB.getBoundingBox(boundingBox.minX, boundingBox.minY, boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-    }
-//    
-//    @Override
-//    public AxisAlignedBB getCollisionBox(Entity parEntity)
-//    {
-//        return getBoundingBox();
-//    }
-    
-    public void considerPerching()
-    {
-        if (isTamed())
-        {
-            return;
-        }
-        else
-        {
-            Block topBlock = worldObj.getTopBlock((int)posX, (int)posZ);
-            if (topBlock instanceof BlockLeaves)
-            {
-                // if (rand.nextInt(100) == 0)
-                {
-                    setState(STATE_DIVING);
-                    setAnchor(posX, worldObj.getHeightValue((int)posX, (int)posZ), posZ);
-                }
-            }
-        }
-    }
-    
-    public void considerAttacking()
-    {
-        if (isTamed())
-        {
-            processOwnerAttack();
-        }
-        else
-        {
-            // find target on ground
-            AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(posX - 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) - 5.0D, posZ - 5.0D, posX + 5.0D, worldObj.getHeightValue((int)posX, (int)posZ) + 5.0D, posZ + 5.0D);
-    
-            List possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntitySerpent.class, attackRegion);
-            Iterator<Object> targetIterator = possibleTargetEntities.iterator();
-            while (targetIterator.hasNext())
-            {
-                EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
-                if (getEntitySenses().canSee(possibleTarget))
-                {
-                    setAttackTarget((EntityLivingBase) targetIterator.next());
-                }
-            }
-            possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
-            targetIterator = possibleTargetEntities.iterator();
-            while (targetIterator.hasNext())
-            {
-                EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
-                if (getEntitySenses().canSee(possibleTarget))
-                {
-                    setAttackTarget((EntityLivingBase) targetIterator.next());
-                }
-            }
-            possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion);
-            targetIterator = possibleTargetEntities.iterator();
-            while (targetIterator.hasNext())
-            {
-                EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
-                if (getEntitySenses().canSee(possibleTarget))
-                {
-                    setAttackTarget((EntityLivingBase) targetIterator.next());
-                }
-            }
-//            possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
-//            targetIterator = possibleTargetEntities.iterator();
-//            while (targetIterator.hasNext())
-//            {
-//                setAttackTarget((EntityLivingBase) targetIterator.next());
-//            }
-//            possibleTargetEntities = worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion);
-//            targetIterator = possibleTargetEntities.iterator();
-//            while (targetIterator.hasNext())
-//            {
-//                setAttackTarget((EntityLivingBase) targetIterator.next());
-//            }
-        }
     }
     
     @Override
@@ -329,7 +244,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     @Override
     protected String getLivingSound()
     {
-        if (getState() == STATE_TAKING_OFF || getState() == STATE_TRAVELLING)
+        if (getState() == AIStates.STATE_TAKING_OFF || getState() == AIStates.STATE_TRAVELLING)
         {
             return soundFlapping;
         }
@@ -390,45 +305,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     {
         super.onUpdate();
     }
-    
-    protected void moveForward(double parSpeedFactor)
-    {
-        motionX = getLookVec().xCoord * parSpeedFactor * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
-        motionZ = getLookVec().zCoord * parSpeedFactor * getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
-    }
-    
-    protected void stopMoving()
-    {
-    	motionX = 0;
-    	motionY = 0;
-    	motionZ = 0;
-    }
-    
-    /**
-     * True if the entity has an unobstructed line of travel to the waypoint.
-     */
-    public boolean isCourseTraversable(double parX, double parY, double parZ)
-    {
-        double theDistance = MathHelper.sqrt_double(parX * parX + parY * parY + parZ * parZ);
-
-        double incrementX = (parX - posX) / theDistance;
-        double incrementY = (parY - posY) / theDistance;
-        double incrementZ = (parZ - posZ) / theDistance;
-        AxisAlignedBB axisalignedbb = boundingBox.copy();
-
-        for (int i = 1; i < theDistance; ++i)
-        {
-            axisalignedbb.offset(incrementX, incrementY, incrementZ);
-
-            if (!worldObj.getCollidingBoundingBoxes(this, axisalignedbb).isEmpty())
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     /**
      * Called when the entity is attacked.
      */

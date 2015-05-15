@@ -34,6 +34,7 @@ import net.minecraft.util.MathHelper;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
+import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 /**
  * @author jabelar
@@ -223,7 +224,9 @@ public class UpdateStateBirdOfPrey
                 // climb again if drifting too low
                 if (theBird.posY < theBird.getSoarHeight()*0.9D)
                 {
-                    theBird.setState(AIStates.STATE_TAKING_OFF);
+                    // point towards owner
+                    rotationYaw = Utilities.getYawFromVec(null);
+                    theBird.setState(AIStates.STATE_TRAVELLING);
                 }
                 
                 considerAttacking();

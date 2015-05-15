@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -541,4 +542,11 @@ public class Utilities
 //        }
 //        return returnMOP;
 //    }
+    
+    public static float getYawFromVec(Vec3 parVec)
+    {
+        // The coordinate system for Minecraft is a bit backwards as explained 
+        // at https://github.com/chraft/c-raft/wiki/Vectors,-Location,-Yaw-and-Pitch-in-C%23raft
+        return (float) Math.toDegrees(Math.atan2(parVec.zCoord, -parVec.xCoord));
+    }
 }

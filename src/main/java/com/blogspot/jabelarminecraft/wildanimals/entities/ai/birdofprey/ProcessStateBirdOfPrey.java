@@ -65,10 +65,10 @@ public class ProcessStateBirdOfPrey
             processAttacking();
             break;
         case AIStates.STATE_SOARING_TAMED:
-            processAttacking();
+            processSoaring();
             break;
         case AIStates.STATE_PERCHED_TAMED:
-            processAttacking();
+            processPerched();
             break;
         default:
             // DEBUG
@@ -84,6 +84,7 @@ public class ProcessStateBirdOfPrey
      */
     protected void processLanding() 
     {
+        theBird.rotationPitch = 0.0F;
     }
 
     /**
@@ -91,6 +92,7 @@ public class ProcessStateBirdOfPrey
      */
     protected void processDiving() 
     {
+        theBird.rotationPitch = 90.0F;
         theBird.motionX = theBird.getAnchorX() - theBird.posX;
         theBird.motionZ = theBird.getAnchorZ() - theBird.posZ;
         theBird.motionY = -1.0D;
@@ -106,6 +108,8 @@ public class ProcessStateBirdOfPrey
      */
     protected void processTakingOff() 
     {
+        theBird.rotationPitch = 0.0F;
+        
         // climb to soaring height
         if (theBird.posY < theBird.getSoarHeight())
         {
@@ -130,11 +134,15 @@ public class ProcessStateBirdOfPrey
      */
     protected void processPerched() 
     {
+        theBird.rotationPitch = 0.0F;
+        
         stopMoving();
     }
     
     protected void processSoaring()
     {
+        theBird.rotationPitch = 0.0F;
+        
         // drift down slowly
         theBird.motionY = -0.01D;
 
@@ -173,6 +181,8 @@ public class ProcessStateBirdOfPrey
     
     protected void processTravelling()
     {
+        theBird.rotationPitch = 0.0F;
+        
         // climb to soaring height
         if (theBird.posY < theBird.getSoarHeight())
         {
@@ -184,6 +194,8 @@ public class ProcessStateBirdOfPrey
     
     protected void processAttacking()
     {
+        theBird.rotationPitch = 90.0F;
+        
         if (theBird.getAttackTarget() != null)
         {
             theBird.motionY = -2.0D;

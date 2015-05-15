@@ -487,6 +487,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
             {
                 if (Utilities.isSuitableTarget(theOwner, theOwner.getLastAttacker(), true))
                 {
+                    // DEBUG
+                    System.out.println("Setting eagle target to owners target");
                     setAttackTarget(theOwner.getLastAttacker()); // note the get last attacker actually returns last attacked
                 }
            }

@@ -57,7 +57,12 @@ public class UpdateStateBirdOfPrey
                 // check if block perched upon has disappeared
     //            // DEBUG
     //            System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
-                if (theBird.worldObj.getBlock(
+                
+                if (theBird.isTamed())
+                {
+                    theBird.setState(AIStates.STATE_PERCHED_TAMED);
+                }
+                else if (theBird.worldObj.getBlock(
                         MathHelper.floor_double(theBird.posX), 
                         (int)theBird.posY - 1, 
                         MathHelper.floor_double(theBird.posZ)) == Blocks.air)
@@ -94,27 +99,42 @@ public class UpdateStateBirdOfPrey
             {
                 if (theBird.posY >= theBird.getSoarHeight())
                 {
-                    theBird.setState(AIStates.STATE_SOARING);
+                    
+                    if (theBird.isTamed())
+                    {
+                        theBird.setState(AIStates.STATE_SOARING_TAMED);
+                    }
+                    else
+                    {
+                        theBird.setState(AIStates.STATE_SOARING);
+                    }
                 }
                 break;
             }
             case AIStates.STATE_SOARING:
             {
-                // climb again if drifting too low
-                if (theBird.posY < theBird.getSoarHeight()*0.9D)
+                if (theBird.isTamed())
                 {
-                    theBird.setState(AIStates.STATE_TRAVELLING);
-                }
-                
-                considerAttacking();
-                
-                if (theBird.getAttackTarget() == null)
-                {
-                    considerPerching();
+                    theBird.setState(AIStates.STATE_SOARING_TAMED);
                 }
                 else
                 {
-                    theBird.setState(AIStates.STATE_ATTACKING);
+                    // climb again if drifting too low
+                    if (theBird.posY < theBird.getSoarHeight()*0.9D)
+                    {
+                        theBird.setState(AIStates.STATE_TRAVELLING);
+                    }
+                    
+                    considerAttacking();
+                    
+                    if (theBird.getAttackTarget() == null)
+                    {
+                        considerPerching();
+                    }
+                    else
+                    {
+                        theBird.setState(AIStates.STATE_ATTACKING);
+                    }
                 }
                 
                 break;
@@ -129,7 +149,14 @@ public class UpdateStateBirdOfPrey
                         (int)theBird.posY - 1, 
                         MathHelper.floor_double(theBird.posZ)) != Blocks.air)
                 {
-                    theBird.setState(AIStates.STATE_PERCHED);
+                    if (theBird.isTamed())
+                    {
+                        theBird.setState(AIStates.STATE_PERCHED_TAMED);
+                    }
+                    else
+                    {
+                        theBird.setState(AIStates.STATE_PERCHED);
+                    }
                 }
                 break;
             }
@@ -141,7 +168,14 @@ public class UpdateStateBirdOfPrey
                         (int)theBird.posY - 1, 
                         MathHelper.floor_double(theBird.posZ)).isNormalCube())
                 {
-                    theBird.setState(AIStates.STATE_PERCHED);
+                    if (theBird.isTamed())
+                    {
+                        theBird.setState(AIStates.STATE_PERCHED_TAMED);
+                    }
+                    else
+                    {
+                        theBird.setState(AIStates.STATE_PERCHED);
+                    }
                 }
                 break;
             }
@@ -149,9 +183,16 @@ public class UpdateStateBirdOfPrey
             {
                 if (theBird.posY >= theBird.getSoarHeight())
                 {
-                    // DEBUG
-                    System.out.println("State changed to soaring");
-                    theBird.setState(AIStates.STATE_SOARING);
+//                    // DEBUG
+//                    System.out.println("State changed to soaring");
+                    if (theBird.isTamed())
+                    {
+                        theBird.setState(AIStates.STATE_SOARING_TAMED);
+                    }
+                    else
+                    {
+                        theBird.setState(AIStates.STATE_SOARING);
+                    }
                 }
                 break;
             }
@@ -179,11 +220,62 @@ public class UpdateStateBirdOfPrey
             }
             case AIStates.STATE_SOARING_TAMED:
             {
+                // climb again if drifting too low
+                if (theBird.posY < theBird.getSoarHeight()*0.9D)
+                {
+                    theBird.setState(AIStates.STATE_TAKING_OFF);
+                }
+                
+                considerAttacking();
+                
+                if (theBird.getAttackTarget() == null)
+                {
+                    considerPerching();
+                }
+                else
+                {
+                    theBird.setState(AIStates.STATE_ATTACKING);
+                }
+                
                 break;
             }
             case AIStates.STATE_PERCHED_TAMED:
             {
-                break;
+                // check if block perched upon has disappeared
+    //            // DEBUG
+    //            System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
+                if (theBird.worldObj.getBlock(
+                        MathHelper.floor_double(theBird.posX), 
+                        (int)theBird.posY - 1, 
+                        MathHelper.floor_double(theBird.posZ)) == Blocks.air)
+                {
+                    theBird.setState(AIStates.STATE_TAKING_OFF);
+                }
+                else // still solidly perched
+                {
+                    // can occasionally adjust or flap, look around, or play sound to create variety
+                    if (theBird.getRNG().nextInt(2400) == 0)
+                    {
+                        theBird.setState(AIStates.STATE_TAKING_OFF);
+                        // rotationYawHead = rand.nextInt(360);
+                    }
+    
+                    // entity can get scared if player gets too close
+                    EntityPlayer closestPlayer = theBird.worldObj.getClosestPlayerToEntity(theBird, 4.0D);
+                    if (closestPlayer != null)
+                    {
+                        ItemStack theHeldItemStack = closestPlayer.inventory.getCurrentItem();
+                        if (theHeldItemStack != null)
+                        {
+                            // if not holding taming food, bird will get spooked
+                            if (!theBird.isTamingFood(theHeldItemStack))
+                            {
+                                theBird.setState(AIStates.STATE_TAKING_OFF);
+                            }
+                        }
+                    }
+                }
+                break;            
             }
             default:
             {

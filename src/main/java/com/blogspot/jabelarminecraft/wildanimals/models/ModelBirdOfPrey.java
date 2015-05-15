@@ -257,7 +257,8 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     	GL11.glScalef(parEntity.getScaleFactor(), parEntity.getScaleFactor(), parEntity.getScaleFactor());
 
 		// should only need to render body because all rest are children
-    	if (parEntity.getState() == AIStates.STATE_PERCHED)
+    	if (parEntity.getState() == AIStates.STATE_PERCHED
+    	        || parEntity.getState() == AIStates.STATE_PERCHED_TAMED)
     	{
     	    bodyWingless.render(parRenderFloat);
     	}

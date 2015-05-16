@@ -547,6 +547,6 @@ public class Utilities
     {
         // The coordinate system for Minecraft is a bit backwards as explained 
         // at https://github.com/chraft/c-raft/wiki/Vectors,-Location,-Yaw-and-Pitch-in-C%23raft
-        return (float) Math.toDegrees(Math.atan2(parVec.zCoord, -parVec.xCoord));
+        return (float) -Math.toDegrees(Math.atan2(parVec.xCoord, parVec.zCoord));
     }
 }

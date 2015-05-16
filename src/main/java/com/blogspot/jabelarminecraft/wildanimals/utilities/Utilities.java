@@ -16,12 +16,17 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.utilities;
 
+import java.util.UUID;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -386,6 +391,88 @@ public class Utilities
             }
         }
     }
+
+    // just putting a human-readable name to the function
+    public static EntityPlayer getPlayerFromUUID(World parWorld, UUID parUUID)
+    {
+        return parWorld.func_152378_a(parUUID);    
+    }
+    
+    /**
+     * A method used to see if an entity is a suitable target through a number of checks.
+     */
+    public static boolean isSuitableTarget(EntityLivingBase theOwner, 
+            EntityLivingBase parPossibleTargetEntity,
+            boolean parShouldCheckSight)
+    {
+        if (parPossibleTargetEntity == null)
+        {
+            return false;
+        }
+        else if (parPossibleTargetEntity == theOwner)
+        {
+            return false;
+        }
+        else if (!parPossibleTargetEntity.isEntityAlive())
+        {
+            return false;
+        }
+//        else if (!theOwner.canAttackClass(parPossibleTargetEntity.getClass()))
+//        {
+//            return false;
+//        }
+        else
+        {
+//            if (parAttackingEntity instanceof IEntityOwnable && StringUtils.isNotEmpty(((IEntityOwnable)parAttackingEntity).func_152113_b()))
+//            {
+//                if (parPossibleTargetEntity instanceof IEntityOwnable && ((IEntityOwnable)parAttackingEntity).func_152113_b().equals(((IEntityOwnable)parPossibleTargetEntity).func_152113_b()))
+//                {
+//                    return false;
+//                }
+//
+//                if (parPossibleTargetEntity == ((IEntityOwnable)parAttackingEntity).getOwner())
+//                {
+//                    return false;
+//                }
+//            }
+            if (theOwner.isOnSameTeam(parPossibleTargetEntity))
+            {
+                return false;
+            }
+            else if (parPossibleTargetEntity instanceof EntityPlayer && ((EntityPlayer)parPossibleTargetEntity).capabilities.disableDamage)
+            {
+                return false;
+            }
+//
+//           if (parShouldCheckSight && !theOwner.getEntitySenses().canSee(parPossibleTargetEntity))
+//            {
+//                return false;
+//            }
+//            else
+            {
+//                if (this.nearbyOnly)
+//                {
+//                    if (--this.targetSearchDelay <= 0)
+//                    {
+//                        this.targetSearchStatus = 0;
+//                    }
+//
+//                    if (this.targetSearchStatus == 0)
+//                    {
+//                        this.targetSearchStatus = this.canEasilyReach(parPossibleTargetEntity) ? 1 : 2;
+//                    }
+//
+//                    if (this.targetSearchStatus == 2)
+//                    {
+//                        return false;
+//                    }
+//                }
+
+                return true;
+            }
+        }
+    }
+
     
 //    // This is mostly copied from the EntityRenderer#getMouseOver() method
 //    public static MovingObjectPosition getMouseOverExtended(float parDist)
@@ -455,5 +542,11 @@ public class Utilities
 //        }
 //        return returnMOP;
 //    }
-
+    
+    public static float getYawFromVec(Vec3 parVec)
+    {
+        // The coordinate system for Minecraft is a bit backwards as explained 
+        // at https://github.com/chraft/c-raft/wiki/Vectors,-Location,-Yaw-and-Pitch-in-C%23raft
+        return (float) Math.toDegrees(Math.atan2(parVec.zCoord, -parVec.xCoord));
+    }
 }

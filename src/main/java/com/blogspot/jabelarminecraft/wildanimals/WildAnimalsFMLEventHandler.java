@@ -17,6 +17,7 @@
 package com.blogspot.jabelarminecraft.wildanimals;
 
 import com.blogspot.jabelarminecraft.wildanimals.proxy.CommonProxy;
+import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -156,6 +157,8 @@ public class WildAnimalsFMLEventHandler
 	@SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)
 	public void onEvent(PlayerTickEvent event)
 	{
+	    // DEBUG
+	    System.out.println("rotationYaw = "+event.player.rotationYaw+" look vector = "+event.player.getLookVec()+" and calc angle = "+Utilities.getYawFromVec(event.player.getLookVec()));
 		
 	}
 

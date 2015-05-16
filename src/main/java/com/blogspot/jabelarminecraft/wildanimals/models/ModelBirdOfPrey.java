@@ -21,6 +21,7 @@ import net.minecraft.entity.Entity;
 
 import org.lwjgl.opengl.GL11;
 
+import com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey.AIStates;
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
 
 import cpw.mods.fml.relauncher.Side;
@@ -256,7 +257,8 @@ public class ModelBirdOfPrey extends ModelWildAnimals
     	GL11.glScalef(parEntity.getScaleFactor(), parEntity.getScaleFactor(), parEntity.getScaleFactor());
 
 		// should only need to render body because all rest are children
-    	if (parEntity.getState() == parEntity.STATE_PERCHED)
+    	if (parEntity.getState() == AIStates.STATE_PERCHED
+    	        || parEntity.getState() == AIStates.STATE_PERCHED_TAMED)
     	{
     	    bodyWingless.render(parRenderFloat);
     	}
@@ -277,31 +279,33 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 		// all entities of same type aren't at same point in animation
 		// because ticksExisted gets reset when world is loaded
 		// so initial randomness due to when entity was spawned will be reset
-		if (parEntity.getState()==parEntity.STATE_TAKING_OFF)
+		if (parEntity.getState() == AIStates.STATE_TAKING_OFF)
 		{
 			doAnimate(parEntity, takingOffCycle);
 		}
-		else if (parEntity.getState()==parEntity.STATE_DIVING)
+		else if (parEntity.getState() == AIStates.STATE_DIVING)
 		{
 			doAnimate(parEntity, divingCycle);
 		}
-		else if (parEntity.getState()==parEntity.STATE_LANDING)
+		else if (parEntity.getState() == AIStates.STATE_LANDING)
 		{
 			doAnimate(parEntity, landingCycle);
 		}
-		else if (parEntity.getState()==parEntity.STATE_PERCHED)
+		else if (parEntity.getState() == AIStates.STATE_PERCHED
+		        || parEntity.getState() == AIStates.STATE_PERCHED_TAMED)
 		{
 			doAnimate(parEntity, perchedCycle);
 		}
-		else if (parEntity.getState()==parEntity.STATE_SOARING)
+		else if (parEntity.getState() == AIStates.STATE_SOARING
+		        || parEntity.getState() == AIStates.STATE_SOARING_TAMED)
 		{
 			doAnimate(parEntity, soaringCycle);
 		}
-        else if (parEntity.getState()==parEntity.STATE_TRAVELLING)
+        else if (parEntity.getState() == AIStates.STATE_TRAVELLING)
         {
             doAnimate(parEntity, travellingCycle);
         }
-        else if (parEntity.getState()==parEntity.STATE_ATTACKING)
+        else if (parEntity.getState() == AIStates.STATE_ATTACKING)
         {
             doAnimate(parEntity, attackingCycle);
         }

@@ -27,10 +27,10 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import com.blogspot.jabelarminecraft.wildanimals.WildAnimals;
-import com.blogspot.jabelarminecraft.wildanimals.WildAnimalsEventHandler;
-import com.blogspot.jabelarminecraft.wildanimals.WildAnimalsFMLEventHandler;
-import com.blogspot.jabelarminecraft.wildanimals.WildAnimalsOreGenEventHandler;
-import com.blogspot.jabelarminecraft.wildanimals.WildAnimalsTerrainGenEventHandler;
+import com.blogspot.jabelarminecraft.wildanimals.EventHandler;
+import com.blogspot.jabelarminecraft.wildanimals.FMLEventHandler;
+import com.blogspot.jabelarminecraft.wildanimals.OreGenEventHandler;
+import com.blogspot.jabelarminecraft.wildanimals.TerrainGenEventHandler;
 import com.blogspot.jabelarminecraft.wildanimals.commands.CommandConjure;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityJaguar;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityLion;
@@ -403,12 +403,12 @@ public class CommonProxy
          // DEBUG
         System.out.println("Registering event listeners");
 
-        MinecraftForge.EVENT_BUS.register(new WildAnimalsEventHandler());
-        MinecraftForge.TERRAIN_GEN_BUS.register(new WildAnimalsTerrainGenEventHandler());
-        MinecraftForge.ORE_GEN_BUS.register(new WildAnimalsOreGenEventHandler());        
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        MinecraftForge.TERRAIN_GEN_BUS.register(new TerrainGenEventHandler());
+        MinecraftForge.ORE_GEN_BUS.register(new OreGenEventHandler());        
 
         // some events, especially tick, is handled on FML bus
-        FMLCommonHandler.instance().bus().register(new WildAnimalsFMLEventHandler());
+        FMLCommonHandler.instance().bus().register(new FMLEventHandler());
     }
     
     /*

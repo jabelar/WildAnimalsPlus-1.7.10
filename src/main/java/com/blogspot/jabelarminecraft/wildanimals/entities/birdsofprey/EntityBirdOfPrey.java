@@ -392,12 +392,30 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     @Override
     protected boolean canDespawn()
     {
+//        // DEBUG
+//        System.out.println("Checking if can despawn");
+        
         // don't despawn owned entities!
         if (getOwner() != null)
         {
             return false;
         }
-        return ticksExisted > 2400;
+        return false;
+//        return ticksExisted > 2400;
+    }
+    
+    @Override
+    public void setDead()
+    {
+        if (isTamed() || this.getHealth() > 0 || !worldObj.isRemote)
+        {
+            return;
+        }
+        
+        // DEBUG
+        System.out.println("Setting dead");
+        
+        super.setDead();
     }
 
     @Override

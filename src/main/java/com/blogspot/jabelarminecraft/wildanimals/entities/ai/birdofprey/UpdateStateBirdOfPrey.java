@@ -304,7 +304,7 @@ public class UpdateStateBirdOfPrey
             Block topBlock = theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ);
             if (topBlock instanceof BlockLeaves)
             {
-                if (theBird.getRNG().nextInt(100) == 0)
+                if (theBird.getRNG().nextInt(10) == 0)
                 {
                     theBird.setState(AIStates.STATE_DIVING);
                     theBird.setAnchor(
@@ -342,10 +342,7 @@ public class UpdateStateBirdOfPrey
                 EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
                 if (theBird.getEntitySenses().canSee(possibleTarget))
                 {
-                    if (targetIterator != null)
-                    {
-                        theBird.setAttackTarget((EntityLivingBase) targetIterator.next());
-                    }
+                    theBird.setAttackTarget(possibleTarget);
                 }
             }
             possibleTargetEntities = theBird.worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
@@ -355,10 +352,7 @@ public class UpdateStateBirdOfPrey
                 EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
                 if (theBird.getEntitySenses().canSee(possibleTarget))
                 {
-                    if (targetIterator != null)
-                    {
-                        theBird.setAttackTarget((EntityLivingBase) targetIterator.next());
-                    }
+                    theBird.setAttackTarget(possibleTarget);
                 }
             }
             possibleTargetEntities = theBird.worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion);
@@ -368,10 +362,7 @@ public class UpdateStateBirdOfPrey
                 EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
                 if (theBird.getEntitySenses().canSee(possibleTarget))
                 {
-                    if (targetIterator != null)
-                    {
-                        theBird.setAttackTarget((EntityLivingBase) targetIterator.next());
-                    }
+                    theBird.setAttackTarget(possibleTarget);
                 }
             }
         }

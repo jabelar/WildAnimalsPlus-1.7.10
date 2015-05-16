@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
@@ -225,7 +226,10 @@ public class UpdateStateBirdOfPrey
                 if (theBird.posY < theBird.getSoarHeight()*0.9D)
                 {
                     // point towards owner
-                    rotationYaw = Utilities.getYawFromVec(null);
+                    theBird.rotationYaw = Utilities.getYawFromVec(Vec3.createVectorHelper(
+                            theBird.getOwner().posX - theBird.posX,
+                            theBird.getOwner().posY - theBird.posY,
+                            theBird.getOwner().posZ - theBird.posZ));
                     theBird.setState(AIStates.STATE_TRAVELLING);
                 }
                 
@@ -300,7 +304,7 @@ public class UpdateStateBirdOfPrey
             Block topBlock = theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ);
             if (topBlock instanceof BlockLeaves)
             {
-                // if (rand.nextInt(100) == 0)
+                if (theBird.getRNG().nextInt(100) == 0)
                 {
                     theBird.setState(AIStates.STATE_DIVING);
                     theBird.setAnchor(
@@ -338,7 +342,10 @@ public class UpdateStateBirdOfPrey
                 EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
                 if (theBird.getEntitySenses().canSee(possibleTarget))
                 {
-                    theBird.setAttackTarget((EntityLivingBase) targetIterator.next());
+                    if (targetIterator != null)
+                    {
+                        theBird.setAttackTarget((EntityLivingBase) targetIterator.next());
+                    }
                 }
             }
             possibleTargetEntities = theBird.worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
@@ -348,7 +355,10 @@ public class UpdateStateBirdOfPrey
                 EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
                 if (theBird.getEntitySenses().canSee(possibleTarget))
                 {
-                    theBird.setAttackTarget((EntityLivingBase) targetIterator.next());
+                    if (targetIterator != null)
+                    {
+                        theBird.setAttackTarget((EntityLivingBase) targetIterator.next());
+                    }
                 }
             }
             possibleTargetEntities = theBird.worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion);
@@ -358,7 +368,10 @@ public class UpdateStateBirdOfPrey
                 EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
                 if (theBird.getEntitySenses().canSee(possibleTarget))
                 {
-                    theBird.setAttackTarget((EntityLivingBase) targetIterator.next());
+                    if (targetIterator != null)
+                    {
+                        theBird.setAttackTarget((EntityLivingBase) targetIterator.next());
+                    }
                 }
             }
         }

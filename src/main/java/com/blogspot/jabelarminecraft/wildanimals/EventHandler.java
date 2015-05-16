@@ -18,12 +18,7 @@ package com.blogspot.jabelarminecraft.wildanimals;
 
 import net.minecraft.entity.EntityList;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent.AllowDespawn;
 import net.minecraftforge.event.entity.player.PlayerEvent.NameFormat;
-
-import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
-
-import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -211,18 +206,12 @@ public class EventHandler
 //    {
 //        
 //    }
-    
-    @SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)
-    public void onEvent(AllowDespawn event)
-    {
-//        // DEBUG
-//        System.out.println("Despawn event");
-        if (event.entity instanceof EntityBirdOfPrey)
-        {
-            event.setResult(Result.DENY);
-        }
-        
-    }
+//    
+//    @SubscribeEvent(priority=EventPriority.NORMAL, receiveCanceled=true)
+//    public void onEvent(AllowDespawn event)
+//    {
+//        
+//    }
     
     /*
      * Player events (extend LivingEvent)

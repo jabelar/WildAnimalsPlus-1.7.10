@@ -26,11 +26,11 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
-import com.blogspot.jabelarminecraft.wildanimals.WildAnimals;
 import com.blogspot.jabelarminecraft.wildanimals.EventHandler;
 import com.blogspot.jabelarminecraft.wildanimals.FMLEventHandler;
 import com.blogspot.jabelarminecraft.wildanimals.OreGenEventHandler;
 import com.blogspot.jabelarminecraft.wildanimals.TerrainGenEventHandler;
+import com.blogspot.jabelarminecraft.wildanimals.WildAnimals;
 import com.blogspot.jabelarminecraft.wildanimals.commands.CommandConjure;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityJaguar;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityLion;
@@ -223,7 +223,7 @@ public class CommonProxy
         }
         
         // Birds of Prey
-         registerModEntityWithEgg(EntityBirdOfPrey.class, "Eagle", 0xFFF2E3, 0x7D6C57);
+         registerModEntityWithEggLongTracking(EntityBirdOfPrey.class, "Eagle", 0xFFF2E3, 0x7D6C57);
 
     }
      
@@ -233,10 +233,23 @@ public class CommonProxy
        	 // DEBUG
        	 System.out.println("Registering mod entity "+parEntityName+" with ID ="+modEntityID);
      }
+     
+     public void registerModEntityLongTracking(Class parEntityClass, String parEntityName)
+     {
+            EntityRegistry.registerModEntity(parEntityClass, parEntityName, ++modEntityID, WildAnimals.instance, 80000, 3, false);
+         // DEBUG
+         System.out.println("Registering mod entity "+parEntityName+" with ID ="+modEntityID);
+     }
 
      public void registerModEntityWithEgg(Class parEntityClass, String parEntityName, int parEggColor, int parEggSpotsColor)
      {
             registerModEntity(parEntityClass, parEntityName);
+            registerSpawnEgg(parEntityName, parEggColor, parEggSpotsColor);
+     }
+
+     public void registerModEntityWithEggLongTracking(Class parEntityClass, String parEntityName, int parEggColor, int parEggSpotsColor)
+     {
+            registerModEntityLongTracking(parEntityClass, parEntityName);
             registerSpawnEgg(parEntityName, parEggColor, parEggSpotsColor);
      }
 

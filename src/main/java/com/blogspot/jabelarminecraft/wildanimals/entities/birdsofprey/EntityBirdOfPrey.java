@@ -400,18 +400,13 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         {
             return false;
         }
-        return false;
-//        return ticksExisted > 2400;
+
+        return ticksExisted > 2400;
     }
     
     @Override
     public void setDead()
     {
-        if (isTamed() || this.getHealth() > 0 || !worldObj.isRemote)
-        {
-            return;
-        }
-        
         // DEBUG
         System.out.println("Setting dead");
         

@@ -16,6 +16,7 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.utilities;
 
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
@@ -23,7 +24,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Vec3;
@@ -393,10 +396,30 @@ public class Utilities
     }
 
     // just putting a human-readable name to the function
+    // note this will only work in the current dimension
     public static EntityPlayer getPlayerFromUUID(World parWorld, UUID parUUID)
     {
         return parWorld.func_152378_a(parUUID);    
     }
+    
+    // this will work across all dimensions
+    public static EntityPlayer getPlayerOnServerFromUUID(UUID parUUID) 
+    {
+        if (parUUID == null) 
+        {
+            return null;
+        }
+        List<EntityPlayerMP> allPlayers = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+        for (EntityPlayerMP player : allPlayers) 
+        {
+            if (player.getUniqueID().equals(parUUID)) 
+            {
+                return player;
+            }
+        }
+        return null;
+    }
+
     
     /**
      * A method used to see if an entity is a suitable target through a number of checks.
@@ -542,11 +565,19 @@ public class Utilities
 //        }
 //        return returnMOP;
 //    }
-    
+
     public static float getYawFromVec(Vec3 parVec)
     {
         // The coordinate system for Minecraft is a bit backwards as explained 
         // at https://github.com/chraft/c-raft/wiki/Vectors,-Location,-Yaw-and-Pitch-in-C%23raft
         return (float) -Math.toDegrees(Math.atan2(parVec.xCoord, parVec.zCoord));
+    }
+    
+    public static float getPitchFromVec(Vec3 parVec)
+    {
+        // The coordinate system for Minecraft is a bit backwards as explained 
+        // at https://github.com/chraft/c-raft/wiki/Vectors,-Location,-Yaw-and-Pitch-in-C%23raft
+        Vec3 theVec = parVec.normalize();
+        return (float) Math.toDegrees(Math.asin(theVec.yCoord));
     }
 }

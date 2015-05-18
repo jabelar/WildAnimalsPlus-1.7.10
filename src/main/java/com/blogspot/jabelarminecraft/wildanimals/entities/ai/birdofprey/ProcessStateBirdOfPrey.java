@@ -22,6 +22,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
+import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 /**
  * @author jabelar
@@ -134,7 +135,7 @@ public class ProcessStateBirdOfPrey
      */
     protected void processPerched() 
     {
-        theBird.rotationPitch = 0.0F;
+        theBird.rotationPitch = 0.0F; // although the model is upright, want to make sure look vector and sense of motion preserved.
         
         stopMoving();
     }
@@ -194,14 +195,16 @@ public class ProcessStateBirdOfPrey
     
     protected void processAttacking()
     {
-        theBird.rotationPitch = 90.0F;
-        
         if (theBird.getAttackTarget() != null)
-        {
+        {           
             theBird.motionY = -2.0D;
             double ticksToHitTarget = (theBird.posY - theBird.getAttackTarget().posY) / Math.abs(theBird.motionY);
             theBird.motionX = (theBird.getAttackTarget().posX - theBird.posX) / ticksToHitTarget;
             theBird.motionZ = (theBird.getAttackTarget().posZ - theBird.posZ) / ticksToHitTarget;
+            theBird.rotationPitch = Utilities.getPitchFromVec(Vec3.createVectorHelper(
+                    theBird.motionX, 
+                    theBird.motionY,
+                    theBird.motionZ));
         }        
     }
     

@@ -32,5 +32,6 @@ public class AIStates
     public final static int STATE_ATTACKING = 6;
     public final static int STATE_SOARING_TAMED = 7;
     public final static int STATE_PERCHED_TAMED = 8;
+    public static final int STATE_SEEKING = 9;
 
 }

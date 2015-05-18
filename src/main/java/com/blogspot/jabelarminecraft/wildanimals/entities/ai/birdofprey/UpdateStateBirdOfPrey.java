@@ -45,6 +45,15 @@ public class UpdateStateBirdOfPrey
 {
     public EntityBirdOfPrey theBird;
     
+    // defines area on ground that bird looks for prey in
+    // region is double this size as this gives dimensions in each direction
+    public double attackRegionSize = 5.0D;
+    
+    // the 1 in X chance that it will decide to perch if over a perchable block
+    public int perchChance = 100;
+    // the 1 in X chance that when perched it will decide to take off
+    public int takeOffChance = 2400;
+    
     public UpdateStateBirdOfPrey(EntityBirdOfPrey parBirdOfPrey)
     {
         theBird = parBirdOfPrey;
@@ -56,48 +65,53 @@ public class UpdateStateBirdOfPrey
         {
             case AIStates.STATE_PERCHED:
             {
-                processStatePerched();
+                updateStatePerched();
                 break;            
             }
             case AIStates.STATE_TAKING_OFF:
             {
-                processStateTakingOff();
+                updateStateTakingOff();
                 break;
             }
             case AIStates.STATE_SOARING:
             {
-                processStateSoaring();
+                updateStateSoaring();
                 break;
             }
             case AIStates.STATE_DIVING:
             {
-                processStateDiving();
+                updateStateDiving();
                 break;
             }
             case AIStates.STATE_LANDING:
             {
-                processStateLanding();
+                updateStateLanding();
                 break;
             }
             case AIStates.STATE_TRAVELLING:
             {
-                processStateTravelling();
+                updateStateTravelling();
                 break;
             }
             case AIStates.STATE_ATTACKING:
             {
-                processStateAttacking();
+                updateStateAttacking();
                 break;
             }
             case AIStates.STATE_SOARING_TAMED:
             {
-                processStateSoaringTamed();
+                updateStateSoaringTamed();
                 break;
             }
             case AIStates.STATE_PERCHED_TAMED:
             {
-                processStatePerchedTamed();
+                updateStatePerchedTamed();
                 break;            
+            }
+            case AIStates.STATE_SEEKING:
+            {
+                updateStateSeeking();
+                break;
             }
             default:
             {
@@ -111,7 +125,36 @@ public class UpdateStateBirdOfPrey
     /**
      * 
      */
-    private void processStatePerchedTamed()
+    private void updateStateSeeking()
+    {
+        if (theBird.isTamed())
+        {
+            if (theBird.getOwner().getLastAttacker() != null)
+            {
+                processOwnerAttack();
+     
+                if (theBird.getAttackTarget() != null)
+                {
+                    theBird.setState(AIStates.STATE_ATTACKING);
+                }
+                theBird.setState(AIStates.STATE_SOARING_TAMED);
+            }
+            else
+            {
+                theBird.setState(AIStates.STATE_TRAVELLING);
+            }
+        }
+        else
+        {
+            // DEBUG
+            System.out.println("Seeking but isn't tamed");
+        }
+    }
+
+    /**
+     * 
+     */
+    private void updateStatePerchedTamed()
     {
         // check if block perched upon has disappeared
 //            // DEBUG
@@ -126,7 +169,7 @@ public class UpdateStateBirdOfPrey
         else // still solidly perched
         {
             // can occasionally adjust or flap, look around, or play sound to create variety
-            if (theBird.getRNG().nextInt(2400) == 0)
+            if (theBird.getRNG().nextInt(takeOffChance) == 0)
             {
                 theBird.setState(AIStates.STATE_TAKING_OFF);
                 // rotationYawHead = rand.nextInt(360);
@@ -152,7 +195,7 @@ public class UpdateStateBirdOfPrey
     /**
      * 
      */
-    private void processStateSoaringTamed()
+    private void updateStateSoaringTamed()
     {
         // climb again if drifting too low
         if (theBird.posY < theBird.getSoarHeight()*0.9D)
@@ -162,7 +205,7 @@ public class UpdateStateBirdOfPrey
                     theBird.getOwner().posX - theBird.posX,
                     theBird.getOwner().posY - theBird.posY,
                     theBird.getOwner().posZ - theBird.posZ));
-            theBird.setState(AIStates.STATE_TRAVELLING);
+            theBird.setState(AIStates.STATE_SEEKING);
         }
         
         considerAttacking();
@@ -173,14 +216,14 @@ public class UpdateStateBirdOfPrey
         }
         else
         {
-            theBird.setState(AIStates.STATE_ATTACKING);
+            theBird.setState(AIStates.STATE_SEEKING);
         }
     }
 
     /**
      * 
      */
-    private void processStateAttacking()
+    private void updateStateAttacking()
     {
         // check if target has been killed or despawned
         if (theBird.getAttackTarget() == null)
@@ -205,7 +248,7 @@ public class UpdateStateBirdOfPrey
     /**
      * 
      */
-    private void processStateTravelling()
+    private void updateStateTravelling()
     {
         if (theBird.posY >= theBird.getSoarHeight())
         {
@@ -225,7 +268,7 @@ public class UpdateStateBirdOfPrey
     /**
      * 
      */
-    private void processStateLanding()
+    private void updateStateLanding()
     {
         // check if actually landed on a block
         if (theBird.worldObj.getBlock(
@@ -247,7 +290,7 @@ public class UpdateStateBirdOfPrey
     /**
      * 
      */
-    private void processStateDiving()
+    private void updateStateDiving()
     {
         // see if made it to perch
 //            // DEBUG
@@ -271,7 +314,7 @@ public class UpdateStateBirdOfPrey
     /**
      * 
      */
-    private void processStateSoaring()
+    private void updateStateSoaring()
     {
         if (theBird.isTamed())
         {
@@ -301,7 +344,7 @@ public class UpdateStateBirdOfPrey
     /**
      * 
      */
-    private void processStateTakingOff()
+    private void updateStateTakingOff()
     {
         if (theBird.posY >= theBird.getSoarHeight())
         {
@@ -320,7 +363,7 @@ public class UpdateStateBirdOfPrey
     /**
      * 
      */
-    private void processStatePerched()
+    private void updateStatePerched()
     {
         // check if block perched upon has disappeared
 //            // DEBUG
@@ -340,7 +383,7 @@ public class UpdateStateBirdOfPrey
         else // still solidly perched
         {
             // can occasionally adjust or flap, look around, or play sound to create variety
-            if (theBird.getRNG().nextInt(2400) == 0)
+            if (theBird.getRNG().nextInt(takeOffChance) == 0)
             {
                 theBird.setState(AIStates.STATE_TAKING_OFF);
                 // rotationYawHead = rand.nextInt(360);
@@ -374,7 +417,7 @@ public class UpdateStateBirdOfPrey
             Block topBlock = theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ);
             if (topBlock instanceof BlockLeaves)
             {
-                if (theBird.getRNG().nextInt(10) == 0)
+                if (theBird.getRNG().nextInt(perchChance) == 0)
                 {
                     theBird.setState(AIStates.STATE_DIVING);
                     theBird.setAnchor(
@@ -403,42 +446,35 @@ public class UpdateStateBirdOfPrey
     // detect if owner has attacked something, if so set attack target to owner's target
     public void processOwnerAttack()
     {
-        if (!theBird.isTamed())
+        EntityLivingBase theOwner = theBird.getOwner();
+
+        if (theOwner == null)
         {
             return;
         }
         else
         {
-            EntityLivingBase theOwner = theBird.getOwner();
-
-            if (theOwner == null)
+            EntityLivingBase possibleAttackTarget = theOwner.getLastAttacker(); // note the get last attacker actually returns last attacked
+            if (Utilities.isSuitableTarget(theOwner, possibleAttackTarget, true))
             {
-                return;
-            }
-            else
-            {
-                EntityLivingBase possibleAttackTarget = theOwner.getLastAttacker(); // note the get last attacker actually returns last attacked
-                if (Utilities.isSuitableTarget(theOwner, possibleAttackTarget, true))
+                // attack region on ground
+                AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(
+                        theBird.posX - attackRegionSize, 
+                        theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) - attackRegionSize, 
+                        theBird.posZ - attackRegionSize, 
+                        theBird.posX + attackRegionSize, 
+                        theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) + attackRegionSize, 
+                        theBird.posZ + attackRegionSize);
+                if (attackRegion.isVecInside(Vec3.createVectorHelper(
+                        possibleAttackTarget.posX,
+                        possibleAttackTarget.posY,
+                        possibleAttackTarget.posZ)))
                 {
-                    // attack region on ground
-                    AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(
-                            theBird.posX - 5.0D, 
-                            theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) - 5.0D, 
-                            theBird.posZ - 5.0D, 
-                            theBird.posX + 5.0D, 
-                            theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) + 5.0D, 
-                            theBird.posZ + 5.0D);
-                    if (attackRegion.isVecInside(Vec3.createVectorHelper(
-                            possibleAttackTarget.posX,
-                            possibleAttackTarget.posY,
-                            possibleAttackTarget.posZ)))
-                    {
-                        // DEBUG
-                        System.out.println("Setting eagle target to owners target");
-                        theBird.setAttackTarget(possibleAttackTarget); 
-                    }
+                    // DEBUG
+                    System.out.println("Setting eagle target to owners target");
+                    theBird.setAttackTarget(possibleAttackTarget); 
                 }
-           }
+            }
         }
     }
 
@@ -447,12 +483,12 @@ public class UpdateStateBirdOfPrey
     {
         // find target on ground
         AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(
-                theBird.posX - 5.0D, 
-                theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) - 5.0D, 
-                theBird.posZ - 5.0D, 
-                theBird.posX + 5.0D, 
-                theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) + 5.0D, 
-                theBird.posZ + 5.0D);
+                theBird.posX - attackRegionSize, 
+                theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) - attackRegionSize, 
+                theBird.posZ - attackRegionSize, 
+                theBird.posX + attackRegionSize, 
+                theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) + attackRegionSize, 
+                theBird.posZ + attackRegionSize);
 
         List possibleTargetEntities = theBird.worldObj.getEntitiesWithinAABB(EntitySerpent.class, attackRegion);
         Iterator<Object> targetIterator = possibleTargetEntities.iterator();

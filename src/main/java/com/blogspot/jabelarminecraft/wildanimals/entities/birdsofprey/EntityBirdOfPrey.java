@@ -603,7 +603,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         try
         {
             UUID uuid = UUID.fromString(getOwnerUUIDString());
-            return uuid == null ? null : Utilities.getPlayerFromUUID(worldObj, uuid);
+            return uuid == null ? null : Utilities.getPlayerOnServerFromUUID(uuid);
         }
         catch (IllegalArgumentException illegalargumentexception)
         {

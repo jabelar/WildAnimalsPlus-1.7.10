@@ -481,33 +481,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         return (getOwner() != null);
     }
 
-    // detect if owner has attacked something, if so set attack target to owner's target
-    public void processOwnerAttack()
-    {
-        if (!isTamed())
-        {
-            return;
-        }
-        else
-        {
-            EntityLivingBase theOwner = getOwner();
-
-            if (theOwner == null)
-            {
-                return;
-            }
-            else
-            {
-                if (Utilities.isSuitableTarget(theOwner, theOwner.getLastAttacker(), true))
-                {
-                    // DEBUG
-                    System.out.println("Setting eagle target to owners target");
-                    setAttackTarget(theOwner.getLastAttacker()); // note the get last attacker actually returns last attacked
-                }
-           }
-        }
-    }
-
     @Override
     public void writeToNBT(NBTTagCompound parCompound)
     {

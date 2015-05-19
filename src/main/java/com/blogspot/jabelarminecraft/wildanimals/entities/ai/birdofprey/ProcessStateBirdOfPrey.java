@@ -31,7 +31,7 @@ public class ProcessStateBirdOfPrey
     EntityBirdOfPrey theBird;
     
     public float yawChangeRate = 1.5F;
-    public float pitchChangeRate = 5.0F;
+    public float pitchChangeRate = 1.5F;
     public float targetPitch = 0.0F;
     
     public ProcessStateBirdOfPrey(EntityBirdOfPrey parBirdOfPrey)
@@ -93,10 +93,10 @@ public class ProcessStateBirdOfPrey
         updatePitch(0.0F);
         if (theBird.getAttackTarget() != null)
         {
-            theBird.rotationYaw = Utilities.getYawFromVec(Vec3.createVectorHelper(
+            updateYaw(Utilities.getYawFromVec(Vec3.createVectorHelper(
                     theBird.getAttackTarget().posX - theBird.posX, 
                     theBird.getAttackTarget().posY - theBird.posY, 
-                    theBird.getAttackTarget().posZ - theBird.posZ));
+                    theBird.getAttackTarget().posZ - theBird.posZ)));
         }
         moveForward(1.0D);
     }
@@ -143,11 +143,11 @@ public class ProcessStateBirdOfPrey
         // turn
         if (theBird.getSoarClockwise())
         {
-            theBird.rotationYaw += yawChangeRate;
+            updateYaw(theBird.rotationYaw + yawChangeRate);
         }
         else
         {
-            theBird.rotationYaw -= yawChangeRate;
+            updateYaw(theBird.rotationYaw - yawChangeRate);
         }
     }
 
@@ -181,22 +181,22 @@ public class ProcessStateBirdOfPrey
                     theBird.getOwner().posZ - theBird.posZ).normalize();
             if (theBird.getLookVec().dotProduct(vecToOwner) > 0.0D)
             {
-                theBird.rotationYaw -= yawChangeRate;
+                updateYaw(theBird.rotationYaw - yawChangeRate);
             }
             else
             {
-                theBird.rotationYaw += yawChangeRate;
+                updateYaw(theBird.rotationYaw + yawChangeRate);
             }
         }
         else
         {
             if (theBird.getSoarClockwise())
             {
-                theBird.rotationYaw += yawChangeRate;
+                updateYaw(theBird.rotationYaw + yawChangeRate);
             }
             else
             {
-                theBird.rotationYaw -= yawChangeRate;
+                updateYaw(theBird.rotationYaw - yawChangeRate);
             }
         }
     }
@@ -243,32 +243,56 @@ public class ProcessStateBirdOfPrey
         theBird.motionZ = 0;
     }
     
-    protected void updatePitch(float parPitch)
+    protected void updateYaw(float parYaw)
     {
-        float angleDiff = parPitch - theBird.rotationPitch;
+        float angleDiff = parYaw - theBird.rotationYaw;
         // handle possibility that shortest path is to rotate the other way
-        if (angleDiff > 0.0F)
+        if (angleDiff > 0.0001F)
         {
             if (angleDiff > 180.0F)
             {
                 angleDiff -= 360.0F;
             }           
+            
+            theBird.rotationYaw += yawChangeRate;
         }
-        else if (angleDiff < 0.0F)
+        else if (angleDiff < -0.0001F)
         {
             if (angleDiff < -180.0F)
             {
                 angleDiff += 360.0F;
             }
+
+            theBird.rotationYaw -= yawChangeRate;
         }
         
-        // now rotate towards target angle
-        if (angleDiff > 0.0F)
+        // clamp to avoid oscillation around target
+        if (Math.abs(angleDiff) < yawChangeRate)
         {
+            theBird.rotationYaw = parYaw;
+        }
+    }
+    
+    protected void updatePitch(float parPitch)
+    {
+        float angleDiff = parPitch - theBird.rotationPitch;
+        // handle possibility that shortest path is to rotate the other way
+        if (angleDiff > 0.0001F)
+        {
+            if (angleDiff > 180.0F)
+            {
+                angleDiff -= 360.0F;
+            }           
+            
             theBird.rotationPitch += pitchChangeRate;
         }
-        else if (angleDiff < 0.0F)
+        else if (angleDiff < -0.0001F)
         {
+            if (angleDiff < -180.0F)
+            {
+                angleDiff += 360.0F;
+            }
+
             theBird.rotationPitch -= pitchChangeRate;
         }
         

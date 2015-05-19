@@ -30,6 +30,10 @@ public class ProcessStateBirdOfPrey
 {
     EntityBirdOfPrey theBird;
     
+    public float yawChangeRate = 1.5F;
+    public float pitchChangeRate = 5.0F;
+    public float targetPitch = 0.0F;
+    
     public ProcessStateBirdOfPrey(EntityBirdOfPrey parBirdOfPrey)
     {
         theBird = parBirdOfPrey;
@@ -83,7 +87,7 @@ public class ProcessStateBirdOfPrey
      */
     protected void processLanding() 
     {
-        theBird.rotationPitch = 0.0F;
+        updatePitch(0.0F);
     }
 
     /**
@@ -91,7 +95,7 @@ public class ProcessStateBirdOfPrey
      */
     protected void processDiving() 
     {
-        theBird.rotationPitch = 90.0F;
+        updatePitch(90.0F);
         theBird.motionX = theBird.getAnchorX() - theBird.posX;
         theBird.motionZ = theBird.getAnchorZ() - theBird.posZ;
         theBird.motionY = -1.0D;
@@ -107,7 +111,7 @@ public class ProcessStateBirdOfPrey
      */
     protected void processTakingOff() 
     {
-        theBird.rotationPitch = 0.0F;
+        updatePitch(0.0F);
         
         // climb to soaring height
         if (theBird.posY < theBird.getSoarHeight())
@@ -120,11 +124,11 @@ public class ProcessStateBirdOfPrey
         // turn
         if (theBird.getSoarClockwise())
         {
-            theBird.rotationYaw += theBird.turnRate;
+            theBird.rotationYaw += yawChangeRate;
         }
         else
         {
-            theBird.rotationYaw -= theBird.turnRate;
+            theBird.rotationYaw -= yawChangeRate;
         }
     }
 
@@ -133,14 +137,14 @@ public class ProcessStateBirdOfPrey
      */
     protected void processPerched() 
     {
-        theBird.rotationPitch = 0.0F; // although the model is upright, want to make sure look vector and sense of motion preserved.
+        updatePitch(0.0F); // although the model is upright, want to make sure look vector and sense of motion preserved.
         
         stopMoving();
     }
     
     protected void processSoaring()
     {
-        theBird.rotationPitch = 0.0F;
+        updatePitch(0.0F);
         
         // drift down slowly
         theBird.motionY = -0.01D;
@@ -158,29 +162,29 @@ public class ProcessStateBirdOfPrey
                     theBird.getOwner().posZ - theBird.posZ).normalize();
             if (theBird.getLookVec().dotProduct(vecToOwner) > 0.0D)
             {
-                theBird.rotationYaw -= theBird.turnRate;
+                theBird.rotationYaw -= yawChangeRate;
             }
             else
             {
-                theBird.rotationYaw += theBird.turnRate;
+                theBird.rotationYaw += yawChangeRate;
             }
         }
         else
         {
             if (theBird.getSoarClockwise())
             {
-                theBird.rotationYaw += theBird.turnRate;
+                theBird.rotationYaw += yawChangeRate;
             }
             else
             {
-                theBird.rotationYaw -= theBird.turnRate;
+                theBird.rotationYaw -= yawChangeRate;
             }
         }
     }
     
     protected void processTravelling()
     {
-        theBird.rotationPitch = 0.0F;
+        updatePitch(0.0F);
         
         // climb to soaring height
         if (theBird.posY < theBird.getSoarHeight())
@@ -199,10 +203,10 @@ public class ProcessStateBirdOfPrey
             double ticksToHitTarget = (theBird.posY - theBird.getAttackTarget().posY) / Math.abs(theBird.motionY);
             theBird.motionX = (theBird.getAttackTarget().posX - theBird.posX) / ticksToHitTarget;
             theBird.motionZ = (theBird.getAttackTarget().posZ - theBird.posZ) / ticksToHitTarget;
-            theBird.rotationPitch = Utilities.getPitchFromVec(Vec3.createVectorHelper(
+            updatePitch(Utilities.getPitchFromVec(Vec3.createVectorHelper(
                     theBird.motionX, 
                     theBird.motionY,
-                    theBird.motionZ));
+                    theBird.motionZ)));
         }        
     }
     
@@ -220,6 +224,40 @@ public class ProcessStateBirdOfPrey
         theBird.motionZ = 0;
     }
     
-
+    protected void updatePitch(float parPitch)
+    {
+        float angleDiff = parPitch - theBird.rotationPitch;
+        // handle possibility that shortest path is to rotate the other way
+        if (angleDiff > 0.0F)
+        {
+            if (angleDiff > 180.0F)
+            {
+                angleDiff -= 360.0F;
+            }           
+        }
+        else if (angleDiff < 0.0F)
+        {
+            if (angleDiff < -180.0F)
+            {
+                angleDiff += 360.0F;
+            }
+        }
+        
+        // now rotate towards target angle
+        if (angleDiff > 0.0F)
+        {
+            theBird.rotationPitch += pitchChangeRate;
+        }
+        else if (angleDiff < 0.0F)
+        {
+            theBird.rotationPitch -= pitchChangeRate;
+        }
+        
+        // clamp to avoid oscillation around target
+        if (Math.abs(angleDiff) < pitchChangeRate)
+        {
+            theBird.rotationPitch = parPitch;
+        }
+    }
 
 }

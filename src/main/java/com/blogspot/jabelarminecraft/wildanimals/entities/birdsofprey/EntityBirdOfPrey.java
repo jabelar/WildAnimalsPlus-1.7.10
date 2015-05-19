@@ -64,8 +64,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     // create a random factor per entity
     protected int randFactor;
     
-    public float turnRate = 1.5F;
-    
     Class[] preyArray = new Class[] {EntityChicken.class, EntityBat.class, EntitySerpent.class};
 
     public EntityBirdOfPrey(World parWorld)

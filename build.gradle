@@ -22,7 +22,7 @@ group= "com.blogspot.jabelarminecraft.wildanimals" // http://maven.apache.org/gu
 archivesBaseName = "WildAnimals+"
 
 minecraft {
-    version = "1.7.10-10.13.3.1401-1710ls"
+    version = "1.7.10-10.13.3.1408-1.7.10"
     runDir = "../run/assets"
 }
 

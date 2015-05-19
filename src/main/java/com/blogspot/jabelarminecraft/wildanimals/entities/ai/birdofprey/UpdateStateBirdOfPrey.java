@@ -19,7 +19,6 @@ package com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -225,12 +224,18 @@ public class UpdateStateBirdOfPrey
      */
     private void updateStateAttacking()
     {
+        EntityLivingBase target = theBird.getAttackTarget();
         // check if target has been killed or despawned
-        if (theBird.getAttackTarget() == null)
+        if (target == null)
         {
             theBird.setState(AIStates.STATE_TAKING_OFF);
         }
-        else if (theBird.getAttackTarget().isDead)
+        else if (target.isDead)
+        {
+            theBird.setAttackTarget(null);
+            theBird.setState(AIStates.STATE_TAKING_OFF);
+        }
+        else if (!Utilities.isCourseTraversable(theBird, target.posX, target.posY, target.posZ))
         {
             theBird.setAttackTarget(null);
             theBird.setState(AIStates.STATE_TAKING_OFF);
@@ -414,18 +419,26 @@ public class UpdateStateBirdOfPrey
         }
         else
         {
-            Block topBlock = theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ);
-            if (topBlock instanceof BlockLeaves)
+            if (theBird.getRNG().nextInt(perchChance) == 0)
             {
-                if (theBird.getRNG().nextInt(perchChance) == 0)
+                if (theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ) instanceof BlockLeaves)
                 {
-                    theBird.setState(AIStates.STATE_DIVING);
-                    theBird.setAnchor(
+                    if (Utilities.isCourseTraversable(
+                            theBird,
                             theBird.posX, 
                             theBird.worldObj.getHeightValue(
                                     (int)theBird.posX, 
                                     (int)theBird.posZ), 
-                            theBird.posZ);
+                            theBird.posZ))
+                    {
+                        theBird.setState(AIStates.STATE_DIVING);
+                        theBird.setAnchor(
+                                theBird.posX, 
+                                theBird.worldObj.getHeightValue(
+                                        (int)theBird.posX, 
+                                        (int)theBird.posZ), 
+                                theBird.posZ);
+                    }
                 }
             }
         }
@@ -454,8 +467,9 @@ public class UpdateStateBirdOfPrey
         }
         else
         {
-            EntityLivingBase possibleAttackTarget = theOwner.getLastAttacker(); // note the get last attacker actually returns last attacked
-            if (Utilities.isSuitableTarget(theOwner, possibleAttackTarget, true))
+            EntityLivingBase possibleTarget = theOwner.getLastAttacker(); // note the get last attacker actually returns last attacked
+            if (Utilities.isSuitableTarget(theOwner, possibleTarget, true) && 
+                    Utilities.isCourseTraversable(theBird, possibleTarget.posX, possibleTarget.posY, possibleTarget.posZ))
             {
                 // attack region on ground
                 AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(
@@ -466,13 +480,13 @@ public class UpdateStateBirdOfPrey
                         theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) + attackRegionSize, 
                         theBird.posZ + attackRegionSize);
                 if (attackRegion.isVecInside(Vec3.createVectorHelper(
-                        possibleAttackTarget.posX,
-                        possibleAttackTarget.posY,
-                        possibleAttackTarget.posZ)))
+                        possibleTarget.posX,
+                        possibleTarget.posY,
+                        possibleTarget.posZ)))
                 {
                     // DEBUG
                     System.out.println("Setting eagle target to owners target");
-                    theBird.setAttackTarget(possibleAttackTarget); 
+                    theBird.setAttackTarget(possibleTarget); 
                 }
             }
         }
@@ -495,7 +509,7 @@ public class UpdateStateBirdOfPrey
         while (targetIterator.hasNext())
         {
             EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
-            if (theBird.getEntitySenses().canSee(possibleTarget))
+            if (Utilities.isCourseTraversable(theBird, possibleTarget.posX, possibleTarget.posY, possibleTarget.posZ))
             {
                 theBird.setAttackTarget(possibleTarget);
             }
@@ -505,7 +519,7 @@ public class UpdateStateBirdOfPrey
         while (targetIterator.hasNext())
         {
             EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
-            if (theBird.getEntitySenses().canSee(possibleTarget))
+            if (Utilities.isCourseTraversable(theBird, possibleTarget.posX, possibleTarget.posY, possibleTarget.posZ))
             {
                 theBird.setAttackTarget(possibleTarget);
             }
@@ -515,7 +529,7 @@ public class UpdateStateBirdOfPrey
         while (targetIterator.hasNext())
         {
             EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
-            if (theBird.getEntitySenses().canSee(possibleTarget))
+            if (Utilities.isCourseTraversable(theBird, possibleTarget.posX, possibleTarget.posY, possibleTarget.posZ))
             {
                 theBird.setAttackTarget(possibleTarget);
             }

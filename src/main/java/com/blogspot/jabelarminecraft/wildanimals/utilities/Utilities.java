@@ -28,7 +28,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -403,6 +405,7 @@ public class Utilities
     }
     
     // this will work across all dimensions
+    // thanks to diesieben07 for this tip on http://www.minecraftforge.net/forum/index.php?topic=27715.0
     public static EntityPlayer getPlayerOnServerFromUUID(UUID parUUID) 
     {
         if (parUUID == null) 
@@ -579,5 +582,30 @@ public class Utilities
         // at https://github.com/chraft/c-raft/wiki/Vectors,-Location,-Yaw-and-Pitch-in-C%23raft
         Vec3 theVec = parVec.normalize();
         return (float) Math.toDegrees(Math.asin(theVec.yCoord));
+    }
+    
+    /**
+     * True if the entity has an unobstructed line of travel to the waypoint.
+     */
+    public static boolean isCourseTraversable(Entity parEntity, double parX, double parY, double parZ)
+    {
+        double theDistance = MathHelper.sqrt_double(parX * parX + parY * parY + parZ * parZ);
+
+        double incrementX = (parX - parEntity.posX) / theDistance;
+        double incrementY = (parY - parEntity.posY) / theDistance;
+        double incrementZ = (parZ - parEntity.posZ) / theDistance;
+        AxisAlignedBB entityBoundingBox = parEntity.boundingBox.copy();
+
+        for (int i = 1; i < theDistance; ++i)
+        {
+            entityBoundingBox.offset(incrementX, incrementY, incrementZ);
+
+            if (!parEntity.worldObj.getCollidingBoundingBoxes(parEntity, entityBoundingBox).isEmpty())
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

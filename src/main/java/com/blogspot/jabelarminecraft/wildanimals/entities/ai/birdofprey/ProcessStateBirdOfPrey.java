@@ -17,8 +17,6 @@
 package com.blogspot.jabelarminecraft.wildanimals.entities.ai.birdofprey;
 
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
@@ -222,30 +220,6 @@ public class ProcessStateBirdOfPrey
         theBird.motionZ = 0;
     }
     
-    /**
-     * True if the entity has an unobstructed line of travel to the waypoint.
-     */
-    public boolean isCourseTraversable(double parX, double parY, double parZ)
-    {
-        double theDistance = MathHelper.sqrt_double(parX * parX + parY * parY + parZ * parZ);
-
-        double incrementX = (parX - theBird.posX) / theDistance;
-        double incrementY = (parY - theBird.posY) / theDistance;
-        double incrementZ = (parZ - theBird.posZ) / theDistance;
-        AxisAlignedBB axisalignedbb = theBird.boundingBox.copy();
-
-        for (int i = 1; i < theDistance; ++i)
-        {
-            axisalignedbb.offset(incrementX, incrementY, incrementZ);
-
-            if (!theBird.worldObj.getCollidingBoundingBoxes(theBird, axisalignedbb).isEmpty())
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
 
 }

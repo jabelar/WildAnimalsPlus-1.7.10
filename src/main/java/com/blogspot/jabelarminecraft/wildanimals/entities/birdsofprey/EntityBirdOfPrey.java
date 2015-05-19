@@ -230,6 +230,12 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         dataWatcher.addObject(19, new Byte((byte)0));
         dataWatcher.addObject(20, new Byte((byte)BlockColored.func_150032_b(1)));
     }
+    
+    @Override
+    public int getTalkInterval()
+    {
+        return 400;
+    }
 
     @Override
     // play step sound
@@ -392,16 +398,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     @Override
     protected boolean canDespawn()
     {
-//        // DEBUG
-//        System.out.println("Checking if can despawn");
-        
-        // don't despawn owned entities!
-        if (getOwner() != null)
-        {
-            return false;
-        }
-
-        return ticksExisted > 2400;
+        return false;
     }
     
     @Override

@@ -128,15 +128,11 @@ public class UpdateStateBirdOfPrey
     {
         if (theBird.isTamed())
         {
-            if (theBird.getOwner().getLastAttacker() != null)
-            {
                 processOwnerAttack();
      
-                if (theBird.getAttackTarget() != null)
-                {
-                    theBird.setState(AIStates.STATE_ATTACKING);
-                }
-                theBird.setState(AIStates.STATE_SOARING_TAMED);
+            if (theBird.getAttackTarget() != null)
+            {
+                theBird.setState(AIStates.STATE_ATTACKING);
             }
             else
             {
@@ -204,7 +200,7 @@ public class UpdateStateBirdOfPrey
                     theBird.getOwner().posX - theBird.posX,
                     theBird.getOwner().posY - theBird.posY,
                     theBird.getOwner().posZ - theBird.posZ));
-            theBird.setState(AIStates.STATE_SEEKING);
+            theBird.setState(AIStates.STATE_TRAVELLING);
         }
         
         considerAttacking();
@@ -297,22 +293,38 @@ public class UpdateStateBirdOfPrey
      */
     private void updateStateDiving()
     {
-        // see if made it to perch
 //            // DEBUG
 //            System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
-        if (theBird.worldObj.getBlock(
-                MathHelper.floor_double(theBird.posX), 
-                (int)theBird.posY - 1, 
-                MathHelper.floor_double(theBird.posZ)) != Blocks.air)
+        // handle case where perch target block might get destroyed before eagle gets to it
+        // or might get obstructed.
+        if (theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ) instanceof BlockLeaves
+                && Utilities.isCourseTraversable(
+                            theBird,
+                            theBird.posX, 
+                            theBird.worldObj.getHeightValue(
+                                    (int)theBird.posX, 
+                                    (int)theBird.posZ), 
+                            theBird.posZ))
         {
-            if (theBird.isTamed())
+            // see if made it to perch
+            if (theBird.worldObj.getBlock(
+                    MathHelper.floor_double(theBird.posX), 
+                    (int)theBird.posY - 1, 
+                    MathHelper.floor_double(theBird.posZ)) != Blocks.air)
             {
-                theBird.setState(AIStates.STATE_PERCHED_TAMED);
+                if (theBird.isTamed())
+                {
+                    theBird.setState(AIStates.STATE_PERCHED_TAMED);
+                }
+                else
+                {
+                    theBird.setState(AIStates.STATE_PERCHED);
+                }
             }
-            else
-            {
-                theBird.setState(AIStates.STATE_PERCHED);
-            }
+        }
+        else
+        {
+            theBird.setState(AIStates.STATE_TAKING_OFF);
         }
     }
 
@@ -419,7 +431,9 @@ public class UpdateStateBirdOfPrey
         }
         else
         {
-            if (theBird.getRNG().nextInt(perchChance) == 0)
+            // always try to perch starting at dusk
+            if (theBird.worldObj.getWorldTime()%24000 > 12000 
+                    || theBird.getRNG().nextInt(perchChance) == 0)
             {
                 if (theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ) instanceof BlockLeaves)
                 {
@@ -446,6 +460,12 @@ public class UpdateStateBirdOfPrey
     
     public void considerAttacking()
     {
+        // handle case where previous target becomes unsuitable
+        if (Utilities.isSuitableTarget(theBird, theBird.getAttackTarget(), false))
+        {
+            theBird.setAttackTarget(null);
+        }
+        
         if (theBird.isTamed())
         {
             processOwnerAttack();
@@ -471,23 +491,23 @@ public class UpdateStateBirdOfPrey
             if (Utilities.isSuitableTarget(theOwner, possibleTarget, true) && 
                     Utilities.isCourseTraversable(theBird, possibleTarget.posX, possibleTarget.posY, possibleTarget.posZ))
             {
-                // attack region on ground
-                AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(
-                        theBird.posX - attackRegionSize, 
-                        theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) - attackRegionSize, 
-                        theBird.posZ - attackRegionSize, 
-                        theBird.posX + attackRegionSize, 
-                        theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) + attackRegionSize, 
-                        theBird.posZ + attackRegionSize);
-                if (attackRegion.isVecInside(Vec3.createVectorHelper(
-                        possibleTarget.posX,
-                        possibleTarget.posY,
-                        possibleTarget.posZ)))
-                {
+//                // attack region on ground
+//                AxisAlignedBB attackRegion = AxisAlignedBB.getBoundingBox(
+//                        theBird.posX - attackRegionSize, 
+//                        theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) - attackRegionSize, 
+//                        theBird.posZ - attackRegionSize, 
+//                        theBird.posX + attackRegionSize, 
+//                        theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) + attackRegionSize, 
+//                        theBird.posZ + attackRegionSize);
+//                if (attackRegion.isVecInside(Vec3.createVectorHelper(
+//                        possibleTarget.posX,
+//                        possibleTarget.posY,
+//                        possibleTarget.posZ)))
+//                {
                     // DEBUG
                     System.out.println("Setting eagle target to owners target");
                     theBird.setAttackTarget(possibleTarget); 
-                }
+//                }
             }
         }
     }

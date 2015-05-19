@@ -73,6 +73,9 @@ public class ProcessStateBirdOfPrey
         case AIStates.STATE_PERCHED_TAMED:
             processPerched();
             break;
+        case AIStates.STATE_SEEKING:
+            processSeeking();
+            break;
         default:
             // DEBUG
             System.out.println("Unknown state");
@@ -80,6 +83,22 @@ public class ProcessStateBirdOfPrey
                 
         }
 
+    }
+
+    /**
+     * 
+     */
+    private void processSeeking()
+    {
+        updatePitch(0.0F);
+        if (theBird.getAttackTarget() != null)
+        {
+            theBird.rotationYaw = Utilities.getYawFromVec(Vec3.createVectorHelper(
+                    theBird.getAttackTarget().posX - theBird.posX, 
+                    theBird.getAttackTarget().posY - theBird.posY, 
+                    theBird.getAttackTarget().posZ - theBird.posZ));
+        }
+        moveForward(1.0D);
     }
 
     /**

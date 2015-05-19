@@ -301,7 +301,8 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 		{
 			doAnimate(parEntity, soaringCycle);
 		}
-        else if (parEntity.getState() == AIStates.STATE_TRAVELLING)
+        else if (parEntity.getState() == AIStates.STATE_TRAVELLING
+                || parEntity.getState() == AIStates.STATE_SEEKING)
         {
             doAnimate(parEntity, travellingCycle);
         }

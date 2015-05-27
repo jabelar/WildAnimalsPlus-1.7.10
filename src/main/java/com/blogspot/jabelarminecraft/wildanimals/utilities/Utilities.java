@@ -22,6 +22,7 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -427,75 +428,49 @@ public class Utilities
     /**
      * A method used to see if an entity is a suitable target through a number of checks.
      */
-    public static boolean isSuitableTarget(EntityLivingBase theOwner, 
+    public static boolean isSuitableTarget(EntityLivingBase theAttackerEntity, 
             EntityLivingBase parPossibleTargetEntity,
             boolean parShouldCheckSight)
     {
         if (parPossibleTargetEntity == null)
         {
+//            // DEBUG
+//            System.out.println("Target isn't suitable because it is null");
             return false;
         }
-        else if (parPossibleTargetEntity == theOwner)
+        else if (parPossibleTargetEntity == theAttackerEntity)
         {
+            // DEBUG
+            System.out.println("Target isn't suitable because it is itself");
             return false;
         }
         else if (!parPossibleTargetEntity.isEntityAlive())
         {
+            // DEBUG
+            System.out.println("Target isn't suitable because it is dead");
             return false;
         }
-//        else if (!theOwner.canAttackClass(parPossibleTargetEntity.getClass()))
+        else if (theAttackerEntity.isOnSameTeam(parPossibleTargetEntity))
+        {
+            // DEBUG
+            System.out.println("Target isn't suitable because it is on same team");
+            return false;
+        }
+//        else if (parPossibleTargetEntity instanceof EntityPlayer && ((EntityPlayer)parPossibleTargetEntity).capabilities.disableDamage)
 //        {
+//            // DEBUG
+//            System.out.println("Target isn't suitable because player can't take damage");
 //            return false;
 //        }
+        else if (theAttackerEntity instanceof EntityLiving && parShouldCheckSight)
+        {
+            // DEBUG
+            System.out.println("The attacker can see target = "+((EntityLiving)theAttackerEntity).getEntitySenses().canSee(parPossibleTargetEntity));
+            return ((EntityLiving)theAttackerEntity).getEntitySenses().canSee(parPossibleTargetEntity);
+        }
         else
         {
-//            if (parAttackingEntity instanceof IEntityOwnable && StringUtils.isNotEmpty(((IEntityOwnable)parAttackingEntity).func_152113_b()))
-//            {
-//                if (parPossibleTargetEntity instanceof IEntityOwnable && ((IEntityOwnable)parAttackingEntity).func_152113_b().equals(((IEntityOwnable)parPossibleTargetEntity).func_152113_b()))
-//                {
-//                    return false;
-//                }
-//
-//                if (parPossibleTargetEntity == ((IEntityOwnable)parAttackingEntity).getOwner())
-//                {
-//                    return false;
-//                }
-//            }
-            if (theOwner.isOnSameTeam(parPossibleTargetEntity))
-            {
-                return false;
-            }
-            else if (parPossibleTargetEntity instanceof EntityPlayer && ((EntityPlayer)parPossibleTargetEntity).capabilities.disableDamage)
-            {
-                return false;
-            }
-//
-//           if (parShouldCheckSight && !theOwner.getEntitySenses().canSee(parPossibleTargetEntity))
-//            {
-//                return false;
-//            }
-//            else
-            {
-//                if (this.nearbyOnly)
-//                {
-//                    if (--this.targetSearchDelay <= 0)
-//                    {
-//                        this.targetSearchStatus = 0;
-//                    }
-//
-//                    if (this.targetSearchStatus == 0)
-//                    {
-//                        this.targetSearchStatus = this.canEasilyReach(parPossibleTargetEntity) ? 1 : 2;
-//                    }
-//
-//                    if (this.targetSearchStatus == 2)
-//                    {
-//                        return false;
-//                    }
-//                }
-
-                return true;
-            }
+            return true;
         }
     }
 

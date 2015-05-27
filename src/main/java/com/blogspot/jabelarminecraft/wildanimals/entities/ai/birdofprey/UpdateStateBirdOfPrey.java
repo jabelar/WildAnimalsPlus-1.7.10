@@ -230,7 +230,7 @@ public class UpdateStateBirdOfPrey
         }
         else if (!Utilities.isCourseTraversable(theBird, target.posX, target.posY, target.posZ))
         {
-            theBird.setAttackTarget(null);
+            // theBird.setAttackTarget(null);
             theBird.setState(AIStates.STATE_TAKING_OFF);
         }
         // check for hitting target
@@ -285,9 +285,6 @@ public class UpdateStateBirdOfPrey
         }
     }
 
-    /**
-     * 
-     */
     private void updateStateDiving()
     {
 //            // DEBUG
@@ -325,9 +322,6 @@ public class UpdateStateBirdOfPrey
         }
     }
 
-    /**
-     * 
-     */
     private void updateStateSoaring()
     {
         if (theBird.isTamed())
@@ -457,9 +451,14 @@ public class UpdateStateBirdOfPrey
     
     public void considerAttacking()
     {
+        // DEBUG
+        if (theBird.getAttackTarget() != null) System.out.println("Attack target = "+theBird.getAttackTarget());
+        
         // handle case where previous target becomes unsuitable
         if (Utilities.isSuitableTarget(theBird, theBird.getAttackTarget(), false))
         {
+            // DEBUG
+            System.out.println(theBird.getAttackTarget()+" is no longer a suitable target");
             theBird.setAttackTarget(null);
         }
         
@@ -470,6 +469,14 @@ public class UpdateStateBirdOfPrey
         else
         {
             processNaturalAttack(); // go for its natural prey
+        }
+        
+        // check for revenge targets (the getAITarget() method really gives a revenge target)
+        if (theBird.getAttackTarget() == null && theBird.getAITarget() != null)
+        {
+            // DEBUG
+            System.out.println("There is a revenge target");
+            theBird.setAttackTarget(theBird.getAITarget());
         }
     }
 

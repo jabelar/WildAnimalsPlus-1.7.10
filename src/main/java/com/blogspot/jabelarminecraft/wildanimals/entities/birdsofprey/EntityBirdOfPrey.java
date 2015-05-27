@@ -213,9 +213,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
      * Sets the active target the Task system uses for tracking
      */
     @Override
-    public void setAttackTarget(EntityLivingBase par1EntityLivingBase)
+    public void setAttackTarget(EntityLivingBase theTargetEntity)
     {
-        super.setAttackTarget(par1EntityLivingBase);
+        // DEBUG
+        System.out.println("Setting attack target to = "+theTargetEntity);
+        super.setAttackTarget(theTargetEntity);
     }
 
 
@@ -320,7 +322,14 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         }
         else
         {
-            return super.attackEntityFrom(parDamageSource, parDamageAmount);
+            boolean result = super.attackEntityFrom(parDamageSource, parDamageAmount);
+            if (parDamageSource.getEntity() instanceof EntityLivingBase)
+            {
+                setRevengeTarget((EntityLivingBase) parDamageSource.getEntity());
+            }
+            // DEBUG
+            System.out.println("Eagle has been attacked by "+parDamageSource.getEntity()+" with source = "+parDamageSource.getSourceOfDamage()+" and revenge target set to "+getAITarget());
+            return result;
         }
     }
 
@@ -389,7 +398,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     {
         return false;
     }
-    
+ 
     @Override
     public void setDead()
     {

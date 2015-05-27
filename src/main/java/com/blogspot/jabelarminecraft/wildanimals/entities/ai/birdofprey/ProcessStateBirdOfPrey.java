@@ -82,7 +82,6 @@ public class ProcessStateBirdOfPrey
             break;
                 
         }
-
     }
 
     /**
@@ -119,15 +118,7 @@ public class ProcessStateBirdOfPrey
         theBird.motionZ = theBird.getAnchorZ() - theBird.posZ;
         theBird.motionY = -1.0D;
     }
-    
-//  protected MovingObjectPosition isSomethingWithinReach()
-//  {
-//      
-//  }
-//
-    /**
-     * 
-     */
+
     protected void processTakingOff() 
     {
         updatePitch(0.0F);

@@ -22,8 +22,6 @@ import java.util.List;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -33,7 +31,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
-import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
 import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
 /**
@@ -524,34 +521,17 @@ public class UpdateStateBirdOfPrey
                 theBird.worldObj.getHeightValue((int)theBird.posX, (int)theBird.posZ) + attackRegionSize, 
                 theBird.posZ + attackRegionSize);
 
-        List possibleTargetEntities = theBird.worldObj.getEntitiesWithinAABB(EntitySerpent.class, attackRegion);
-        Iterator<Object> targetIterator = possibleTargetEntities.iterator();
-        while (targetIterator.hasNext())
+        for (int i=0; i<theBird.getPreyArray().length; i++)
         {
-            EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
-            if (Utilities.isCourseTraversable(theBird, possibleTarget.posX, possibleTarget.posY, possibleTarget.posZ))
+            List possibleTargetEntities = theBird.worldObj.getEntitiesWithinAABB(theBird.getPreyArray()[i], attackRegion);
+            Iterator<Object> targetIterator = possibleTargetEntities.iterator();
+            while (targetIterator.hasNext())
             {
-                theBird.setAttackTarget(possibleTarget);
-            }
-        }
-        possibleTargetEntities = theBird.worldObj.getEntitiesWithinAABB(EntityChicken.class, attackRegion);
-        targetIterator = possibleTargetEntities.iterator();
-        while (targetIterator.hasNext())
-        {
-            EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
-            if (Utilities.isCourseTraversable(theBird, possibleTarget.posX, possibleTarget.posY, possibleTarget.posZ))
-            {
-                theBird.setAttackTarget(possibleTarget);
-            }
-        }
-        possibleTargetEntities = theBird.worldObj.getEntitiesWithinAABB(EntityBat.class, attackRegion);
-        targetIterator = possibleTargetEntities.iterator();
-        while (targetIterator.hasNext())
-        {
-            EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
-            if (Utilities.isCourseTraversable(theBird, possibleTarget.posX, possibleTarget.posY, possibleTarget.posZ))
-            {
-                theBird.setAttackTarget(possibleTarget);
+                EntityLivingBase possibleTarget = (EntityLivingBase)(targetIterator.next());
+                if (Utilities.isCourseTraversable(theBird, possibleTarget.posX, possibleTarget.posY, possibleTarget.posZ))
+                {
+                    theBird.setAttackTarget(possibleTarget);
+                }
             }
         }
     }

@@ -27,7 +27,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -64,7 +63,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     // create a random factor per entity
     protected int randFactor;
     
-    Class[] preyArray = new Class[] {EntityChicken.class, EntityBat.class, EntitySerpent.class};
+    private Class[] preyArray = new Class[] {EntityChicken.class, EntityBat.class, EntitySerpent.class};
 
     public EntityBirdOfPrey(World parWorld)
     {
@@ -313,7 +312,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
      * Called when the entity is attacked.
      */
     @Override
-    public boolean attackEntityFrom(DamageSource par1DamageSource, float par2)
+    public boolean attackEntityFrom(DamageSource parDamageSource, float parDamageAmount)
     {
         if (isEntityInvulnerable())
         {
@@ -321,22 +320,14 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         }
         else
         {
-            Entity entity = par1DamageSource.getEntity();
-
-            if (entity != null && !(entity instanceof EntityPlayer) && !(entity instanceof EntityArrow))
-            {
-                par2 = (par2 + 1.0F) / 2.0F;
-            }
-
-            return super.attackEntityFrom(par1DamageSource, par2);
+            return super.attackEntityFrom(parDamageSource, parDamageAmount);
         }
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity par1Entity)
+    public boolean attackEntityAsMob(Entity parEntity)
     {
-        int i = 2;
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), i);
+        return parEntity.attackEntityFrom(DamageSource.causeMobDamage(this), (float)getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue());
     }
     
     /**
@@ -676,6 +667,16 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     public int getRandFactor()
     {
         return randFactor;
+    }
+
+    public Class[] getPreyArray()
+    {
+        return preyArray;
+    }
+
+    public void setPreyArray(Class[] preyArray)
+    {
+        this.preyArray = preyArray;
     }
 
 }

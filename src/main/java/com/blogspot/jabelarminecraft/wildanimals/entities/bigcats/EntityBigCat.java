@@ -443,12 +443,6 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         else
         {
             aiSit.setSitting(false);
-//            Entity entity = par1DamageSource.getEntity();
-//
-//            if (entity != null && !(entity instanceof EntityPlayer) && !(entity instanceof EntityArrow))
-//            {
-//                par2 = (par2 + 1.0F) / 2.0F;
-//            }
 
             return super.attackEntityFrom(par1DamageSource, par2);
         }

@@ -122,6 +122,7 @@ public class CommonProxy
     	WildAnimals.configIncludeSnakes = WildAnimals.config.getBoolean("IncludeSnakes", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeSnakes, "A Boolean!");
     	WildAnimals.configIncludeBigCats = WildAnimals.config.getBoolean("IncludeBigCats", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeBigCats, "A Boolean!");
     	WildAnimals.configIncludeHerdAnimals = WildAnimals.config.getBoolean("IncludeHerdAnimals", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeHerdAnimals, "A Boolean!");
+        WildAnimals.configIncludeBirdsOfPrey = WildAnimals.config.getBoolean("IncludeBirdsOfPrey", Configuration.CATEGORY_GENERAL, WildAnimals.configIncludeBirdsOfPrey, "A Boolean!");
  
         if(WildAnimals.config.hasChanged())
         {
@@ -223,8 +224,10 @@ public class CommonProxy
         }
         
         // Birds of Prey
-         registerModEntityWithEggLongTracking(EntityBirdOfPrey.class, "Eagle", 0xFFF2E3, 0x7D6C57);
-
+        if (WildAnimals.configIncludeBirdsOfPrey)
+        {
+            registerModEntityWithEggLongTracking(EntityBirdOfPrey.class, "Eagle", 0xFFF2E3, 0x7D6C57);
+        }
     }
      
      public void registerModEntity(Class parEntityClass, String parEntityName)

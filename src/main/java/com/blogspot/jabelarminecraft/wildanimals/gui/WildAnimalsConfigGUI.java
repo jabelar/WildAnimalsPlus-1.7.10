@@ -17,6 +17,7 @@
 package com.blogspot.jabelarminecraft.wildanimals.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 
@@ -28,8 +29,16 @@ public class WildAnimalsConfigGUI extends GuiConfig
 {
     public WildAnimalsConfigGUI(GuiScreen parent) 
     {
-        super(parent,
-                new ConfigElement(WildAnimals.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),
-                WildAnimals.MODID, false, false, GuiConfig.getAbridgedConfigPath(WildAnimals.config.toString()));
+        super(
+                parent,
+                new ConfigElement(
+                        WildAnimals.config.getCategory(Configuration.CATEGORY_GENERAL)
+                 ).getChildElements(),
+                 WildAnimals.MODID, 
+                 false, 
+                 true, 
+                 EnumChatFormatting.RED+"Changes Only Take Effect If You Completely Quit Minecraft Then Load World Again"
+             );
+         titleLine2 = GuiConfig.getAbridgedConfigPath(WildAnimals.config.toString());
     }
 }

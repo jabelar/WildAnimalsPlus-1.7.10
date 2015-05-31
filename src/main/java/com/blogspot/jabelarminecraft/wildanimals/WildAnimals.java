@@ -65,6 +65,7 @@ public class WildAnimals
     public static Boolean configIncludeSnakes = true;
     public static Boolean configIncludeBigCats = true;
     public static Boolean configIncludeHerdAnimals = true;
+    public static Boolean configIncludeBirdsOfPrey = true;
 
     // instantiate the mod
     @Instance(MODID)

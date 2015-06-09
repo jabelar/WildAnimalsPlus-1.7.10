@@ -67,13 +67,16 @@ public class EntityBigCat extends EntityTameable implements IModEntity
 {
     protected NBTTagCompound syncDataCompound = new NBTTagCompound();
 
-    protected float field_70926_e;
-    protected float field_70924_f;
+    /**
+     * fields for controlling head tilt, like when interested or shaking
+     */
+    protected float targetHeadAngle;
+    protected float prevHeadAngle;
     /**
      * true if the bigCat is wet else false
      */
     protected boolean isShaking;
-    protected boolean field_70928_h;
+    protected boolean startedShaking;
     /**
      * This time increases while bigCat is shaking and emitting water particles.
      */
@@ -189,11 +192,11 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      * Sets the active target the Task system uses for tracking
      */
     @Override
-	public void setAttackTarget(EntityLivingBase par1EntityLivingBase)
+	public void setAttackTarget(EntityLivingBase parEntityLivingBase)
     {
-        super.setAttackTarget(par1EntityLivingBase);
+        super.setAttackTarget(parEntityLivingBase);
 
-        if (par1EntityLivingBase == null)
+        if (parEntityLivingBase == null)
         {
             setAngry(false);
         }
@@ -231,25 +234,25 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */
     @Override
-	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
+	public void writeEntityToNBT(NBTTagCompound parTagCompound)
     {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setBoolean("Angry", isAngry());
-        par1NBTTagCompound.setByte("CollarColor", (byte)getCollarColor());
+        super.writeEntityToNBT(parTagCompound);
+        parTagCompound.setBoolean("Angry", isAngry());
+        parTagCompound.setByte("CollarColor", (byte)getCollarColor());
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     @Override
-	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
+	public void readEntityFromNBT(NBTTagCompound parTagCompound)
     {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        setAngry(par1NBTTagCompound.getBoolean("Angry"));
+        super.readEntityFromNBT(parTagCompound);
+        setAngry(parTagCompound.getBoolean("Angry"));
 
-        if (par1NBTTagCompound.hasKey("CollarColor", 99))
+        if (parTagCompound.hasKey("CollarColor", 99))
         {
-            setCollarColor(par1NBTTagCompound.getByte("CollarColor"));
+            setCollarColor(parTagCompound.getByte("CollarColor"));
         }
     }
 
@@ -304,9 +307,9 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     {
         super.onLivingUpdate();
 
-        if (!worldObj.isRemote && isShaking && !field_70928_h && !hasPath() && onGround)
+        if (!worldObj.isRemote && isShaking && !startedShaking && !hasPath() && onGround)
         {
-            field_70928_h = true;
+            startedShaking = true;
             timeBigCatIsShaking = 0.0F;
             prevTimeBigCatIsShaking = 0.0F;
             worldObj.setEntityState(this, (byte)8);
@@ -320,30 +323,26 @@ public class EntityBigCat extends EntityTameable implements IModEntity
 	public void onUpdate()
     {
         super.onUpdate();
-        field_70924_f = field_70926_e;
+        prevHeadAngle = targetHeadAngle;
 
-        if (func_70922_bv())
+        if (getInterested())
         {
-            field_70926_e += (1.0F - field_70926_e) * 0.4F;
+            targetHeadAngle += (1.0F - targetHeadAngle) * 0.4F;
+            numTicksToChaseTarget = 10;
         }
         else
         {
-            field_70926_e += (0.0F - field_70926_e) * 0.4F;
-        }
-
-        if (func_70922_bv())
-        {
-            numTicksToChaseTarget = 10;
+            targetHeadAngle += (0.0F - targetHeadAngle) * 0.4F;
         }
 
         if (isWet())
         {
             isShaking = true;
-            field_70928_h = false;
+            startedShaking = false;
             timeBigCatIsShaking = 0.0F;
             prevTimeBigCatIsShaking = 0.0F;
         }
-        else if ((isShaking || field_70928_h) && field_70928_h)
+        else if ((isShaking || startedShaking) && startedShaking)
         {
             if (timeBigCatIsShaking == 0.0F)
             {
@@ -356,7 +355,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
             if (prevTimeBigCatIsShaking >= 2.0F)
             {
                 isShaking = false;
-                field_70928_h = false;
+                startedShaking = false;
                 prevTimeBigCatIsShaking = 0.0F;
                 timeBigCatIsShaking = 0.0F;
             }
@@ -386,15 +385,15 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      * Used when calculating the amount of shading to apply while the bigCat is shaking.
      */
     @SideOnly(Side.CLIENT)
-    public float getShadingWhileShaking(float par1)
+    public float getShadingWhileShaking(float parShakeRate)
     {
-        return 0.75F + (prevTimeBigCatIsShaking + (timeBigCatIsShaking - prevTimeBigCatIsShaking) * par1) / 2.0F * 0.25F;
+        return 0.75F + (prevTimeBigCatIsShaking + (timeBigCatIsShaking - prevTimeBigCatIsShaking) * parShakeRate) / 2.0F * 0.25F;
     }
 
     @SideOnly(Side.CLIENT)
-    public float getShakeAngle(float par1, float par2)
+    public float getShakeAngle(float parShakeRate, float par2)
     {
-        float f2 = (prevTimeBigCatIsShaking + (timeBigCatIsShaking - prevTimeBigCatIsShaking) * par1 + par2) / 1.8F;
+        float f2 = (prevTimeBigCatIsShaking + (timeBigCatIsShaking - prevTimeBigCatIsShaking) * parShakeRate + par2) / 1.8F;
 
         if (f2 < 0.0F)
         {
@@ -415,9 +414,9 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     }
 
     @SideOnly(Side.CLIENT)
-    public float getInterestedAngle(float par1)
+    public float getInterestedAngle(float parRateOfAngleChange)
     {
-        return (field_70924_f + (field_70926_e - field_70924_f) * par1) * 0.15F * (float)Math.PI;
+        return (prevHeadAngle + (targetHeadAngle - prevHeadAngle) * parRateOfAngleChange) * 0.15F * (float)Math.PI;
     }
 
     /**
@@ -459,11 +458,11 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     }
 
     @Override
-	public void setTamed(boolean par1)
+	public void setTamed(boolean parValue)
     {
-        super.setTamed(par1);
+        super.setTamed(parValue);
 
-        if (par1)
+        if (parValue)
         {
             getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
         }
@@ -529,9 +528,12 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                 }
             }
 
+            // DEBUG
+            System.out.println("Player is "+par1EntityPlayer.getCommandSenderName()+" and owner is "+func_152113_b());
             if (par1EntityPlayer.getCommandSenderName().equalsIgnoreCase(func_152113_b()) && !worldObj.isRemote && !isBreedingItem(itemstack))
             {
                 aiSit.setSitting(!isSitting());
+                setSitting(!isSitting());
                 isJumping = false;
                 setPathToEntity((PathEntity)null);
                 setTarget((Entity)null);
@@ -610,7 +612,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     {
         if (par1 == 8)
         {
-            field_70928_h = true;
+            startedShaking = true;
             timeBigCatIsShaking = 0.0F;
             prevTimeBigCatIsShaking = 0.0F;
         }
@@ -656,11 +658,11 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     /**
      * Sets whether this bigCat is angry or not.
      */
-    public void setAngry(boolean par1)
+    public void setAngry(boolean parValue)
     {
         byte b0 = dataWatcher.getWatchableObjectByte(16);
 
-        if (par1)
+        if (parValue)
         {
             dataWatcher.updateObject(16, Byte.valueOf((byte)(b0 | 2)));
         }
@@ -705,9 +707,11 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         return entitybigCat;
     }
 
-    public void func_70918_i(boolean par1)
+    public void setInterested(boolean parValue)
     {
-        if (par1)
+        // DEBUG
+        System.out.println("Setting interested = "+parValue);
+        if (parValue)
         {
             dataWatcher.updateObject(19, Byte.valueOf((byte)1));
         }
@@ -721,9 +725,9 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      * Returns true if the mob is currently able to mate with the specified mob.
      */
     @Override
-	public boolean canMateWith(EntityAnimal par1EntityAnimal)
+	public boolean canMateWith(EntityAnimal parEntityAnimal)
     {
-        if (par1EntityAnimal == this)
+        if (parEntityAnimal == this)
         {
             return false;
         }
@@ -731,18 +735,18 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         {
             return false;
         }
-        else if (!(par1EntityAnimal instanceof EntityBigCat))
+        else if (!(parEntityAnimal instanceof EntityBigCat))
         {
             return false;
         }
         else
         {
-            EntityBigCat entitybigCat = (EntityBigCat)par1EntityAnimal;
+            EntityBigCat entitybigCat = (EntityBigCat)parEntityAnimal;
             return !entitybigCat.isTamed() ? false : (entitybigCat.isSitting() ? false : isInLove() && entitybigCat.isInLove());
         }
     }
 
-    public boolean func_70922_bv()
+    public boolean getInterested()
     {
         return dataWatcher.getWatchableObjectByte(19) == 1;
     }

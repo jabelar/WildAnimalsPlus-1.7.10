@@ -65,7 +65,7 @@ public class EntityAIBegBigCat extends EntityAIBase
     @Override
 	public void startExecuting()
     {
-        this.theBigCat.func_70918_i(true);
+        this.theBigCat.setInterested(true);
         this.field_75384_e = 40 + this.theBigCat.getRNG().nextInt(40);
     }
 
@@ -75,7 +75,7 @@ public class EntityAIBegBigCat extends EntityAIBase
     @Override
 	public void resetTask()
     {
-        this.theBigCat.func_70918_i(false);
+        this.theBigCat.setInterested(false);
         this.thePlayer = null;
     }
 

@@ -81,9 +81,9 @@ public class EntityManEatingLynx extends EntityLynx
     {
         super.onLivingUpdate();
 
-        if (!this.worldObj.isRemote && this.isShaking && !this.field_70928_h && !this.hasPath() && this.onGround)
+        if (!this.worldObj.isRemote && this.isShaking && !this.startedShaking && !this.hasPath() && this.onGround)
         {
-            this.field_70928_h = true;
+            this.startedShaking = true;
             this.timeBigCatIsShaking = 0.0F;
             this.prevTimeBigCatIsShaking = 0.0F;
             this.worldObj.setEntityState(this, (byte)8);

@@ -141,9 +141,9 @@ public void renderBigCat(EntityBigCat entity, float f, float f1, float f2, float
    * and third as in the setRotationAngles method.
    */
   @Override
-public void setLivingAnimations(EntityLivingBase par1EntityLivingBase, float par2, float par3, float par4)
+public void setLivingAnimations(EntityLivingBase parEntityLivingBase, float parLimbSwingAngle, float parMaxLimbSwingDistance, float parHeadAngleChangeRate)
   {
-      EntityBigCat entityBigCat = (EntityBigCat)par1EntityLivingBase;
+      EntityBigCat entityBigCat = (EntityBigCat)parEntityLivingBase;
 
       if (entityBigCat.isAngry())
       {
@@ -151,7 +151,7 @@ public void setLivingAnimations(EntityLivingBase par1EntityLivingBase, float par
       }
       else
       {
-          tail.rotateAngleY = MathHelper.cos(par2 * 0.6662F) * 1.4F * par3;
+          tail.rotateAngleY = MathHelper.cos(parLimbSwingAngle * 0.6662F) * 1.4F * parMaxLimbSwingDistance;
       }
 
       if (entityBigCat.isSitting())
@@ -177,15 +177,15 @@ public void setLivingAnimations(EntityLivingBase par1EntityLivingBase, float par
           leg2.setRotationPoint(0.5F, 16.0F, 7.0F);
           leg3.setRotationPoint(-2.5F, 16.0F, -4.0F);
           leg4.setRotationPoint(0.5F, 16.0F, -4.0F);
-          leg1.rotateAngleX = MathHelper.cos(par2 * 0.6662F) * 1.4F * par3;
-          leg2.rotateAngleX = MathHelper.cos(par2 * 0.6662F + (float)Math.PI) * 1.4F * par3;
-          leg3.rotateAngleX = MathHelper.cos(par2 * 0.6662F + (float)Math.PI) * 1.4F * par3;
-          leg4.rotateAngleX = MathHelper.cos(par2 * 0.6662F) * 1.4F * par3;
+          leg1.rotateAngleX = MathHelper.cos(parLimbSwingAngle * 0.6662F) * 1.4F * parMaxLimbSwingDistance;
+          leg2.rotateAngleX = MathHelper.cos(parLimbSwingAngle * 0.6662F + (float)Math.PI) * 1.4F * parMaxLimbSwingDistance;
+          leg3.rotateAngleX = MathHelper.cos(parLimbSwingAngle * 0.6662F + (float)Math.PI) * 1.4F * parMaxLimbSwingDistance;
+          leg4.rotateAngleX = MathHelper.cos(parLimbSwingAngle * 0.6662F) * 1.4F * parMaxLimbSwingDistance;
       }
 
-      head.rotateAngleZ = entityBigCat.getInterestedAngle(par4) + entityBigCat.getShakeAngle(par4, 0.0F);
-      body.rotateAngleZ = entityBigCat.getShakeAngle(par4, -0.16F);
-      tail.rotateAngleZ = entityBigCat.getShakeAngle(par4, -0.2F);
+      head.rotateAngleZ = entityBigCat.getInterestedAngle(parHeadAngleChangeRate) + entityBigCat.getShakeAngle(parHeadAngleChangeRate, 0.0F);
+      body.rotateAngleZ = entityBigCat.getShakeAngle(parHeadAngleChangeRate, -0.16F);
+      tail.rotateAngleZ = entityBigCat.getShakeAngle(parHeadAngleChangeRate, -0.2F);
   }
 
   /**

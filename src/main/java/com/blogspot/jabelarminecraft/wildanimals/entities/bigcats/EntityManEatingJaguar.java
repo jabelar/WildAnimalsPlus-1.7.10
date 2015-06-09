@@ -81,9 +81,9 @@ public class EntityManEatingJaguar extends EntityJaguar
     {
         super.onLivingUpdate();
 
-        if (!worldObj.isRemote && isShaking && !field_70928_h && !hasPath() && onGround)
+        if (!worldObj.isRemote && isShaking && !startedShaking && !hasPath() && onGround)
         {
-            field_70928_h = true;
+            startedShaking = true;
             timeBigCatIsShaking = 0.0F;
             prevTimeBigCatIsShaking = 0.0F;
             worldObj.setEntityState(this, (byte)8);

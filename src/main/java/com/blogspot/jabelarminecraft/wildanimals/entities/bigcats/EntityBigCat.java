@@ -528,18 +528,17 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                 }
             }
 
-            // DEBUG
-            System.out.println("Player is "+par1EntityPlayer.getCommandSenderName()+" and owner is "+func_152113_b());
             if (par1EntityPlayer.getCommandSenderName().equalsIgnoreCase(func_152113_b()) && !worldObj.isRemote && !isBreedingItem(itemstack))
             {
-                aiSit.setSitting(!isSitting());
                 setSitting(!isSitting());
+                aiSit.setSitting(isSitting());
                 isJumping = false;
                 setPathToEntity((PathEntity)null);
                 setTarget((Entity)null);
                 setAttackTarget((EntityLivingBase)null);
             }
         }
+        
         // tame with bone
         else if (itemstack != null && itemstack.getItem() == Items.bone && !isAngry())
         {
@@ -553,6 +552,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                 par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack)null);
             }
 
+            // Try taming
             if (!worldObj.isRemote)
             {
                 if (rand.nextInt(3) == 0)
@@ -573,6 +573,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                 }
             }
         }
+        
         // grow with meat
         else if (itemstack != null && itemstack.getItem() == Items.beef && !isAngry())
         {
@@ -591,7 +592,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                 if (rand.nextInt(3) == 0)
                 {
                     setGrowingAge(getAge()+500);
-                     worldObj.setEntityState(this, (byte)7);
+                    worldObj.setEntityState(this, (byte)7);
                 }
                 else
                 {
@@ -742,6 +743,8 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         else
         {
             EntityBigCat entitybigCat = (EntityBigCat)parEntityAnimal;
+            // DEBUG
+            System.out.println("Found mate = "+entitybigCat);
             return !entitybigCat.isTamed() ? false : (entitybigCat.isSitting() ? false : isInLove() && entitybigCat.isInLove());
         }
     }

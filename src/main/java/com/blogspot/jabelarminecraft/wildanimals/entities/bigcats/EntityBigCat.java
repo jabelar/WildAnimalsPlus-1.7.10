@@ -146,10 +146,14 @@ public class EntityBigCat extends EntityTameable implements IModEntity
 	@Override
 	public void initSyncDataCompound() 
 	{
+	    // DEBUG
+	    System.out.println("Initializing sync data compound");
+	    
     	syncDataCompound.setFloat("scaleFactor", 1.2F);
     	syncDataCompound.setBoolean("isInterested", false);
     	syncDataCompound.setBoolean("isTamed", false);
     	syncDataCompound.setBoolean("isAngry", false);
+    	syncDataCompound.setBoolean("isSitting", false);
     	syncDataCompound.setByte("collarColor", (byte) 0);
     	syncDataCompound.setString("ownerName", "");
     	syncDataCompound.setLong("ownerUUIDMSB", 0);
@@ -170,12 +174,12 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     {
         super.applyEntityAttributes(); 
 
-        // standard attributes registered to EntityLivingBase
-        if (isTamed())
-        {
-            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
-        }
-        else
+//        // standard attributes registered to EntityLivingBase
+//        if (isTamed())
+//        {
+//            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
+//        }
+//        else
         {
             getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(8.0D);
         }
@@ -485,21 +489,6 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue());
     }
 
-    @Override
-	public void setTamed(boolean parTamed)
-    {
-        super.setTamed(parTamed);
-
-        if (parTamed)
-        {
-            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
-        }
-        else
-        {
-            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(8.0D);
-        }
-    }
-
     /**
      * Called when a player interacts with a mob. e.g. gets milk from a cow, gets into the saddle on a pig.
      */
@@ -638,7 +627,48 @@ public class EntityBigCat extends EntityTameable implements IModEntity
 
         return super.interact(parPlayer);
     }
-    
+
+
+    @Override
+    public boolean isTamed()
+    {
+        boolean isTamed = syncDataCompound.getBoolean("isTamed");
+        return isTamed;
+    }
+
+    @Override
+    public void setTamed(boolean parTamed)
+    {
+        syncDataCompound.setBoolean("isTamed", parTamed);
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
+
+        if (parTamed)
+        {
+            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
+        }
+        else
+        {
+            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(8.0D);
+        }
+    }
+
+    @Override
+    public boolean isSitting()
+    {
+        return syncDataCompound.getBoolean("isSitting");
+    }
+
+    @Override
+    public void setSitting(boolean parIsSitting)
+    {
+        syncDataCompound.setBoolean("isSitting", parIsSitting);
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
+    }
+
     public String getOwnerName()
     {
         return getOwner().getCommandSenderName();

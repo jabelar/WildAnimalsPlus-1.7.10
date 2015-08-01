@@ -69,8 +69,8 @@ public class EntityAIFollowBigCat extends EntityAIBase
 
         if (theOwner == null)
         {
-            // DEBUG
-            System.out.println("Follow AI not starting execution because the owner is null");
+//            // DEBUG
+//            System.out.println("Follow AI not starting execution because the owner is null");
             return false;
         }
         else if (thePet.isSitting())
@@ -104,7 +104,7 @@ public class EntityAIFollowBigCat extends EntityAIBase
                 && thePet.getDistanceSqToEntity(theOwner) > maxDist * maxDist 
                 && !thePet.isSitting();
         // DEBUG
-        System.out.println("Continue executing = "+continueExecuting);
+        if (!continueExecuting) System.out.println("Continue executing = "+continueExecuting);
         return continueExecuting;
     }
 

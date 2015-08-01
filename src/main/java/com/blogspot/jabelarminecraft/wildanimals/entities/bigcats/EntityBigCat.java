@@ -16,6 +16,8 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.bigcats;
 
+import java.util.UUID;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.Entity;
@@ -24,7 +26,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAIFollowOwner;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
@@ -57,6 +58,7 @@ import net.minecraft.world.World;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.IModEntity;
 import com.blogspot.jabelarminecraft.wildanimals.entities.ai.bigcat.EntityAIBegBigCat;
+import com.blogspot.jabelarminecraft.wildanimals.entities.ai.bigcat.EntityAIFollowBigCat;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityHerdAnimal;
 import com.blogspot.jabelarminecraft.wildanimals.utilities.Utilities;
 
@@ -82,12 +84,12 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      */
     protected float timeBigCatIsShaking;
     protected float prevTimeBigCatIsShaking;
-	
+    	
     // good to have instances of AI so task list can be modified, including in sub-classes
     protected EntityAIBase aiSwimming = new EntityAISwimming(this);
     protected EntityAIBase aiLeapAtTarget = new EntityAILeapAtTarget(this, 0.4F);
     protected EntityAIBase aiAttackOnCollide = new EntityAIAttackOnCollide(this, 1.0D, true);
-    protected EntityAIBase aiFollowOwner = new EntityAIFollowOwner(this, 1.0D, 10.0F, 2.0F);
+    protected EntityAIBase aiFollowOwner = new EntityAIFollowBigCat(this, 1.0D, 10.0F, 2.0F);
     protected EntityAIBase aiMate = new EntityAIMate(this, 1.0D);
     protected EntityAIBase aiWander = new EntityAIWander(this, 1.0D);
     protected EntityAIBase aiBeg = new EntityAIBegBigCat(this, 8.0F); // in vanilla begging is only for wolf
@@ -145,6 +147,13 @@ public class EntityBigCat extends EntityTameable implements IModEntity
 	public void initSyncDataCompound() 
 	{
     	syncDataCompound.setFloat("scaleFactor", 1.2F);
+    	syncDataCompound.setBoolean("isInterested", false);
+    	syncDataCompound.setBoolean("isTamed", false);
+    	syncDataCompound.setBoolean("isAngry", false);
+    	syncDataCompound.setByte("collarColor", (byte) 0);
+    	syncDataCompound.setString("ownerName", "");
+    	syncDataCompound.setLong("ownerUUIDMSB", 0);
+    	syncDataCompound.setLong("ownerUUIDLSB", 0);
 	}
     
     // use clear tasks for subclasses then build up their ai task list specifically
@@ -230,31 +239,50 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         playSound("wildanimals:mob.bigCat.step", 0.15F, 1.0F); // this is randomized from 1 to 5
     }
 
-    /**
-     * (abstract) Protected helper method to write subclass entity data to NBT.
-     */
+
     @Override
-	public void writeEntityToNBT(NBTTagCompound parTagCompound)
+    public void writeToNBT(NBTTagCompound parCompound)
     {
-        super.writeEntityToNBT(parTagCompound);
-        parTagCompound.setBoolean("Angry", isAngry());
-        parTagCompound.setByte("CollarColor", (byte)getCollarColor());
+        // DEBUG
+        System.out.println("Writing NBT");
+        super.writeToNBT(parCompound);
+        parCompound.setTag("extendedPropsJabelar", syncDataCompound);
     }
 
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
     @Override
-	public void readEntityFromNBT(NBTTagCompound parTagCompound)
+    public void readFromNBT(NBTTagCompound parCompound)
     {
-        super.readEntityFromNBT(parTagCompound);
-        setAngry(parTagCompound.getBoolean("Angry"));
-
-        if (parTagCompound.hasKey("CollarColor", 99))
-        {
-            setCollarColor(parTagCompound.getByte("CollarColor"));
-        }
+        // DEBUG
+        System.out.println("Reading NBT");
+        super.readFromNBT(parCompound);
+        syncDataCompound = (NBTTagCompound) parCompound.getTag("extendedPropsJabelar");
     }
+//
+//    /**
+//     * (abstract) Protected helper method to write subclass entity data to NBT.
+//     */
+//    @Override
+//	public void writeEntityToNBT(NBTTagCompound parTagCompound)
+//    {
+//        super.writeEntityToNBT(parTagCompound);
+//        parTagCompound.setBoolean("Angry", isAngry());
+//        parTagCompound.setByte("CollarColor", (byte)getCollarColor());
+//    }
+//
+//    /**
+//     * (abstract) Protected helper method to read subclass entity data from NBT.
+//     */
+//    @Override
+//	public void readEntityFromNBT(NBTTagCompound parTagCompound)
+//    {
+//        super.readEntityFromNBT(parTagCompound);
+//        setAngry(parTagCompound.getBoolean("Angry"));
+//
+//        if (parTagCompound.hasKey("CollarColor", 99))
+//        {
+//            setCollarColor(parTagCompound.getByte("CollarColor"));
+//        }
+//    }
 
     /**
      * Returns the sound this mob makes while it's alive.
@@ -458,11 +486,11 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     }
 
     @Override
-	public void setTamed(boolean parValue)
+	public void setTamed(boolean parTamed)
     {
-        super.setTamed(parValue);
+        super.setTamed(parTamed);
 
-        if (parValue)
+        if (parTamed)
         {
             getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
         }
@@ -476,51 +504,51 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      * Called when a player interacts with a mob. e.g. gets milk from a cow, gets into the saddle on a pig.
      */
     @Override
-	public boolean interact(EntityPlayer par1EntityPlayer)
+	public boolean interact(EntityPlayer parPlayer)
     {
         
         // DEBUG
         System.out.println("EntityBigCat interact()");
  
-        ItemStack itemstack = par1EntityPlayer.inventory.getCurrentItem();
+        ItemStack itemInHand = parPlayer.inventory.getCurrentItem();
 
         // heal tamed with food
         if (isTamed())
         {
-            if (itemstack != null)
+            if (itemInHand != null)
             {
-                if (itemstack.getItem() instanceof ItemFood)
+                if (itemInHand.getItem() instanceof ItemFood)
                 {
-                    ItemFood itemfood = (ItemFood)itemstack.getItem();
+                    ItemFood itemfood = (ItemFood)itemInHand.getItem();
 
                     if (itemfood.isWolfsFavoriteMeat() && dataWatcher.getWatchableObjectFloat(18) < 20.0F)
                     {
-                        if (!par1EntityPlayer.capabilities.isCreativeMode)
+                        if (!parPlayer.capabilities.isCreativeMode)
                         {
-                            --itemstack.stackSize;
+                            --itemInHand.stackSize;
                         }
 
-                        heal(itemfood.func_150905_g(itemstack));
+                        heal(itemfood.func_150905_g(itemInHand));
 
-                        if (itemstack.stackSize <= 0)
+                        if (itemInHand.stackSize <= 0)
                         {
-                            par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack)null);
+                            parPlayer.inventory.setInventorySlotContents(parPlayer.inventory.currentItem, (ItemStack)null);
                         }
 
                         return true;
                     }
                 }
-                else if (itemstack.getItem() == Items.dye)
+                else if (itemInHand.getItem() == Items.dye)
                 {
-                    int i = BlockColored.func_150032_b(itemstack.getItemDamage());
+                    int i = BlockColored.func_150032_b(itemInHand.getItemDamage());
 
                     if (i != getCollarColor())
                     {
                         setCollarColor(i);
 
-                        if (!par1EntityPlayer.capabilities.isCreativeMode && --itemstack.stackSize <= 0)
+                        if (!parPlayer.capabilities.isCreativeMode && --itemInHand.stackSize <= 0)
                         {
-                            par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack)null);
+                            parPlayer.inventory.setInventorySlotContents(parPlayer.inventory.currentItem, (ItemStack)null);
                         }
 
                         return true;
@@ -528,7 +556,8 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                 }
             }
 
-            if (par1EntityPlayer.getCommandSenderName().equalsIgnoreCase(func_152113_b()) && !worldObj.isRemote && !isBreedingItem(itemstack))
+            // toggle sitting
+            if (parPlayer.getCommandSenderName().equalsIgnoreCase(getOwnerName()) && !worldObj.isRemote && !isBreedingItem(itemInHand))
             {
                 setSitting(!isSitting());
                 aiSit.setSitting(isSitting());
@@ -540,16 +569,16 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         }
         
         // tame with bone
-        else if (itemstack != null && itemstack.getItem() == Items.bone && !isAngry())
+        else if (itemInHand != null && itemInHand.getItem() == Items.bone && !isAngry())
         {
-            if (!par1EntityPlayer.capabilities.isCreativeMode)
+            if (!parPlayer.capabilities.isCreativeMode)
             {
-                --itemstack.stackSize;
+                --itemInHand.stackSize;
             }
 
-            if (itemstack.stackSize <= 0)
+            if (itemInHand.stackSize <= 0)
             {
-                par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack)null);
+                parPlayer.inventory.setInventorySlotContents(parPlayer.inventory.currentItem, (ItemStack)null);
             }
 
             // Try taming
@@ -562,9 +591,12 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                     setAttackTarget((EntityLivingBase)null);
                     aiSit.setSitting(true);
                     setHealth(20.0F);
-                    func_152115_b(par1EntityPlayer.getCommandSenderName()); // used to be setOwner()
+//                    setOwnerName(parPlayer.getCommandSenderName()); 
+                    setOwner(parPlayer.getUniqueID());
                     playTameEffect(true);
                     worldObj.setEntityState(this, (byte)7);
+                    // DEBUG
+                    System.out.println("Taming successful for owner = "+parPlayer.getCommandSenderName());
                 }
                 else
                 {
@@ -575,16 +607,16 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         }
         
         // grow with meat
-        else if (itemstack != null && itemstack.getItem() == Items.beef && !isAngry())
+        else if (itemInHand != null && itemInHand.getItem() == Items.beef && !isAngry())
         {
-            if (!par1EntityPlayer.capabilities.isCreativeMode)
+            if (!parPlayer.capabilities.isCreativeMode)
             {
-                --itemstack.stackSize;
+                --itemInHand.stackSize;
             }
 
-            if (itemstack.stackSize <= 0)
+            if (itemInHand.stackSize <= 0)
             {
-                par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, (ItemStack)null);
+                parPlayer.inventory.setInventorySlotContents(parPlayer.inventory.currentItem, (ItemStack)null);
             }
 
             if (!worldObj.isRemote)
@@ -604,7 +636,57 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         return true;
         }
 
-        return super.interact(par1EntityPlayer);
+        return super.interact(parPlayer);
+    }
+    
+    public String getOwnerName()
+    {
+        return getOwner().getCommandSenderName();
+        
+//        return syncDataCompound.getString("ownerName"); 
+    }
+
+//    public void setOwnerName(String parOwnerName)
+//    {
+//        syncDataCompound.setString("ownerName", parOwnerName);
+//        
+//        // don't forget to sync client and server
+//        sendEntitySyncPacket();
+//    }
+
+    public void setOwner(UUID parOwnerUUID)
+    {
+        syncDataCompound.setLong("ownerUUIDMSB", parOwnerUUID.getMostSignificantBits());
+        syncDataCompound.setLong("ownerUUIDLSB", parOwnerUUID.getLeastSignificantBits());
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
+    }
+    
+    @Override
+    public EntityLivingBase getOwner()
+    {
+        UUID uuid = new UUID(syncDataCompound.getLong("ownerUUIDMSB"), syncDataCompound.getLong("ownerUUIDLSB"));
+        return worldObj.func_152378_a(uuid); 
+        
+//        try
+//        {
+//            UUID uuid = UUID.fromString(getOwnerName());
+//            // DEBUG
+//            if (uuid == null)
+//            {
+//                System.out.println("Owner UUID is null for owner name = "+getOwnerName());
+//            }
+//            else
+//            {
+//                System.out.println("Owner UUID = "+uuid);
+//            }
+//            return uuid == null ? null : worldObj.func_152378_a(uuid);
+//        }
+//        catch (IllegalArgumentException illegalargumentexception)
+//        {
+//            return null;
+//        }
     }
 
     @Override
@@ -653,24 +735,18 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      */
     public boolean isAngry()
     {
-        return (dataWatcher.getWatchableObjectByte(16) & 2) != 0;
+        return syncDataCompound.getBoolean("isAngry");
     }
 
     /**
      * Sets whether this bigCat is angry or not.
      */
-    public void setAngry(boolean parValue)
+    public void setAngry(boolean parIsAngry)
     {
-        byte b0 = dataWatcher.getWatchableObjectByte(16);
-
-        if (parValue)
-        {
-            dataWatcher.updateObject(16, Byte.valueOf((byte)(b0 | 2)));
-        }
-        else
-        {
-            dataWatcher.updateObject(16, Byte.valueOf((byte)(b0 & -3)));
-        }
+        syncDataCompound.setBoolean("isAngry", parIsAngry);
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
     }
 
     /**
@@ -678,15 +754,18 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      */
     public int getCollarColor()
     {
-        return dataWatcher.getWatchableObjectByte(20) & 15;
+        return syncDataCompound.getByte("collarColor");
     }
 
     /**
      * Set this bigCat's collar color.
      */
-    public void setCollarColor(int par1)
+    public void setCollarColor(int parCollarColor)
     {
-        dataWatcher.updateObject(20, Byte.valueOf((byte)(par1 & 15)));
+        syncDataCompound.setByte("collarColor", (byte) parCollarColor);
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
     }
 
     @Override
@@ -708,20 +787,19 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         return entitybigCat;
     }
 
-    public void setInterested(boolean parValue)
+    public void setInterested(boolean parIsInterested)
     {
-        // DEBUG
-        System.out.println("Setting interested = "+parValue);
-        if (parValue)
-        {
-            dataWatcher.updateObject(19, Byte.valueOf((byte)1));
-        }
-        else
-        {
-            dataWatcher.updateObject(19, Byte.valueOf((byte)0));
-        }
+        syncDataCompound.setBoolean("isInterested", parIsInterested);
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
     }
 
+    public boolean getInterested()
+    {
+        return syncDataCompound.getBoolean("isInterested");
+    }
+    
     /**
      * Returns true if the mob is currently able to mate with the specified mob.
      */
@@ -749,11 +827,6 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         }
     }
 
-    public boolean getInterested()
-    {
-        return dataWatcher.getWatchableObjectByte(19) == 1;
-    }
-
     /**
      * Determines if an entity can be despawned, used on idle far away entities
      */
@@ -763,6 +836,10 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         return !isTamed() && ticksExisted > 2400;
     }
 
+    /*
+     * Used by the EntityAIOwnerHurt target and EntityAIOwnerHurtByTarget classes to identity 
+     * suitable attack targets
+     */
     @Override
 	public boolean func_142018_a(EntityLivingBase par1EntityLivingBase, EntityLivingBase par2EntityLivingBase)
     {

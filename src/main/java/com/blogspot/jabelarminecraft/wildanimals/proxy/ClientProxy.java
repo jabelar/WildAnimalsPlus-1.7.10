@@ -93,12 +93,16 @@ public class ClientProxy extends CommonProxy
 	    RenderingRegistry.registerEntityRenderingHandler(EntityItemWildAnimalsEgg.class, new RenderItem());
 
         // Big cats
-	    RenderingRegistry.registerEntityRenderingHandler(EntityTiger.class, new RenderBigCat(new ModelBigCat(), new ModelBigCat(), 
-	    		0.5F,
-	    		new ResourceLocation("wildanimals:textures/entity/tiger/tiger.png"), 
-	    		new ResourceLocation("wildanimals:textures/entity/tiger/tiger_tame.png"),
-	    		new ResourceLocation("wildanimals:textures/entity/tiger/tiger_angry.png"),
-	    		new ResourceLocation("wildanimals:textures/entity/tiger/tiger_collar.png"))); // not sure about second model
+	    RenderingRegistry.registerEntityRenderingHandler(
+	            EntityTiger.class, 
+	            new RenderBigCat(
+	                    new ModelBigCat(), 
+	                    new ModelBigCat(), 
+	                    0.5F,
+	                    new ResourceLocation("wildanimals:textures/entity/tiger/tiger.png"), 
+	                    new ResourceLocation("wildanimals:textures/entity/tiger/tiger_tame.png"),
+	                    new ResourceLocation("wildanimals:textures/entity/tiger/tiger_angry.png"),
+	                    new ResourceLocation("wildanimals:textures/entity/tiger/tiger_collar.png"))); // not sure about second model
 	    RenderingRegistry.registerEntityRenderingHandler(EntityManEatingTiger.class, new RenderBigCat(new ModelBigCat(), new ModelBigCat(), 
 	    		0.5F,
 	    		new ResourceLocation("wildanimals:textures/entity/tiger/tiger.png"), 

@@ -38,11 +38,17 @@ public class RenderBigCat extends RenderLiving
     protected ResourceLocation angryTexture ;
     protected ResourceLocation collarTexture ;
 
-    public RenderBigCat(ModelBase par1ModelBase, ModelBase par2ModelBase, float parShadowSize, ResourceLocation parNormalTexture, ResourceLocation parTamedTexture, 
-    		ResourceLocation parAngryTexture, ResourceLocation parCollarTexture)
+    public RenderBigCat(
+            ModelBase parModelBase1, 
+            ModelBase parModelBase2, 
+            float parShadowSize, 
+            ResourceLocation parNormalTexture, 
+            ResourceLocation parTamedTexture, 
+    		ResourceLocation parAngryTexture, 
+    		ResourceLocation parCollarTexture)
     {
-        super(par1ModelBase, parShadowSize);
-        this.setRenderPassModel(par2ModelBase);
+        super(parModelBase1, parShadowSize);
+        setRenderPassModel(parModelBase2);
         normalTexture = parNormalTexture ;
         tamedTexture = parTamedTexture ;
         angryTexture = parAngryTexture ;
@@ -52,28 +58,28 @@ public class RenderBigCat extends RenderLiving
     /**
      * Defines what float the third param in setRotationAngles of ModelBase is
      */
-    protected float handleRotationFloat(EntityBigCat par1EntityBigCat, float par2)
+    protected float handleRotationFloat(EntityBigCat parEntityBigCat, float par2)
     {
-        return par1EntityBigCat.getTailRotation();
+        return parEntityBigCat.getTailRotation();
     }
 
     /**
      * Queries whether should render the specified pass or not.
      */
-    protected int shouldRenderPass(EntityBigCat par1EntityBigCat, int par2, float par3)
+    protected int shouldRenderPass(EntityBigCat parEntityBigCat, int parRenderPass, float parShakeShadingFactor)
     {
-        if (par2 == 0 && par1EntityBigCat.getBigCatShaking())
+        if (parRenderPass == 0 && parEntityBigCat.getBigCatShaking())
         {
-            float f1 = par1EntityBigCat.getBrightness(par3) * par1EntityBigCat.getShadingWhileShaking(par3);
-            this.bindTexture(normalTexture);
-            GL11.glColor3f(f1, f1, f1);
+            float colorComponent = parEntityBigCat.getBrightness(parShakeShadingFactor) * parEntityBigCat.getShadingWhileShaking(parShakeShadingFactor);
+            bindTexture(normalTexture);
+            GL11.glColor3f(colorComponent, colorComponent, colorComponent);
             return 1;
         }
-        else if (par2 == 1 && par1EntityBigCat.isTamed())
+        else if (parRenderPass == 1 && parEntityBigCat.isTamed())
         {
-            this.bindTexture(collarTexture);
-            int j = par1EntityBigCat.getCollarColor();
-            GL11.glColor3f(EntitySheep.fleeceColorTable[j][0], EntitySheep.fleeceColorTable[j][1], EntitySheep.fleeceColorTable[j][2]);
+            bindTexture(collarTexture);
+            int collarColor = parEntityBigCat.getCollarColor();
+            GL11.glColor3f(EntitySheep.fleeceColorTable[collarColor][0], EntitySheep.fleeceColorTable[collarColor][1], EntitySheep.fleeceColorTable[collarColor][2]);
             return 1;
         }
         else
@@ -85,9 +91,9 @@ public class RenderBigCat extends RenderLiving
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EntityBigCat par1EntityBigCat)
+    protected ResourceLocation getEntityTexture(EntityBigCat parEntityBigCat)
     {
-        return par1EntityBigCat.isTamed() ? tamedTexture : (par1EntityBigCat.isAngry() ? angryTexture : normalTexture);
+        return parEntityBigCat.isTamed() ? tamedTexture : (parEntityBigCat.isAngry() ? angryTexture : normalTexture);
     }
 
     /**
@@ -96,7 +102,7 @@ public class RenderBigCat extends RenderLiving
     @Override
 	protected int shouldRenderPass(EntityLivingBase par1EntityLivingBase, int par2, float par3)
     {
-        return this.shouldRenderPass((EntityBigCat)par1EntityLivingBase, par2, par3);
+        return shouldRenderPass((EntityBigCat)par1EntityLivingBase, par2, par3);
     }
 
     /**
@@ -105,7 +111,7 @@ public class RenderBigCat extends RenderLiving
     @Override
 	protected float handleRotationFloat(EntityLivingBase par1EntityLivingBase, float par2)
     {
-        return this.handleRotationFloat((EntityBigCat)par1EntityLivingBase, par2);
+        return handleRotationFloat((EntityBigCat)par1EntityLivingBase, par2);
     }
 
     /**
@@ -114,6 +120,6 @@ public class RenderBigCat extends RenderLiving
     @Override
 	protected ResourceLocation getEntityTexture(Entity par1Entity)
     {
-        return this.getEntityTexture((EntityBigCat)par1Entity);
+        return getEntityTexture((EntityBigCat)par1Entity);
     }
 }

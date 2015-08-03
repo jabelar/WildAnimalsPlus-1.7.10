@@ -74,11 +74,15 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      */
     protected float targetHeadAngle;
     protected float prevHeadAngle;
+    
     /**
      * true if the bigCat is wet else false
      */
     protected boolean isShaking;
     protected boolean startedShaking;
+    
+    protected final float TAMED_HEALTH = 20.0F;
+    
     /**
      * This time increases while bigCat is shaking and emitting water particles.
      */
@@ -115,7 +119,6 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         setSize(1.0F, 1.33F);
         initSyncDataCompound();
         setupAI();		
-        setTamed(false);
  	}
 	
 	@Override
@@ -172,17 +175,9 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     @Override
 	protected void applyEntityAttributes()
     {
-        super.applyEntityAttributes(); 
-
-//        // standard attributes registered to EntityLivingBase
-//        if (isTamed())
-//        {
-//            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
-//        }
-//        else
-        {
-            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(8.0D);
-        }
+        super.applyEntityAttributes(); // registers the common attributes
+        
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(8.0D);
         getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.30D);
         getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(0.0D);
         getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(16.0D);
@@ -190,6 +185,14 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         // need to register any additional attributes
         getAttributeMap().registerAttribute(SharedMonsterAttributes.attackDamage);
         getEntityAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(4.0D);
+    }
+    
+    public void adjustEntityAttributes()
+    {
+        if (isTamed())
+        {
+            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(TAMED_HEALTH);
+        }
     }
 
     /**
@@ -225,16 +228,22 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     @Override
 	protected void updateAITick()
     {
-        dataWatcher.updateObject(18, Float.valueOf(getHealth()));
+        // Need to adjust attributes after the save data regarding
+        // whether it is tamed is loaded and synced.
+        if (ticksExisted == 10)
+        {
+            if (syncDataCompound.getBoolean("isTamed"))
+            {
+                setTamed(true);
+            }
+            adjustEntityAttributes();
+        }
     }
 
     @Override
 	protected void entityInit()
     {
         super.entityInit();
-        dataWatcher.addObject(18, new Float(getHealth()));
-        dataWatcher.addObject(19, new Byte((byte)0));
-        dataWatcher.addObject(20, new Byte((byte)BlockColored.func_150032_b(1)));
     }
 
     @Override
@@ -294,7 +303,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     @Override
 	protected String getLivingSound()
     {
-        return isAngry() ? "wildanimals:mob.bigCat.growl" : (rand.nextInt(3) == 0 ? (isTamed() && dataWatcher.getWatchableObjectFloat(18) < 10.0F ? "wildanimals:mob.bigCat.whine" : "wildanimals:mob.bigCat.panting") : "wildanimals:mob.bigCat.bark");
+        return isAngry() ? "wildanimals:mob.bigCat.growl" : (rand.nextInt(3) == 0 ? (isTamed() && getHealth() < 10.0F ? "wildanimals:mob.bigCat.whine" : "wildanimals:mob.bigCat.panting") : "wildanimals:mob.bigCat.bark");
     }
 
     /**
@@ -510,7 +519,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                 {
                     ItemFood itemfood = (ItemFood)itemInHand.getItem();
 
-                    if (itemfood.isWolfsFavoriteMeat() && dataWatcher.getWatchableObjectFloat(18) < 20.0F)
+                    if (itemfood.isWolfsFavoriteMeat() && getHealth() < TAMED_HEALTH)
                     {
                         if (!parPlayer.capabilities.isCreativeMode)
                         {
@@ -579,7 +588,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                     setPathToEntity((PathEntity)null);
                     setAttackTarget((EntityLivingBase)null);
                     aiSit.setSitting(true);
-                    setHealth(20.0F);
+                    setHealth(TAMED_HEALTH);
 //                    setOwnerName(parPlayer.getCommandSenderName()); 
                     setOwner(parPlayer.getUniqueID());
                     playTameEffect(true);
@@ -646,7 +655,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
 
         if (parTamed)
         {
-            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20.0D);
+            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(TAMED_HEALTH);
         }
         else
         {
@@ -738,7 +747,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     @SideOnly(Side.CLIENT)
     public float getTailRotation()
     {
-        return isAngry() ? 1.5393804F : (isTamed() ? (0.55F - (20.0F - dataWatcher.getWatchableObjectFloat(18)) * 0.02F) * (float)Math.PI : ((float)Math.PI / 5F));
+        return isAngry() ? 1.5393804F : (isTamed() ? (0.55F - (TAMED_HEALTH - getHealth()) * 0.02F) * (float)Math.PI : ((float)Math.PI / 5F));
     }
 
     /**

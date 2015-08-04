@@ -427,7 +427,7 @@ public class CommonProxy
         EntityRegistry.addSpawn(EntityBirdOfPrey.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.roofedForest); //change the values to vary the spawn rarity, biome, etc.              
 
         // stone beach
-        EntityRegistry.addSpawn(EntitySerpent.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.stoneBeach); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntitySerpent.class, 5, 1, 1, EnumCreatureType.monster, BiomeGenBase.stoneBeach); //change the values to vary the spawn rarity, biome, etc.              
     }
     
     public void registerFuelHandlers()

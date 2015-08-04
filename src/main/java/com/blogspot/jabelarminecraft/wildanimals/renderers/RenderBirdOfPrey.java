@@ -20,13 +20,18 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
 
 public class RenderBirdOfPrey extends RenderLiving
 {
     protected ResourceLocation birdOfPreyTexture;
+    protected ResourceLocation birdOfPreyTamedTexture;
+    protected ResourceLocation legBandTexture;
 
     public RenderBirdOfPrey(ModelBase par1ModelBase, float parShadowSize)
     {
@@ -48,6 +53,8 @@ public class RenderBirdOfPrey extends RenderLiving
     protected void setEntityTexture()
     {
     	birdOfPreyTexture = new ResourceLocation("wildanimals:textures/entity/birdsofprey/eagle.png");
+        birdOfPreyTamedTexture = new ResourceLocation("wildanimals:textures/entity/birdsofprey/eagletamed.png");
+    	legBandTexture = new ResourceLocation("wildanimals:textures/entity/birdsofprey/legbands.png");
     }
     
     /**
@@ -64,6 +71,34 @@ public class RenderBirdOfPrey extends RenderLiving
     @Override
 	protected ResourceLocation getEntityTexture(Entity par1Entity)
     {
-        return this.getEntityTexture((EntityBirdOfPrey)par1Entity);
+        return getEntityTexture((EntityBirdOfPrey)par1Entity);
     }
+    
+    /**
+     * Queries whether should render the specified pass or not.
+     */
+    protected int shouldRenderPass(EntityBirdOfPrey parEntityBirdOfPrey, int parRenderPass, float parShakeShadingFactor)
+    {
+        if (parRenderPass == 1 && parEntityBirdOfPrey.isTamed())
+        {
+            bindTexture(legBandTexture);
+            int collarColor = parEntityBirdOfPrey.getCollarColor();
+            GL11.glColor3f(EntitySheep.fleeceColorTable[collarColor][0], EntitySheep.fleeceColorTable[collarColor][1], EntitySheep.fleeceColorTable[collarColor][2]);
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    /**
+     * Queries whether should render the specified pass or not.
+     */
+    @Override
+    protected int shouldRenderPass(EntityLivingBase parEntityLivingBase, int parRenderPass, float par3)
+    {
+        return shouldRenderPass((EntityBirdOfPrey)parEntityLivingBase, parRenderPass, par3);
+    }
+
 }

@@ -75,20 +75,20 @@ public class EntityAIFollowBigCat extends EntityAIBase
         }
         else if (thePet.isSitting())
         {
-            // DEBUG
-            System.out.println("Follow AI not starting execution because the pet is sitting");
+//            // DEBUG
+//            System.out.println("Follow AI not starting execution because the pet is sitting");
             return false;
         }
         else if (thePet.getDistanceSqToEntity(theOwner) < minDist * minDist)
         {
-            // DEBUG
-            System.out.println("Follow AI not starting execution because the owner is too close");
+//            // DEBUG
+//            System.out.println("Follow AI not starting execution because the owner is too close");
             return false;
         }
         else
         {
-            // DEBUG
-            System.out.println("Follow AI is starting execution");
+//            // DEBUG
+//            System.out.println("Follow AI is starting execution");
             return true;
         }
     }
@@ -103,8 +103,8 @@ public class EntityAIFollowBigCat extends EntityAIBase
                 !petPathfinder.noPath() 
                 && thePet.getDistanceSqToEntity(theOwner) > maxDist * maxDist 
                 && !thePet.isSitting();
-        // DEBUG
-        if (!continueExecuting) System.out.println("Continue executing = "+continueExecuting);
+//        // DEBUG
+//        if (!continueExecuting) System.out.println("Continue executing = "+continueExecuting);
         return continueExecuting;
     }
 

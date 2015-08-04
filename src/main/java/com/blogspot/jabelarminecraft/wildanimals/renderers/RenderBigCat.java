@@ -91,6 +91,15 @@ public class RenderBigCat extends RenderLiving
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
+    @Override
+    protected ResourceLocation getEntityTexture(Entity par1Entity)
+    {
+        return getEntityTexture((EntityBigCat)par1Entity);
+    }
+
+    /**
+     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
+     */
     protected ResourceLocation getEntityTexture(EntityBigCat parEntityBigCat)
     {
         return parEntityBigCat.isTamed() ? tamedTexture : (parEntityBigCat.isAngry() ? angryTexture : normalTexture);
@@ -112,14 +121,5 @@ public class RenderBigCat extends RenderLiving
 	protected float handleRotationFloat(EntityLivingBase par1EntityLivingBase, float par2)
     {
         return handleRotationFloat((EntityBigCat)par1EntityLivingBase, par2);
-    }
-
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
-    @Override
-	protected ResourceLocation getEntityTexture(Entity par1Entity)
-    {
-        return getEntityTexture((EntityBigCat)par1Entity);
     }
 }

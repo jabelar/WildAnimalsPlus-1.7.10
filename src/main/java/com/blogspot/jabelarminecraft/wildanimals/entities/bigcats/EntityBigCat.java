@@ -270,32 +270,6 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         super.readFromNBT(parCompound);
         syncDataCompound = (NBTTagCompound) parCompound.getTag("extendedPropsJabelar");
     }
-//
-//    /**
-//     * (abstract) Protected helper method to write subclass entity data to NBT.
-//     */
-//    @Override
-//	public void writeEntityToNBT(NBTTagCompound parTagCompound)
-//    {
-//        super.writeEntityToNBT(parTagCompound);
-//        parTagCompound.setBoolean("Angry", isAngry());
-//        parTagCompound.setByte("CollarColor", (byte)getCollarColor());
-//    }
-//
-//    /**
-//     * (abstract) Protected helper method to read subclass entity data from NBT.
-//     */
-//    @Override
-//	public void readEntityFromNBT(NBTTagCompound parTagCompound)
-//    {
-//        super.readEntityFromNBT(parTagCompound);
-//        setAngry(parTagCompound.getBoolean("Angry"));
-//
-//        if (parTagCompound.hasKey("CollarColor", 99))
-//        {
-//            setCollarColor(parTagCompound.getByte("CollarColor"));
-//        }
-//    }
 
     /**
      * Returns the sound this mob makes while it's alive.

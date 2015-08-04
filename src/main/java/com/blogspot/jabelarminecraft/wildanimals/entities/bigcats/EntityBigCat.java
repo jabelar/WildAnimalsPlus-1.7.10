@@ -239,7 +239,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
             adjustEntityAttributes();
         }
     }
-
+ 
     @Override
 	protected void entityInit()
     {
@@ -269,6 +269,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         System.out.println("Reading NBT");
         super.readFromNBT(parCompound);
         syncDataCompound = (NBTTagCompound) parCompound.getTag("extendedPropsJabelar");
+        sendEntitySyncPacket();
     }
 
     /**
@@ -563,7 +564,6 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                     setAttackTarget((EntityLivingBase)null);
                     aiSit.setSitting(true);
                     setHealth(TAMED_HEALTH);
-//                    setOwnerName(parPlayer.getCommandSenderName()); 
                     setOwner(parPlayer.getUniqueID());
                     playTameEffect(true);
                     worldObj.setEntityState(this, (byte)7);
@@ -655,17 +655,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     public String getOwnerName()
     {
         return getOwner().getCommandSenderName();
-        
-//        return syncDataCompound.getString("ownerName"); 
     }
-
-//    public void setOwnerName(String parOwnerName)
-//    {
-//        syncDataCompound.setString("ownerName", parOwnerName);
-//        
-//        // don't forget to sync client and server
-//        sendEntitySyncPacket();
-//    }
 
     public void setOwner(UUID parOwnerUUID)
     {
@@ -681,25 +671,6 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     {
         UUID uuid = new UUID(syncDataCompound.getLong("ownerUUIDMSB"), syncDataCompound.getLong("ownerUUIDLSB"));
         return worldObj.func_152378_a(uuid); 
-        
-//        try
-//        {
-//            UUID uuid = UUID.fromString(getOwnerName());
-//            // DEBUG
-//            if (uuid == null)
-//            {
-//                System.out.println("Owner UUID is null for owner name = "+getOwnerName());
-//            }
-//            else
-//            {
-//                System.out.println("Owner UUID = "+uuid);
-//            }
-//            return uuid == null ? null : worldObj.func_152378_a(uuid);
-//        }
-//        catch (IllegalArgumentException illegalargumentexception)
-//        {
-//            return null;
-//        }
     }
 
     @Override

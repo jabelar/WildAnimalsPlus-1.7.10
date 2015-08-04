@@ -494,6 +494,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         syncDataCompound = (NBTTagCompound) parCompound.getTag("extendedPropsJabelar");
         // DEBUG
         System.out.println("State = "+getState());
+        sendEntitySyncPacket();
     }
 
     // *****************************************************

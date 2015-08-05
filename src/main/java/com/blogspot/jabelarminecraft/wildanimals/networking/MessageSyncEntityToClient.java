@@ -46,8 +46,8 @@ public class MessageSyncEntityToClient implements IMessage
     {
     	entityId = parEntityId;
         entitySyncDataCompound = parTagCompound;
-        // DEBUG
-        System.out.println("SyncEntityToClient constructor");
+//        // DEBUG
+//        System.out.println("SyncEntityToClient constructor");
     }
 
     @Override
@@ -55,8 +55,8 @@ public class MessageSyncEntityToClient implements IMessage
     {
     	entityId = ByteBufUtils.readVarInt(buf, 4);
     	entitySyncDataCompound = ByteBufUtils.readTag(buf); // this class is very useful in general for writing more complex objects
-    	// DEBUG
-    	System.out.println("fromBytes");
+//    	// DEBUG
+//    	System.out.println("fromBytes");
     }
 
     @Override
@@ -64,8 +64,8 @@ public class MessageSyncEntityToClient implements IMessage
     {
     	ByteBufUtils.writeVarInt(buf, entityId, 4);
     	ByteBufUtils.writeTag(buf, entitySyncDataCompound);
-        // DEBUG
-        System.out.println("toBytes encoded");
+//        // DEBUG
+//        System.out.println("toBytes encoded");
     }
 
     public static class Handler implements IMessageHandler<MessageSyncEntityToClient, IMessage> 
@@ -79,13 +79,13 @@ public class MessageSyncEntityToClient implements IMessage
         	if (theEntity != null)
         	{
         		theEntity.setSyncDataCompound(message.entitySyncDataCompound);
-        	// DEBUG
-        	System.out.println("MessageSyncEnitityToClient onMessage(), entity ID = "+message.entityId);
+//        	// DEBUG
+//        	System.out.println("MessageSyncEnitityToClient onMessage(), entity ID = "+message.entityId);
         	}
         	else
         	{
-        		// DEBUG
-        		System.out.println("Can't find entity with ID = "+message.entityId+" on client");
+//        		// DEBUG
+//        		System.out.println("Can't find entity with ID = "+message.entityId+" on client");
         	}
         	return null; // no response in this case
         }

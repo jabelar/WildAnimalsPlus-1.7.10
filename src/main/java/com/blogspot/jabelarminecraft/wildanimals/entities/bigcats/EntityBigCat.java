@@ -113,8 +113,8 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     {
         super(par1World);
         
-        // DEBUG
-        System.out.println("EntityBigCat constructor(), "+"on Client="+par1World.isRemote);
+//        // DEBUG
+//        System.out.println("EntityBigCat constructor(), "+"on Client="+par1World.isRemote);
 
         setSize(1.0F, 1.33F);
         initSyncDataCompound();
@@ -149,8 +149,8 @@ public class EntityBigCat extends EntityTameable implements IModEntity
 	@Override
 	public void initSyncDataCompound() 
 	{
-	    // DEBUG
-	    System.out.println("Initializing sync data compound");
+//	    // DEBUG
+//	    System.out.println("Initializing sync data compound");
 	    
     	syncDataCompound.setFloat("scaleFactor", 1.2F);
     	syncDataCompound.setBoolean("isInterested", false);
@@ -256,8 +256,8 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     @Override
     public void writeToNBT(NBTTagCompound parCompound)
     {
-        // DEBUG
-        System.out.println("Writing NBT");
+//        // DEBUG
+//        System.out.println("Writing NBT");
         super.writeToNBT(parCompound);
         parCompound.setTag("extendedPropsJabelar", syncDataCompound);
     }
@@ -265,8 +265,8 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     @Override
     public void readFromNBT(NBTTagCompound parCompound)
     {
-        // DEBUG
-        System.out.println("Reading NBT");
+//        // DEBUG
+//        System.out.println("Reading NBT");
         super.readFromNBT(parCompound);
         syncDataCompound = (NBTTagCompound) parCompound.getTag("extendedPropsJabelar");
         sendEntitySyncPacket();

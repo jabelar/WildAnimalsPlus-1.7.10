@@ -364,9 +364,9 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
                     {
                         setLegBandColor(i);
 
-                        if (!parPlayer.capabilities.isCreativeMode && --itemInHand.stackSize <= 0)
+                        if (!parPlayer.capabilities.isCreativeMode)
                         {
-                            parPlayer.inventory.setInventorySlotContents(parPlayer.inventory.currentItem, (ItemStack)null);
+                            --itemInHand.stackSize;
                         }
 
                         return true;
@@ -391,7 +391,10 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     
                     // DEBUG
                     System.out.println("It likes the raw salmon");
-                    --itemInHand.stackSize;
+                    if (!parPlayer.capabilities.isCreativeMode)
+                    {
+                        --itemInHand.stackSize;
+                    }
                 }
                 else
                 {

@@ -23,7 +23,6 @@ import net.minecraft.block.BlockLeaves;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
@@ -125,7 +124,7 @@ public class UpdateStateBirdOfPrey
     {
         if (theBird.isTamed())
         {
-                processOwnerAttack();
+            processOwnerAttack();
      
             if (theBird.getAttackTarget() != null)
             {
@@ -151,10 +150,7 @@ public class UpdateStateBirdOfPrey
         // check if block perched upon has disappeared
 //            // DEBUG
 //            System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
-        if (theBird.worldObj.getBlock(
-                MathHelper.floor_double(theBird.posX), 
-                (int)theBird.posY - 1, 
-                MathHelper.floor_double(theBird.posZ)) == Blocks.air)
+        if (!hasLanded())
         {
             theBird.setState(AIStates.STATE_TAKING_OFF);
         }
@@ -276,21 +272,20 @@ public class UpdateStateBirdOfPrey
 //            System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
         // handle case where perch target block might get destroyed before eagle gets to it
         // or might get obstructed.
-        if (theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ) instanceof BlockLeaves
-                && Utilities.isCourseTraversable(
-                            theBird,
-                            theBird.posX, 
-                            theBird.worldObj.getHeightValue(
-                                    (int)theBird.posX, 
-                                    (int)theBird.posZ), 
-                            theBird.posZ))
-        {
+//        if (theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ) instanceof BlockLeaves
+//                && Utilities.isCourseTraversable(
+//                            theBird,
+//                            theBird.posX, 
+//                            theBird.worldObj.getHeightValue(
+//                                    (int)theBird.posX, 
+//                                    (int)theBird.posZ), 
+//                            theBird.posZ))
+//        {
             // see if made it to perch
-            if (theBird.worldObj.getBlock(
-                    MathHelper.floor_double(theBird.posX), 
-                    (int)theBird.posY - 1, 
-                    MathHelper.floor_double(theBird.posZ)) != Blocks.air)
+            if (hasLanded())
             {
+                // DEBUG
+                System.out.println("Made it to perch");
                 if (theBird.isTamed())
                 {
                     theBird.setState(AIStates.STATE_PERCHED_TAMED);
@@ -300,10 +295,24 @@ public class UpdateStateBirdOfPrey
                     theBird.setState(AIStates.STATE_PERCHED);
                 }
             }
+//        }
+//        else
+//        {
+//            theBird.setState(AIStates.STATE_TAKING_OFF);
+//        }
+    }
+    
+    private boolean hasLanded()
+    {
+        AxisAlignedBB entityBoundingBox = theBird.boundingBox.copy().offset(0.0D, -0.5D, 0.0D);
+
+        if (!theBird.worldObj.getCollidingBoundingBoxes(theBird, entityBoundingBox).isEmpty())
+        {
+            return true;
         }
         else
         {
-            theBird.setState(AIStates.STATE_TAKING_OFF);
+            return false;
         }
     }
 
@@ -366,10 +375,7 @@ public class UpdateStateBirdOfPrey
         {
             theBird.setState(AIStates.STATE_PERCHED_TAMED);
         }
-        else if (theBird.worldObj.getBlock(
-                MathHelper.floor_double(theBird.posX), 
-                (int)theBird.posY - 1, 
-                MathHelper.floor_double(theBird.posZ)) == Blocks.air)
+        else if (!hasLanded())
         {
             theBird.setState(AIStates.STATE_TAKING_OFF);
         }

@@ -231,8 +231,8 @@ public class Utilities
     	Entity theEntity = (Entity)parEntity;
         if (!theEntity.worldObj.isRemote)
         {
-        	// DEBUG
-        	System.out.println("sendEntitySyncPacket from server");
+//        	// DEBUG
+//        	System.out.println("sendEntitySyncPacket from server");
             WildAnimals.network.sendToAll(new MessageSyncEntityToClient(theEntity.getEntityId(), parEntity.getSyncDataCompound()));           
         }
     }

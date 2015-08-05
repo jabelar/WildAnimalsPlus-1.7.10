@@ -29,8 +29,8 @@ public class EntityAIPanicHerdAnimal extends EntityAIBase
         theEntity = par1Entity;
         setMutexBits(1);
 
-        // DEBUG
-        System.out.println("EntityAIPanicHerdAnimal constructor(), client side = "+theEntity.worldObj.isRemote);
+//        // DEBUG
+//        System.out.println("EntityAIPanicHerdAnimal constructor(), client side = "+theEntity.worldObj.isRemote);
     }
 
     /**
@@ -62,8 +62,8 @@ public class EntityAIPanicHerdAnimal extends EntityAIBase
     @Override
     public void startExecuting()
     {
-        // DEBUG
-        System.out.println("AIPanic startExecute(), isRearing = "+theEntity.isRearing()+", client side = "+theEntity.worldObj.isRemote);
+//        // DEBUG
+//        System.out.println("AIPanic startExecute(), isRearing = "+theEntity.isRearing()+", client side = "+theEntity.worldObj.isRemote);
     }
 
     /**
@@ -79,17 +79,17 @@ public class EntityAIPanicHerdAnimal extends EntityAIBase
             theEntity.setRearing(false);
             theEntity.setAttackTarget(theEntity.getLastAttacker()); // now attack back
         }
-        // DEBUG
-        if (theEntity.getAITarget() != null)
-        {
-        System.out.println("AIPanic continueExecuting = "+continueExecuting+", rearingCounter = "+theEntity.getRearingCounter()+", isRearing = "
-                +theEntity.isRearing()+", Attack Target = "+theEntity.getAITarget().getClass().getSimpleName()+", client side = "+theEntity.worldObj.isRemote);
-        }
-        else
-        {
-            System.out.println("AIPanic continueExecuting = "+continueExecuting+", rearingCounter = "+theEntity.getRearingCounter()+", isRearing = "
-                    +theEntity.isRearing()+", Attack Target = null"+", client side = "+theEntity.worldObj.isRemote);
-        }
+//        // DEBUG
+//        if (theEntity.getAITarget() != null)
+//        {
+//        System.out.println("AIPanic continueExecuting = "+continueExecuting+", rearingCounter = "+theEntity.getRearingCounter()+", isRearing = "
+//                +theEntity.isRearing()+", Attack Target = "+theEntity.getAITarget().getClass().getSimpleName()+", client side = "+theEntity.worldObj.isRemote);
+//        }
+//        else
+//        {
+//            System.out.println("AIPanic continueExecuting = "+continueExecuting+", rearingCounter = "+theEntity.getRearingCounter()+", isRearing = "
+//                    +theEntity.isRearing()+", Attack Target = null"+", client side = "+theEntity.worldObj.isRemote);
+//        }
         return (continueExecuting);
     }
 }

@@ -25,8 +25,8 @@ public class EntityElephant extends EntityHerdAnimal
 	{
 		super(par1World);
 	    
-		// DEBUG
-        System.out.println("EntityElephant constructor()");
+//		// DEBUG
+//        System.out.println("EntityElephant constructor()");
 
         initSyncDataCompound();
         setSize(width*getScaleFactor(), height*getScaleFactor());

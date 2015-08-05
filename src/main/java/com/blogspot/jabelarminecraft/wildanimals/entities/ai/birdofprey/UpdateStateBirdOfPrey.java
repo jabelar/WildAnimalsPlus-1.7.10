@@ -414,8 +414,9 @@ public class UpdateStateBirdOfPrey
         else
         {
             // always try to perch starting at dusk
-            if (theBird.worldObj.getWorldTime()%24000 > 12000 
-                    || theBird.getRNG().nextInt(perchChance) == 0)
+//            if (theBird.worldObj.getWorldTime()%24000 > 12000 
+//                    || theBird.getRNG().nextInt(perchChance) == 0)
+            if (theBird.getRNG().nextInt(perchChance) == 0)
             {
                 if (theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ) instanceof BlockLeaves)
                 {

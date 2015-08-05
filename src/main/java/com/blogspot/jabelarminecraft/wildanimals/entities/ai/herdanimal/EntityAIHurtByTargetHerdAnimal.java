@@ -37,8 +37,8 @@ public class EntityAIHurtByTargetHerdAnimal extends EntityAITarget
         taskOwnerHerdAnimal = (EntityHerdAnimal)taskOwner;
         setMutexBits(1);
         
-        // DEBUG
-    	System.out.println("EntityAIHurtByTargetHerdAnimal constructor(), client side = "+taskOwnerHerdAnimal.worldObj.isRemote);
+//        // DEBUG
+//    	System.out.println("EntityAIHurtByTargetHerdAnimal constructor(), client side = "+taskOwnerHerdAnimal.worldObj.isRemote);
     }
 
     /**

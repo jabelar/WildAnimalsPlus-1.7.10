@@ -25,8 +25,8 @@ public class EntityLion extends EntityBigCat
 	{
 		super(par1World);
 	    
-		// DEBUG
-        System.out.println("EntityLion constructor()");
+//		// DEBUG
+//        System.out.println("EntityLion constructor()");
         
 	}
 }

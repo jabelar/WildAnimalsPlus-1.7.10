@@ -109,9 +109,9 @@ public class EntityBigCat extends EntityTameable implements IModEntity
 	protected EntityAIBase aiTargetNonTamedHerdAnimal = new EntityAITargetNonTamed(this, EntityHerdAnimal.class, 200, false);
 
 	
-    public EntityBigCat(World par1World)
+    public EntityBigCat(World parWorld)
     {
-        super(par1World);
+        super(parWorld);
         
 //        // DEBUG
 //        System.out.println("EntityBigCat constructor(), "+"on Client="+par1World.isRemote);
@@ -232,9 +232,14 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         // whether it is tamed is loaded and synced.
         if (ticksExisted == 10)
         {
+            // note that the setTamed also forces a full NBT sync to client
             if (syncDataCompound.getBoolean("isTamed"))
             {
                 setTamed(true);
+            }
+            else
+            {
+                setTamed(false);
             }
             adjustEntityAttributes();
         }

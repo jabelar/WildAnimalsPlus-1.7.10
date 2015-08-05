@@ -142,9 +142,18 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     @Override
     protected void updateAITick()
     {        
-        if (ticksExisted == 1)
+        if (ticksExisted == 10)
         {
-            sendEntitySyncPacket();
+            // note that the setTamed also forces a full NBT sync to client
+            String ownerUUIDString = syncDataCompound.getString("ownerUUIDString");
+            if (ownerUUIDString != "")
+            {
+                setOwnerUUIDString(ownerUUIDString);
+            }
+            else
+            {
+                setOwnerUUIDString("");
+            }
         }
         
         aiHelper.updateAITick();
@@ -510,8 +519,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     @Override
     public void writeToNBT(NBTTagCompound parCompound)
     {
-        // DEBUG
-        System.out.println("Writing NBT");
+//        // DEBUG
+//        System.out.println("Writing NBT");
         super.writeToNBT(parCompound);
         parCompound.setTag("extendedPropsJabelar", syncDataCompound);
     }

@@ -59,8 +59,8 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
     {
         super(par1World);
         
-        // DEBUG
-        System.out.println("EntityHerdAnimal constructor(), entity.worldObj.isRemote = "+this.worldObj.isRemote);
+//        // DEBUG
+//        System.out.println("EntityHerdAnimal constructor(), entity.worldObj.isRemote = "+this.worldObj.isRemote);
 
         setSize(0.9F, 1.3F);
         initSyncDataCompound();

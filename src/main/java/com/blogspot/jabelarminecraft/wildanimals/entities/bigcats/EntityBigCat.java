@@ -88,7 +88,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
      */
     protected float timeBigCatIsShaking;
     protected float prevTimeBigCatIsShaking;
-    	
+ 
     // good to have instances of AI so task list can be modified, including in sub-classes
     protected EntityAIBase aiSwimming = new EntityAISwimming(this);
     protected EntityAIBase aiLeapAtTarget = new EntityAILeapAtTarget(this, 0.4F);

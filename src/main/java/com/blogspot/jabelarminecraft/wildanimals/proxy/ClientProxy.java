@@ -135,7 +135,16 @@ public class ClientProxy extends CommonProxy
 	    RenderingRegistry.registerEntityRenderingHandler(EntitySerpent.class, new RenderSerpent(new ModelSerpent(), 0.0F));
 
 	    // Birds of Prey
-	    RenderingRegistry.registerEntityRenderingHandler(EntityBirdOfPrey.class, new RenderBirdOfPrey(new ModelBirdOfPrey(), 0.5F));
+	    RenderingRegistry.registerEntityRenderingHandler(
+	            EntityBirdOfPrey.class, 
+	            new RenderBirdOfPrey(
+	                    new ModelBirdOfPrey(), 
+	                    new ModelBirdOfPrey(), 
+	                    0.5F,
+	                    new ResourceLocation("wildanimals:textures/entity/birdsofprey/eagle.png"),
+	                    new ResourceLocation("wildanimals:textures/entity/birdsofprey/bird_of_prey_legband.png")
+	                    )
+	            );
     }
 	
     @Override

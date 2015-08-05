@@ -95,6 +95,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         syncDataCompound.setDouble("anchorY", posY);
         syncDataCompound.setDouble("anchorZ", posZ);
         syncDataCompound.setString("ownerUUIDString", "");
+        syncDataCompound.setInteger("legBandColor", 0);
     }
     
     // use clear tasks then build up their custom ai task list specifically
@@ -140,9 +141,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
      */
     @Override
     protected void updateAITick()
-    {
-        dataWatcher.updateObject(18, Float.valueOf(getHealth()));
-        
+    {        
         if (ticksExisted == 1)
         {
             sendEntitySyncPacket();
@@ -173,7 +172,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     @SideOnly(Side.CLIENT)
     public boolean isInRangeToRenderDist(double parDistance)
     {
-        return true;
+        return true; // need to see them even when far away or high above
     }
 
     /**
@@ -190,14 +189,20 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
      * Called when the mob is falling. Calculates and applies fall damage.
      */
     @Override
-    protected void fall(float p_70069_1_) {}
+    protected void fall(float p_70069_1_) 
+    {
+        
+    }
 
     /**
      * Takes in the distance the entity has fallen this tick and whether its on the ground to update the fall distance
      * and deal fall damage if landing on the ground.  Args: distanceFallenThisTick, onGround
      */
     @Override
-    protected void updateFallState(double p_70064_1_, boolean p_70064_3_) {}
+    protected void updateFallState(double p_70064_1_, boolean p_70064_3_) 
+    {
+        
+    }
 
     /**
      * Return whether this entity should NOT trigger a pressure plate or a tripwire.
@@ -225,9 +230,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     protected void entityInit()
     {
         super.entityInit();
-        dataWatcher.addObject(18, new Float(getHealth()));
-        dataWatcher.addObject(19, new Byte((byte)0));
-        dataWatcher.addObject(20, new Byte((byte)BlockColored.func_150032_b(1)));
     }
     
     @Override
@@ -349,12 +351,37 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         // DEBUG
         System.out.println("EntityBirdOfPrey interact()");
         
-        ItemStack theHeldItemStack = parPlayer.inventory.getCurrentItem();
-        if (theHeldItemStack != null)
+        ItemStack itemInHand = parPlayer.inventory.getCurrentItem();
+        if (isTamed())
+        {
+            if (itemInHand != null)
+            {
+                if (itemInHand.getItem() == Items.dye)
+                {
+                    int i = BlockColored.func_150032_b(itemInHand.getItemDamage());
+
+                    if (i != getLegBandColor())
+                    {
+                        setLegBandColor(i);
+
+                        if (!parPlayer.capabilities.isCreativeMode && --itemInHand.stackSize <= 0)
+                        {
+                            parPlayer.inventory.setInventorySlotContents(parPlayer.inventory.currentItem, (ItemStack)null);
+                        }
+
+                        return true;
+                    }
+                }
+            }
+        }
+        else if (itemInHand != null)
         {
             // check if raw salmon
-            if (isTamingFood(theHeldItemStack))
+            if (isTamingFood(itemInHand))
             {
+                // DEBUG
+                System.out.println("Trying taming food");
+                
                 if (rand.nextInt(3) == 0)
                 {
                     spawnTamingParticles(true);
@@ -364,7 +391,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     
                     // DEBUG
                     System.out.println("It likes the raw salmon");
-                    --theHeldItemStack.stackSize;
+                    --itemInHand.stackSize;
                 }
                 else
                 {
@@ -381,6 +408,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         // check for raw salmon
         return (parItemStack.getItem() == Items.fish && parItemStack.getItemDamage() == 1);
     }
+    
     /**
      * Will return how many at most can spawn in a chunk at once.
      */
@@ -684,9 +712,28 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         return preyArray;
     }
 
-    public void setPreyArray(Class[] preyArray)
+    public void setPreyArray(Class[] parPreyArray)
     {
-        this.preyArray = preyArray;
+        preyArray = parPreyArray;
+    }
+
+    /**
+     * Return this bigCat's collar color.
+     */
+    public int getLegBandColor()
+    {
+        return syncDataCompound.getByte("legBandColor");
+    }
+
+    /**
+     * Set this bigCat's collar color.
+     */
+    public void setLegBandColor(int parLegBandColor)
+    {
+        syncDataCompound.setByte("legBandColor", (byte) parLegBandColor);
+        
+        // don't forget to sync client and server
+        sendEntitySyncPacket();
     }
 
 }

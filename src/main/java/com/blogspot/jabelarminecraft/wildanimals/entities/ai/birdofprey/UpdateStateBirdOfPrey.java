@@ -166,21 +166,6 @@ public class UpdateStateBirdOfPrey
                 theBird.setState(AIStates.STATE_TAKING_OFF);
                 // rotationYawHead = rand.nextInt(360);
             }
-
-            // entity can get scared if player gets too close
-            EntityPlayer closestPlayer = theBird.worldObj.getClosestPlayerToEntity(theBird, 4.0D);
-            if (closestPlayer != null)
-            {
-                ItemStack theHeldItemStack = closestPlayer.inventory.getCurrentItem();
-                if (theHeldItemStack != null)
-                {
-                    // if not holding taming food, bird will get spooked
-                    if (!theBird.isTamingFood(theHeldItemStack))
-                    {
-                        theBird.setState(AIStates.STATE_TAKING_OFF);
-                    }
-                }
-            }
         }
     }
 

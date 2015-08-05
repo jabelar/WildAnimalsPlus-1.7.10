@@ -48,7 +48,7 @@ public class RenderBigCat extends RenderLiving
     		ResourceLocation parCollarTexture)
     {
         super(parModelBase1, parShadowSize);
-        setRenderPassModel(parModelBase2);
+        setRenderPassModel(parModelBase2); // I think this is for collar rendering
         normalTexture = parNormalTexture ;
         tamedTexture = parTamedTexture ;
         angryTexture = parAngryTexture ;

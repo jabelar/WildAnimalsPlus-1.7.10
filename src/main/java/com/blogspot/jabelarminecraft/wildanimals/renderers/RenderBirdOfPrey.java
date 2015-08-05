@@ -30,18 +30,25 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBird
 public class RenderBirdOfPrey extends RenderLiving
 {
     protected ResourceLocation birdOfPreyTexture;
-    protected ResourceLocation birdOfPreyTamedTexture;
     protected ResourceLocation legBandTexture;
 
-    public RenderBirdOfPrey(ModelBase par1ModelBase, float parShadowSize)
+    public RenderBirdOfPrey(
+            ModelBase parModelBase1, 
+            ModelBase parModelBase2, 
+            float parShadowSize,
+            ResourceLocation parNormalTexture, 
+            ResourceLocation parLegBandTexture
+            )
     {
-        super(par1ModelBase, parShadowSize);
-        setEntityTexture();
-        
+        super(parModelBase1, parShadowSize);
+        setRenderPassModel(parModelBase2); // I believe this is used for the leg band
+        birdOfPreyTexture = parNormalTexture;
+        legBandTexture = parLegBandTexture;        
     }
 	
     @Override
-	protected void preRenderCallback(EntityLivingBase entity, float f){
+	protected void preRenderCallback(EntityLivingBase entity, float f)
+    {
     	preRenderCallbackBirdOfPrey((EntityBirdOfPrey) entity, f);
     }
 
@@ -50,28 +57,21 @@ public class RenderBirdOfPrey extends RenderLiving
 	{
     }
 
-    protected void setEntityTexture()
-    {
-    	birdOfPreyTexture = new ResourceLocation("wildanimals:textures/entity/birdsofprey/eagle.png");
-        birdOfPreyTamedTexture = new ResourceLocation("wildanimals:textures/entity/birdsofprey/eagletamed.png");
-    	legBandTexture = new ResourceLocation("wildanimals:textures/entity/birdsofprey/legbands.png");
-    }
-    
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EntityBirdOfPrey par1EntityBirdOfPrey)
+    @Override
+    protected ResourceLocation getEntityTexture(Entity par1Entity)
     {
-        return birdOfPreyTexture;
+        return getEntityTexture((EntityBirdOfPrey)par1Entity);
     }
 
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    @Override
-	protected ResourceLocation getEntityTexture(Entity par1Entity)
+    protected ResourceLocation getEntityTexture(EntityBirdOfPrey parEntityBirdOfPrey)
     {
-        return getEntityTexture((EntityBirdOfPrey)par1Entity);
+        return birdOfPreyTexture;
     }
     
     /**
@@ -82,8 +82,8 @@ public class RenderBirdOfPrey extends RenderLiving
         if (parRenderPass == 1 && parEntityBirdOfPrey.isTamed())
         {
             bindTexture(legBandTexture);
-            int collarColor = parEntityBirdOfPrey.getCollarColor();
-            GL11.glColor3f(EntitySheep.fleeceColorTable[collarColor][0], EntitySheep.fleeceColorTable[collarColor][1], EntitySheep.fleeceColorTable[collarColor][2]);
+            int legBandColor = parEntityBirdOfPrey.getLegBandColor();
+            GL11.glColor3f(EntitySheep.fleeceColorTable[legBandColor][0], EntitySheep.fleeceColorTable[legBandColor][1], EntitySheep.fleeceColorTable[legBandColor][2]);
             return 1;
         }
         else

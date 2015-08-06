@@ -28,6 +28,7 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityLynx;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityManEatingTiger;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityTiger;
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityEagle;
+import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityHawk;
 import com.blogspot.jabelarminecraft.wildanimals.entities.eggs.EntityItemWildAnimalsEgg;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityElephant;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
@@ -135,16 +136,26 @@ public class ClientProxy extends CommonProxy
 	    RenderingRegistry.registerEntityRenderingHandler(EntitySerpent.class, new RenderSerpent(new ModelSerpent(), 0.0F));
 
 	    // Birds of Prey
-	    RenderingRegistry.registerEntityRenderingHandler(
-	            EntityEagle.class, 
-	            new RenderBirdOfPrey(
-	                    new ModelBirdOfPrey(), 
-	                    new ModelBirdOfPrey(), 
-	                    0.5F,
-	                    new ResourceLocation("wildanimals:textures/entity/birdsofprey/eagle.png"),
-	                    new ResourceLocation("wildanimals:textures/entity/birdsofprey/bird_of_prey_legband.png")
-	                    )
-	            );
+        RenderingRegistry.registerEntityRenderingHandler(
+                EntityEagle.class, 
+                new RenderBirdOfPrey(
+                        new ModelBirdOfPrey(), 
+                        new ModelBirdOfPrey(), 
+                        0.5F,
+                        new ResourceLocation("wildanimals:textures/entity/birdsofprey/eagle.png"),
+                        new ResourceLocation("wildanimals:textures/entity/birdsofprey/bird_of_prey_legband.png")
+                        )
+                );
+        RenderingRegistry.registerEntityRenderingHandler(
+                EntityHawk.class, 
+                new RenderBirdOfPrey(
+                        new ModelBirdOfPrey(), 
+                        new ModelBirdOfPrey(), 
+                        0.5F,
+                        new ResourceLocation("wildanimals:textures/entity/birdsofprey/hawk.png"),
+                        new ResourceLocation("wildanimals:textures/entity/birdsofprey/bird_of_prey_legband.png")
+                        )
+                );
     }
 	
     @Override

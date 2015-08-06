@@ -41,6 +41,7 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityManEatin
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityManEatingTiger;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityTiger;
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityEagle;
+import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityHawk;
 import com.blogspot.jabelarminecraft.wildanimals.entities.eggs.EntityWildAnimalsEgg;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityElephant;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
@@ -227,6 +228,7 @@ public class CommonProxy
         if (WildAnimals.configIncludeBirdsOfPrey)
         {
             registerModEntityWithEggLongTracking(EntityEagle.class, "Eagle", 0xFFF2E3, 0x7D6C57);
+            registerModEntityWithEggLongTracking(EntityHawk.class, "Hawk", 0xFFF2E3, 0x7D6C57);
         }
     }
      
@@ -295,12 +297,12 @@ public class CommonProxy
         // savanna
         EntityRegistry.addSpawn(EntityLion.class, 6, 1, 5, EnumCreatureType.creature, BiomeGenBase.savanna); //change the values to vary the spawn rarity, biome, etc.              
         EntityRegistry.addSpawn(EntityElephant.class, 10, 1, 5, EnumCreatureType.creature, BiomeGenBase.savanna); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.savanna); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.savanna); //change the values to vary the spawn rarity, biome, etc.              
 
         // savannPlateau
         EntityRegistry.addSpawn(EntityLion.class, 6, 1, 5, EnumCreatureType.creature, BiomeGenBase.savannaPlateau); //change the values to vary the spawn rarity, biome, etc.              
         EntityRegistry.addSpawn(EntityElephant.class, 10, 1, 5, EnumCreatureType.creature, BiomeGenBase.savannaPlateau); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.savannaPlateau); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.savannaPlateau); //change the values to vary the spawn rarity, biome, etc.              
 
         // birch forest
         EntityRegistry.addSpawn(EntityLynx.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.birchForest); //change the values to vary the spawn rarity, biome, etc.              
@@ -313,23 +315,23 @@ public class CommonProxy
 
         // cold taiga
         EntityRegistry.addSpawn(EntityLynx.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.coldTaiga); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.coldTaiga); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.coldTaiga); //change the values to vary the spawn rarity, biome, etc.              
         
         // cold taiga hills
         EntityRegistry.addSpawn(EntityLynx.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.coldTaigaHills); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.coldTaigaHills); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.coldTaigaHills); //change the values to vary the spawn rarity, biome, etc.              
 
         // desert
         EntityRegistry.addSpawn(EntityLion.class, 6, 1, 5, EnumCreatureType.creature, BiomeGenBase.desert); //change the values to vary the spawn rarity, biome, etc.              
         EntityRegistry.addSpawn(EntityElephant.class, 10, 1, 5, EnumCreatureType.creature, BiomeGenBase.desert); //change the values to vary the spawn rarity, biome, etc.              
         EntityRegistry.addSpawn(EntitySerpent.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.desert); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.desert); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.desert); //change the values to vary the spawn rarity, biome, etc.              
 
         // desert hills
         EntityRegistry.addSpawn(EntityLion.class, 6, 1, 5, EnumCreatureType.creature, BiomeGenBase.desertHills); //change the values to vary the spawn rarity, biome, etc.              
         EntityRegistry.addSpawn(EntityElephant.class, 10, 1, 5, EnumCreatureType.creature, BiomeGenBase.desertHills); //change the values to vary the spawn rarity, biome, etc.              
         EntityRegistry.addSpawn(EntitySerpent.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.desertHills); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.desertHills); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.desertHills); //change the values to vary the spawn rarity, biome, etc.              
 
         // extreme hills
         EntityRegistry.addSpawn(EntityLynx.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.extremeHills); //change the values to vary the spawn rarity, biome, etc.              
@@ -355,23 +357,23 @@ public class CommonProxy
         
         // ice mountains
         EntityRegistry.addSpawn(EntityLynx.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.iceMountains); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.iceMountains); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.iceMountains); //change the values to vary the spawn rarity, biome, etc.              
 
         // mega taiga
         EntityRegistry.addSpawn(EntityLynx.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.megaTaiga); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.megaTaiga); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.megaTaiga); //change the values to vary the spawn rarity, biome, etc.              
 
         // mega taiga hills
         EntityRegistry.addSpawn(EntityLynx.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.megaTaigaHills); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.megaTaigaHills); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.megaTaigaHills); //change the values to vary the spawn rarity, biome, etc.              
        
         // mesa plateau
         EntityRegistry.addSpawn(EntityLynx.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.mesaPlateau); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.mesaPlateau); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.mesaPlateau); //change the values to vary the spawn rarity, biome, etc.              
         
         // mesa plateau F
         EntityRegistry.addSpawn(EntityLynx.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.mesaPlateau_F); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.mesaPlateau_F); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.mesaPlateau_F); //change the values to vary the spawn rarity, biome, etc.              
         
         // swamp
         EntityRegistry.addSpawn(EntityJaguar.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.swampland); //change the values to vary the spawn rarity, biome, etc.                  
@@ -385,7 +387,7 @@ public class CommonProxy
             EntityRegistry.addSpawn(EntityManEatingTiger.class, 1, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungle); //change the values to vary the spawn rarity, biome, etc.            
         }
         EntityRegistry.addSpawn(EntitySerpent.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungle); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungle); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungle); //change the values to vary the spawn rarity, biome, etc.              
         
         // jungle hills
         EntityRegistry.addSpawn(EntityJaguar.class, 3, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleHills); //change the values to vary the spawn rarity, biome, etc.              
@@ -395,7 +397,7 @@ public class CommonProxy
             EntityRegistry.addSpawn(EntityManEatingTiger.class, 1, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleHills); //change the values to vary the spawn rarity, biome, etc.            
         }
         EntityRegistry.addSpawn(EntitySerpent.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleHills); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleHills); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleHills); //change the values to vary the spawn rarity, biome, etc.              
         
         // jungle edge
         EntityRegistry.addSpawn(EntityJaguar.class, 1, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleEdge); //change the values to vary the spawn rarity, biome, etc.              
@@ -405,12 +407,12 @@ public class CommonProxy
             EntityRegistry.addSpawn(EntityManEatingTiger.class, 1, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleEdge); //change the values to vary the spawn rarity, biome, etc.            
         }
         EntityRegistry.addSpawn(EntitySerpent.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleEdge); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleEdge); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 6, 1, 1, EnumCreatureType.creature, BiomeGenBase.jungleEdge); //change the values to vary the spawn rarity, biome, etc.              
 
         // plains
         EntityRegistry.addSpawn(EntityLion.class, 10, 1, 5, EnumCreatureType.creature, BiomeGenBase.plains); //change the values to vary the spawn rarity, biome, etc.              
         EntityRegistry.addSpawn(EntityElephant.class, 10, 1, 5, EnumCreatureType.creature, BiomeGenBase.plains); //change the values to vary the spawn rarity, biome, etc.              
-        EntityRegistry.addSpawn(EntityEagle.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.plains); //change the values to vary the spawn rarity, biome, etc.              
+        EntityRegistry.addSpawn(EntityHawk.class, 10, 1, 1, EnumCreatureType.creature, BiomeGenBase.plains); //change the values to vary the spawn rarity, biome, etc.              
 
         // beach
         EntityRegistry.addSpawn(EntitySerpent.class, 5, 1, 1, EnumCreatureType.creature, BiomeGenBase.beach); //change the values to vary the spawn rarity, biome, etc.              

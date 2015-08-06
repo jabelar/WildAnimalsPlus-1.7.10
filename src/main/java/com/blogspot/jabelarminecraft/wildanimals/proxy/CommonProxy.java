@@ -42,6 +42,7 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityManEatin
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityTiger;
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityEagle;
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityHawk;
+import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityOwl;
 import com.blogspot.jabelarminecraft.wildanimals.entities.eggs.EntityWildAnimalsEgg;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityElephant;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
@@ -229,6 +230,7 @@ public class CommonProxy
         {
             registerModEntityWithEggLongTracking(EntityEagle.class, "Eagle", 0xFFF2E3, 0x7D6C57);
             registerModEntityWithEggLongTracking(EntityHawk.class, "Hawk", 0xFFF2E3, 0x7D6C57);
+            registerModEntityWithEggLongTracking(EntityOwl.class, "Owl", 0xFFF2E3, 0x7D6C57);
         }
     }
      

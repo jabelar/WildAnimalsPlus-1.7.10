@@ -520,6 +520,14 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         return false;
     }
     
+    /*
+     * Indicates proportions of the head
+     */
+    public boolean isOwlType()
+    {
+        return false;
+    }
+    
     public boolean isTamed()
     {
         return (getOwner() != null);

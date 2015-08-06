@@ -441,33 +441,34 @@ public class UpdateStateBirdOfPrey
     
     public int getPerchChance()
     {
-        if (theBird.worldObj.isRaining())
-        {
-            return 1;
-        }
-        
-        if (theBird.isNocturnal())
-        {
-            if (theBird.worldObj.isDaytime())
-            {
-                return PERCH_CHANCE_BASE;
-            }
-            else
-            {
-                return PERCH_CHANCE_BASE * 100;
-            }
-        }
-        else
-        {
-            if (theBird.worldObj.isDaytime())
-            {
-                return PERCH_CHANCE_BASE * 100;
-            }
-            else
-            {
-                return PERCH_CHANCE_BASE;
-            }
-        }
+        return 1;
+//        if (theBird.worldObj.isRaining())
+//        {
+//            return 1;
+//        }
+//        
+//        if (theBird.isNocturnal())
+//        {
+//            if (theBird.worldObj.isDaytime())
+//            {
+//                return PERCH_CHANCE_BASE;
+//            }
+//            else
+//            {
+//                return PERCH_CHANCE_BASE * 100;
+//            }
+//        }
+//        else
+//        {
+//            if (theBird.worldObj.isDaytime())
+//            {
+//                return PERCH_CHANCE_BASE * 100;
+//            }
+//            else
+//            {
+//                return PERCH_CHANCE_BASE;
+//            }
+//        }
     }
     
     public int getTakeOffChance()

@@ -29,12 +29,14 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityManEatin
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityTiger;
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityEagle;
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityHawk;
+import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityOwl;
 import com.blogspot.jabelarminecraft.wildanimals.entities.eggs.EntityItemWildAnimalsEgg;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityElephant;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
 import com.blogspot.jabelarminecraft.wildanimals.models.ModelBigCat;
 import com.blogspot.jabelarminecraft.wildanimals.models.ModelBirdOfPrey;
 import com.blogspot.jabelarminecraft.wildanimals.models.ModelElephant;
+import com.blogspot.jabelarminecraft.wildanimals.models.ModelOwl;
 import com.blogspot.jabelarminecraft.wildanimals.models.ModelSerpent;
 import com.blogspot.jabelarminecraft.wildanimals.renderers.RenderBigCat;
 import com.blogspot.jabelarminecraft.wildanimals.renderers.RenderBirdOfPrey;
@@ -153,6 +155,16 @@ public class ClientProxy extends CommonProxy
                         new ModelBirdOfPrey(), 
                         0.5F,
                         new ResourceLocation("wildanimals:textures/entity/birdsofprey/hawk.png"),
+                        new ResourceLocation("wildanimals:textures/entity/birdsofprey/bird_of_prey_legband.png")
+                        )
+                );
+        RenderingRegistry.registerEntityRenderingHandler(
+                EntityOwl.class, 
+                new RenderBirdOfPrey(
+                        new ModelOwl(), 
+                        new ModelOwl(), 
+                        0.5F,
+                        new ResourceLocation("wildanimals:textures/entity/birdsofprey/owl.png"),
                         new ResourceLocation("wildanimals:textures/entity/birdsofprey/bird_of_prey_legband.png")
                         )
                 );

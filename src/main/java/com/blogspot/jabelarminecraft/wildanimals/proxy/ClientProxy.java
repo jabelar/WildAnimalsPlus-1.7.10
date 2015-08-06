@@ -27,7 +27,7 @@ import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityLion;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityLynx;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityManEatingTiger;
 import com.blogspot.jabelarminecraft.wildanimals.entities.bigcats.EntityTiger;
-import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
+import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityEagle;
 import com.blogspot.jabelarminecraft.wildanimals.entities.eggs.EntityItemWildAnimalsEgg;
 import com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals.EntityElephant;
 import com.blogspot.jabelarminecraft.wildanimals.entities.serpents.EntitySerpent;
@@ -136,7 +136,7 @@ public class ClientProxy extends CommonProxy
 
 	    // Birds of Prey
 	    RenderingRegistry.registerEntityRenderingHandler(
-	            EntityBirdOfPrey.class, 
+	            EntityEagle.class, 
 	            new RenderBirdOfPrey(
 	                    new ModelBirdOfPrey(), 
 	                    new ModelBirdOfPrey(), 

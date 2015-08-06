@@ -511,6 +511,15 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         }
     }
     
+    /*
+     * Indicates whether the bird is more active during night time.
+     * Affects tendency to perch and take off from perch
+     */
+    public boolean isNocturnal()
+    {
+        return false;
+    }
+    
     public boolean isTamed()
     {
         return (getOwner() != null);

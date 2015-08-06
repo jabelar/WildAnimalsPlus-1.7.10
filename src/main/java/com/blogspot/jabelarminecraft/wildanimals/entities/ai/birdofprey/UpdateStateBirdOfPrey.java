@@ -44,10 +44,10 @@ public class UpdateStateBirdOfPrey
     // region is double this size as this gives dimensions in each direction
     public double attackRegionSize = 5.0D;
     
-    // the 1 in X chance that it will decide to perch if over a perchable block
-    public int perchChance = 100;
-    // the 1 in X chance that when perched it will decide to take off
-    public int takeOffChance = 2400;
+    // the percent chance per tick that it will decide to perch if over a perchable block
+    public final int PERCH_CHANCE_BASE = 100;
+    // the percent chance per tick that when perched it will decide to take off
+    public final int TAKE_OFF_CHANCE_BASE = 2400;
     
     public UpdateStateBirdOfPrey(EntityBirdOfPrey parBirdOfPrey)
     {
@@ -157,7 +157,7 @@ public class UpdateStateBirdOfPrey
         else // still solidly perched
         {
             // can occasionally adjust or flap, look around, or play sound to create variety
-            if (theBird.getRNG().nextInt(takeOffChance) == 0)
+            if (theBird.getRNG().nextInt(getTakeOffChance()) == 0)
             {
                 theBird.setState(AIStates.STATE_TAKING_OFF);
                 // rotationYawHead = rand.nextInt(360);
@@ -382,7 +382,7 @@ public class UpdateStateBirdOfPrey
         else // still solidly perched
         {
             // can occasionally adjust or flap, look around, or play sound to create variety
-            if (theBird.getRNG().nextInt(takeOffChance) == 0)
+            if (theBird.getRNG().nextInt(getTakeOffChance()) == 0)
             {
                 theBird.setState(AIStates.STATE_TAKING_OFF);
                 // rotationYawHead = rand.nextInt(360);
@@ -414,9 +414,7 @@ public class UpdateStateBirdOfPrey
         else
         {
             // always try to perch starting at dusk
-//            if (theBird.worldObj.getWorldTime()%24000 > 12000 
-//                    || theBird.getRNG().nextInt(perchChance) == 0)
-            if (theBird.getRNG().nextInt(perchChance) == 0)
+            if (theBird.getRNG().nextInt(getPerchChance()) == 0)
             {
                 if (theBird.worldObj.getTopBlock((int)theBird.posX, (int)theBird.posZ) instanceof BlockLeaves)
                 {
@@ -437,6 +435,68 @@ public class UpdateStateBirdOfPrey
                                 theBird.posZ);
                     }
                 }
+            }
+        }
+    }
+    
+    public int getPerchChance()
+    {
+        if (theBird.worldObj.isRaining())
+        {
+            return 1;
+        }
+        
+        if (theBird.isNocturnal())
+        {
+            if (theBird.worldObj.isDaytime())
+            {
+                return PERCH_CHANCE_BASE;
+            }
+            else
+            {
+                return PERCH_CHANCE_BASE * 100;
+            }
+        }
+        else
+        {
+            if (theBird.worldObj.isDaytime())
+            {
+                return PERCH_CHANCE_BASE * 100;
+            }
+            else
+            {
+                return PERCH_CHANCE_BASE;
+            }
+        }
+    }
+    
+    public int getTakeOffChance()
+    {
+        if (theBird.worldObj.isRaining())
+        {
+            return TAKE_OFF_CHANCE_BASE * 1000;
+        }
+        
+        if (theBird.isNocturnal())
+        {
+            if (!theBird.worldObj.isDaytime())
+            {
+                return TAKE_OFF_CHANCE_BASE;
+            }
+            else
+            {
+                return TAKE_OFF_CHANCE_BASE * 100;
+            }
+        }
+        else
+        {
+            if (!theBird.worldObj.isDaytime())
+            {
+                return TAKE_OFF_CHANCE_BASE * 100;
+            }
+            else
+            {
+                return TAKE_OFF_CHANCE_BASE;
             }
         }
     }

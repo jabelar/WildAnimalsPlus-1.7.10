@@ -16,6 +16,7 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.models;
 
+
 /**
  * @author jabelar
  *
@@ -26,7 +27,7 @@ public class ModelOwl extends ModelBirdOfPrey
     {
         super();
         head.cubeList.clear();
-        head.addBox(-8F, -8F, -4F, 11, 11, 4);
+        head.addBox(0F, 0F, -4F, 15, 15, 4);
         head.setRotationPoint(0F, -1F, -9F);
     }
     

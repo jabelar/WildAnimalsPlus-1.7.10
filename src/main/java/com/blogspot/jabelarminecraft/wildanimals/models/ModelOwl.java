@@ -27,7 +27,7 @@ public class ModelOwl extends ModelBirdOfPrey
     {
         super();
         head.cubeList.clear();
-        head.addBox(0F, 0F, -4F, 15, 15, 4);
+        head.addBox(-6F, -6F, -7F, 12, 12, 8);
         head.setRotationPoint(0F, -1F, -9F);
     }
     

@@ -44,7 +44,7 @@ public class UpdateStateBirdOfPrey
     // region is double this size as this gives dimensions in each direction
     public double attackRegionSize = 5.0D;
     
-    // the percent chance per tick that it will decide to perch if over a perchable block
+    // the "one in" chance per tick that it will decide to perch if over a perchable block
     public final int PERCH_CHANCE_BASE = 100;
     // the percent chance per tick that when perched it will decide to take off
     public final int TAKE_OFF_CHANCE_BASE = 2400;

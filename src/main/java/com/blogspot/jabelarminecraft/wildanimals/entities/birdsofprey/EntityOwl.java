@@ -27,6 +27,7 @@ public class EntityOwl extends EntityBirdOfPrey
     public EntityOwl(World parWorld)
     {
         super(parWorld);
+        setScaleFactor(0.7F);
     }
     
     @Override

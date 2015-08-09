@@ -144,7 +144,7 @@ public class ModelBirdOfPrey extends ModelWildAnimals
 	    body.setTextureSize(textureWidth, textureHeight);
 	    body.mirror = true;
 	    setRotation(body, 0F, 0F, 0F);
-	    head = new ModelRenderer(this, 58, 44);
+	    head = new ModelRenderer(this, 38, 41);
 	    head.addBox(-3F, -3F, -8F, 6, 6, 8);
 	    head.setRotationPoint(0F, -1F, -9F);
 	    head.setTextureSize(textureWidth, textureHeight);

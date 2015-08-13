@@ -222,7 +222,37 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         return true;
     }
 
+    @Override
+    public boolean allowLeashing()
+    {
+        return false;
+    }
 
+    @Override
+    public boolean canAttackClass(Class parClass)
+    {
+        return true;
+    }
+    
+    @Override
+    public Item getDropItem()
+    {
+        return Items.feather;
+    }
+    
+    @Override
+    protected void dropFewItems(boolean parRecentlyHitByPlayer, int parLootLevel)
+    {
+        dropItem(Items.feather, parLootLevel+1);
+        return;
+    }
+    
+    @Override
+    public boolean isNoDespawnRequired()
+    {
+        return isTamed();
+    }
+    
     /**
      * Sets the active target the Task system uses for tracking
      */
@@ -295,12 +325,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     protected float getSoundVolume()
     {
         return 0.3F;
-    }
-
-    @Override
-    protected Item getDropItem()
-    {
-        return Item.getItemById(-1);
     }
 
     /**

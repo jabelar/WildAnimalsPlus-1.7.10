@@ -344,7 +344,7 @@ public class Utilities
                 existingBlock.onBlockPreDestroy(parChunk.worldObj, worldPosX, parY, worldPosZ, existingMetaData);
             }
 
-            extendedblockstorage.func_150818_a(parX, parY & 15, parZ, parBlock);
+            extendedblockstorage.setExtBlockID(parX, parY & 15, parZ, parBlock);
             extendedblockstorage.setExtBlockMetadata(parX, parY & 15, parZ, parMetaData); // This line duplicates the one below, so breakBlock fires with valid worldstate
 
             if (!parChunk.worldObj.isRemote)
@@ -383,7 +383,7 @@ public class Utilities
 
                 if (parBlock.hasTileEntity(parMetaData))
                 {
-                    tileentity = parChunk.func_150806_e(parX, parY, parZ);
+                    tileentity = parChunk.getBlockTileEntityInChunk(parX, parY, parZ);
 
                     if (tileentity != null)
                     {
@@ -396,13 +396,6 @@ public class Utilities
                 return true;
             }
         }
-    }
-
-    // just putting a human-readable name to the function
-    // note this will only work in the current dimension
-    public static EntityPlayer getPlayerFromUUID(World parWorld, UUID parUUID)
-    {
-        return parWorld.func_152378_a(parUUID);    
     }
     
     // this will work across all dimensions

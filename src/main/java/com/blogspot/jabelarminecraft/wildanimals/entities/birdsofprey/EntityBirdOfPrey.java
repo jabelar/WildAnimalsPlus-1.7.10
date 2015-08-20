@@ -18,7 +18,6 @@ package com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey;
 
 import java.util.UUID;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
@@ -277,12 +276,12 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         return 400;
     }
 
-    @Override
-    // play step sound
-    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
-    {
-        // birds are silent when moving
-    }
+//    @Override
+//    // play step sound
+//    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
+//    {
+//        // birds are silent when moving
+//    }
 
     /**
      * Returns the sound this mob makes while it's alive.
@@ -391,7 +390,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
             {
                 if (itemInHand.getItem() == Items.dye)
                 {
-                    int i = BlockColored.func_150032_b(itemInHand.getItemDamage());
+                    int i = BlockColored.func_150032_b(itemInHand.getMetadata());
 
                     if (i != getLegBandColor())
                     {
@@ -442,7 +441,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     public boolean isTamingFood(ItemStack parItemStack)
     {
         // check for raw salmon
-        return (parItemStack.getItem() == Items.fish && parItemStack.getItemDamage() == 1);
+        return (parItemStack.getItem() == Items.fish && parItemStack.getMetadata() == 1);
     }
     
     /**

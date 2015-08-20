@@ -16,7 +16,6 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.serpents;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -154,12 +153,12 @@ public class EntitySerpent extends EntityAnimal implements IModEntity
         dataWatcher.addObject(20, new Byte((byte)BlockColored.func_150032_b(1)));
     }
 
-    @Override
-    // play step sound
-	protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
-    {
-    	// serpents are silent when moving
-    }
+//    @Override
+//    // play step sound
+//	protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
+//    {
+//    	// serpents are silent when moving
+//    }
 
     /**
      * (abstract) Protected helper method to write subclass entity data to NBT.

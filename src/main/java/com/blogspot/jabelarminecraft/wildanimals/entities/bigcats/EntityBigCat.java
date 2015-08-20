@@ -18,7 +18,6 @@ package com.blogspot.jabelarminecraft.wildanimals.entities.bigcats;
 
 import java.util.UUID;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -251,11 +250,11 @@ public class EntityBigCat extends EntityTameable implements IModEntity
         super.entityInit();
     }
 
-    @Override
-	protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
-    {
-        playSound("wildanimals:mob.bigCat.step", 0.15F, 1.0F); // this is randomized from 1 to 5
-    }
+//    @Override
+//	protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
+//    {
+//        playSound("wildanimals:mob.bigCat.step", 0.15F, 1.0F); // this is randomized from 1 to 5
+//    }
 
 
     @Override
@@ -506,7 +505,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                             --itemInHand.stackSize;
                         }
 
-                        heal(itemfood.func_150905_g(itemInHand));
+                        heal(itemfood.getHealAmount(itemInHand));
 
                         if (itemInHand.stackSize <= 0)
                         {
@@ -518,7 +517,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
                 }
                 else if (itemInHand.getItem() == Items.dye)
                 {
-                    int i = BlockColored.func_150032_b(itemInHand.getItemDamage());
+                    int i = BlockColored.func_150032_b(itemInHand.getMetadata());
 
                     if (i != getCollarColor())
                     {
@@ -675,7 +674,7 @@ public class EntityBigCat extends EntityTameable implements IModEntity
     public EntityLivingBase getOwner()
     {
         UUID uuid = new UUID(syncDataCompound.getLong("ownerUUIDMSB"), syncDataCompound.getLong("ownerUUIDLSB"));
-        return worldObj.func_152378_a(uuid); 
+        return worldObj.getPlayerEntityByUUID(uuid); 
     }
 
     @Override

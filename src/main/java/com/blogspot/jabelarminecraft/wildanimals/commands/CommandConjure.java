@@ -91,8 +91,8 @@ public class CommandConjure implements ICommand
 		    if (EntityList.stringToClassMapping.containsKey(fullEntityName))
 		    {
 	            conjuredEntity = EntityList.createEntityByName(fullEntityName, world);
-	    		conjuredEntity.setPosition(sender.getPlayerCoordinates().posX, sender.getPlayerCoordinates().posY, 
-	    				sender.getPlayerCoordinates().posZ);
+	    		conjuredEntity.setPosition(sender.getCommandSenderPosition().posX, sender.getCommandSenderPosition().posY, 
+	    				sender.getCommandSenderPosition().posZ);
 	    		world.spawnEntityInWorld(conjuredEntity);
 		    }
 		    else

@@ -16,7 +16,6 @@
 
 package com.blogspot.jabelarminecraft.wildanimals.entities.herdanimals;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
@@ -154,11 +153,11 @@ public class EntityHerdAnimal extends EntityAnimal implements IModEntity
         return "mob.cow.hurt";
     }
 
-    @Override
-    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
-    {
-        playSound("mob.cow.step", 0.15F, 1.0F);
-    }
+//    @Override
+//    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
+//    {
+//        playSound("mob.cow.step", 0.15F, 1.0F);
+//    }
 
     /**
      * Returns the volume for the sounds this mob makes.

@@ -26,7 +26,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
 import com.blogspot.jabelarminecraft.wildanimals.entities.birdsofprey.EntityBirdOfPrey;
@@ -249,12 +248,10 @@ public class UpdateStateBirdOfPrey
      */
     private void updateStateLanding()
     {
-        // check if actually landed on a block
-        if (theBird.worldObj.getBlock(
-                MathHelper.floor_double(theBird.posX), 
-                (int)theBird.posY - 1, 
-                MathHelper.floor_double(theBird.posZ)).isNormalCube())
+        if (hasLanded())
         {
+            // DEBUG
+            System.out.println("Made it to perch");
             if (theBird.isTamed())
             {
                 theBird.setState(AIStates.STATE_PERCHED_TAMED);
@@ -281,8 +278,16 @@ public class UpdateStateBirdOfPrey
 //                                    (int)theBird.posZ), 
 //                            theBird.posZ))
 //        {
+        // check if should start landing
+        if (theBird.getDistanceSq(
+                theBird.getAnchorX(), 
+                theBird.getAnchorY(),
+                theBird.getAnchorZ())<25)
+        {
+            theBird.setState(AIStates.STATE_LANDING);
+        }
             // see if made it to perch
-            if (hasLanded())
+        else if (hasLanded())
             {
                 // DEBUG
                 System.out.println("Made it to perch");

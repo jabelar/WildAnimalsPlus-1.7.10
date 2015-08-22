@@ -44,7 +44,7 @@ public class UpdateStateBirdOfPrey
     public double attackRegionSize = 5.0D;
     
     // the "one in" chance per tick that it will decide to perch if over a perchable block
-    public final int PERCH_CHANCE_BASE = 100;
+    public final int PERCH_CHANCE_BASE = 1;
     // the percent chance per tick that when perched it will decide to take off
     public final int TAKE_OFF_CHANCE_BASE = 2400;
     
@@ -375,7 +375,9 @@ public class UpdateStateBirdOfPrey
         // check if block perched upon has disappeared
 //            // DEBUG
 //            System.out.println("Block underneath = "+worldObj.getBlock(MathHelper.floor_double(posX), (int)posY - 1, MathHelper.floor_double(posZ)).getUnlocalizedName());
-        
+
+        // DEBUG
+        System.out.println("Tamed = "+theBird.isTamed());
         if (theBird.isTamed())
         {
             theBird.setState(AIStates.STATE_PERCHED_TAMED);

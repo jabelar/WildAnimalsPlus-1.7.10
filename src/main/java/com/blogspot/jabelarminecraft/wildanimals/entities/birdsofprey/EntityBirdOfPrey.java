@@ -64,6 +64,8 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     
     private Class[] preyArray = new Class[] {EntityChicken.class, EntityBat.class, EntitySerpent.class};
 
+    private final double TAMED_HEALTH = 30.0D;
+    
     public EntityBirdOfPrey(World parWorld)
     {
         super(parWorld);
@@ -416,10 +418,7 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
                 
                 if (rand.nextInt(3) == 0)
                 {
-                    spawnTamingParticles(true);
-                    setAttackTarget(null);
-                    setHealth((float)getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue());
-                    setOwner(parPlayer);
+                    setTamed(parPlayer);
     
                     // DEBUG
                     System.out.println("It likes the raw salmon");
@@ -687,18 +686,25 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         }
     }
     
-    public boolean setOwner(EntityLivingBase parNewOwner)
+    public boolean setTamed(EntityLivingBase parNewOwner)
     {
         if (getOwner() != null)
         {
+            // DEBUG
+            System.out.println("There is already an owner");
             return false;
         }
         else if (parNewOwner == null)
         {
+            // DEBUG
+            System.out.println("Trying to assign a null owner");
             return false;
         }
         else
         {
+            spawnTamingParticles(true);
+            setAttackTarget(null);
+            getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(TAMED_HEALTH);
             setOwnerUUIDString(parNewOwner.getUniqueID().toString());
             return true;
         }

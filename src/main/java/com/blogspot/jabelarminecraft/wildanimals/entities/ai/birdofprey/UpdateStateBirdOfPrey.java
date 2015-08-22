@@ -461,14 +461,14 @@ public class UpdateStateBirdOfPrey
             }
             else
             {
-                return PERCH_CHANCE_BASE * 100;
+                return PERCH_CHANCE_BASE * 10000;
             }
         }
         else
         {
             if (theBird.worldObj.isDaytime())
             {
-                return PERCH_CHANCE_BASE * 100;
+                return PERCH_CHANCE_BASE * 10000;
             }
             else
             {

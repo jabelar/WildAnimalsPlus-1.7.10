@@ -46,10 +46,10 @@ public class WildAnimals
 {
     public static final String MODID = "wildanimals";
     public static final String MODNAME = "Wild Animals +";
-    public static final String MODVERSION = "0.0.1";
+    public static final String MODVERSION = "0.0.2";
     public static final String MODDESCRIPTION = "The wildest animals that ever inhabited Minecraft! Tigers! Snakes! Elephants! And More!";
     public static final String MODAUTHOR = "jabelar";
-    public static final String MODCREDITS = "Dedicated to jnaejnae.";
+    public static final String MODCREDITS = "Dedicated to jnaejnae and taliaailat";
     public static final String MODURL = "www.jabelarminecraft.blogspot.com";
 
     // use a named channel to identify packets related to this mod

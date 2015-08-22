@@ -229,8 +229,8 @@ public class CommonProxy
         if (WildAnimals.configIncludeBirdsOfPrey)
         {
             registerModEntityWithEggLongTracking(EntityEagle.class, "Eagle", 0xFFF2E3, 0x7D6C57);
-            registerModEntityWithEggLongTracking(EntityHawk.class, "Hawk", 0xFFF2E3, 0x7D6C57);
-            registerModEntityWithEggLongTracking(EntityOwl.class, "Owl", 0xFFF2E3, 0x7D6C57);
+            registerModEntityWithEggLongTracking(EntityHawk.class, "Hawk", 0x7D6C57, 0xFFF2E3);
+            registerModEntityWithEggLongTracking(EntityOwl.class, "Owl", 0xFFF2E3, 0xFFFFFF);
         }
     }
      

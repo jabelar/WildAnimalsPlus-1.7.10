@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "wildanimals",
+  "name": "Wild Animals Plus",
+  "description": "It's a zoo out there!",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "jabelarminecraft.blogspot.com",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["jabelar"],
+  "credits": "jnaejnae and taliaailat",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

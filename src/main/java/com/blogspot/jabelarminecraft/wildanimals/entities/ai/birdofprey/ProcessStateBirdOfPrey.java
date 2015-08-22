@@ -43,6 +43,15 @@ public class ProcessStateBirdOfPrey
     {
 //        // DEBUG
 //        System.out.println("State = "+getState());
+ 
+        // regen
+        if (theBird.isTamed())
+        {
+            if (theBird.ticksExisted%50 == 0 && theBird.isEntityAlive())
+            {
+                theBird.setHealth(theBird.getHealth()+1.0F);
+            }
+        }
         
         switch (theBird.getState())
         {

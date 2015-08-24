@@ -294,10 +294,12 @@ public class UpdateStateBirdOfPrey
                 if (theBird.isTamed())
                 {
                     theBird.setState(AIStates.STATE_PERCHED_TAMED);
+                    stopMoving();
                 }
                 else
                 {
                     theBird.setState(AIStates.STATE_PERCHED);
+                    stopMoving();
                 }
             }
 //        }
@@ -319,6 +321,13 @@ public class UpdateStateBirdOfPrey
         {
             return false;
         }
+    }
+    
+    protected void stopMoving()
+    {
+        theBird.motionX = 0;
+        theBird.motionY = 0;
+        theBird.motionZ = 0;
     }
 
     private void updateStateSoaring()

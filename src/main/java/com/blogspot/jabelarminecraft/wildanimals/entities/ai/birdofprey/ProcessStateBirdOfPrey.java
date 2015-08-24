@@ -160,8 +160,8 @@ public class ProcessStateBirdOfPrey
     protected void processPerched() 
     {
         updatePitch(0.0F); // although the model is upright, want to make sure look vector and sense of motion preserved.
-        
-        stopMoving();
+        processFrictionAndGravity();
+//        stopMoving();
     }
     
     protected void processSoaring()
@@ -244,6 +244,13 @@ public class ProcessStateBirdOfPrey
         theBird.motionX = 0;
         theBird.motionY = 0;
         theBird.motionZ = 0;
+    }
+ 
+    protected void processFrictionAndGravity()
+    {
+        theBird.motionX *= 0.93D;
+        theBird.motionZ *= 0.93D;
+        theBird.motionY -= 0.04D;
     }
     
     protected void updateYaw(float parYaw)

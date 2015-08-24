@@ -46,7 +46,7 @@ public class WildAnimals
 {
     public static final String MODID = "wildanimals";
     public static final String MODNAME = "Wild Animals +";
-    public static final String MODVERSION = "0.0.3";
+    public static final String MODVERSION = "0.0.4";
     public static final String MODDESCRIPTION = "The wildest animals that ever inhabited Minecraft! Tigers! Snakes! Elephants! And More!";
     public static final String MODAUTHOR = "jabelar";
     public static final String MODCREDITS = "Dedicated to jnaejnae and taliaailat";

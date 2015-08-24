@@ -248,17 +248,24 @@ public class ModelBirdOfPrey extends ModelWildAnimals
   		renderBirdOfPrey((EntityBirdOfPrey) parEntity, f5);
 	}
 	  
-	public void renderBirdOfPrey(EntityBirdOfPrey parEntity, float parRenderFloat)
+	public void renderBirdOfPrey(EntityBirdOfPrey parBird, float parRenderFloat)
 	{
-		setRotationAngles(parEntity);
+		setRotationAngles(parBird);
 
         // scale the whole thing for big or small entities
         GL11.glPushMatrix();
-    	GL11.glScalef(parEntity.getScaleFactor(), parEntity.getScaleFactor(), parEntity.getScaleFactor());
+        GL11.glTranslatef(0F, 1.5F-1.5F*parBird.getScaleFactor(), 0F);
+        // translate a bit extra if perched, as legs don't quite reach ground otherwise
+        if (parBird.getState() == AIStates.STATE_PERCHED
+            || parBird.getState() == AIStates.STATE_PERCHED_TAMED)
+            {
+                GL11.glTranslatef(0F, 0.2F*parBird.getScaleFactor(), 0F);
+            }
+    	GL11.glScalef(parBird.getScaleFactor(), parBird.getScaleFactor(), parBird.getScaleFactor());
 
 		// should only need to render body because all rest are children
-    	if (parEntity.getState() == AIStates.STATE_PERCHED
-    	        || parEntity.getState() == AIStates.STATE_PERCHED_TAMED)
+    	if (parBird.getState() == AIStates.STATE_PERCHED
+    	        || parBird.getState() == AIStates.STATE_PERCHED_TAMED)
     	{
     	    bodyWingless.render(parRenderFloat);
     	}

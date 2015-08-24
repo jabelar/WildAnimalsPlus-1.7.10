@@ -471,6 +471,12 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
     }
 
     @Override
+    public boolean canBePushed()
+    {
+        return true;
+    }
+    
+    @Override
     public Team getTeam()
     {
         if (getOwner() != null)
@@ -775,17 +781,11 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         preyArray = parPreyArray;
     }
 
-    /**
-     * Return this bigCat's collar color.
-     */
     public int getLegBandColor()
     {
         return syncDataCompound.getByte("legBandColor");
     }
 
-    /**
-     * Set this bigCat's collar color.
-     */
     public void setLegBandColor(int parLegBandColor)
     {
         syncDataCompound.setByte("legBandColor", (byte) parLegBandColor);

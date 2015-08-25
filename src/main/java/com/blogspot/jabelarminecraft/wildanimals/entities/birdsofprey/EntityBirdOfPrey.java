@@ -469,12 +469,6 @@ public class EntityBirdOfPrey extends EntityFlying implements IModEntity
         
         super.setDead();
     }
-
-    @Override
-    public boolean canBePushed()
-    {
-        return true;
-    }
     
     @Override
     public Team getTeam()

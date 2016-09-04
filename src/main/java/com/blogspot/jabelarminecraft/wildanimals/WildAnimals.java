@@ -18,11 +18,7 @@ package com.blogspot.jabelarminecraft.wildanimals;
 
 import java.io.File;
 
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.common.config.Configuration;
-
 import com.blogspot.jabelarminecraft.wildanimals.proxy.CommonProxy;
-
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -37,11 +33,14 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.config.Configuration;
 
-@Mod(modid = WildAnimals.MODID, 
+@Mod( modid = WildAnimals.MODID, 
       name = WildAnimals.MODNAME, 
       version = WildAnimals.MODVERSION,
-      guiFactory = "com.blogspot.jabelarminecraft.wildanimals.gui.WildAnimalsConfigGUIFactory")
+      guiFactory = "com.blogspot.jabelarminecraft.wildanimals.gui.WildAnimalsConfigGUIFactory",
+      acceptedMinecraftVersions = "[1.7.10]")
 public class WildAnimals
 {
     public static final String MODID = "wildanimals";

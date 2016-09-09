@@ -1,0 +1,95 @@
+--- ../src-base/minecraft/net/minecraft/server/management/PlayerManager.java
++++ ../src-work/minecraft/net/minecraft/server/management/PlayerManager.java
+@@ -1,6 +1,7 @@
+ package net.minecraft.server.management;
+ 
+ import java.util.ArrayList;
++import java.util.Arrays;
+ import java.util.List;
+ import net.minecraft.entity.player.EntityPlayerMP;
+ import net.minecraft.network.Packet;
+@@ -13,6 +14,9 @@
+ import net.minecraft.world.WorldProvider;
+ import net.minecraft.world.WorldServer;
+ import net.minecraft.world.chunk.Chunk;
++import net.minecraftforge.common.ForgeModContainer;
++import net.minecraftforge.common.MinecraftForge;
++import net.minecraftforge.event.world.ChunkWatchEvent;
+ 
+ public class PlayerManager
+ {
+@@ -320,6 +324,8 @@
+                 this.field_73263_b.remove(p_73252_1_);
+                 p_73252_1_.field_71129_f.remove(this.field_73264_c);
+ 
++                MinecraftForge.EVENT_BUS.post(new ChunkWatchEvent.UnWatch(field_73264_c, p_73252_1_));
++
+                 if (this.field_73263_b.isEmpty())
+                 {
+                     long i = (long)this.field_73264_c.field_77276_a + 2147483647L | (long)this.field_73264_c.field_77275_b + 2147483647L << 32;
+@@ -357,7 +363,7 @@
+ 
+             this.field_73260_f |= 1 << (p_151253_2_ >> 4);
+ 
+-            if (this.field_73262_e < 64)
++            //if (this.numberOfTilesToUpdate < 64) //Forge; Cache everything, so always run
+             {
+                 short short1 = (short)(p_151253_1_ << 12 | p_151253_3_ << 8 | p_151253_2_);
+ 
+@@ -369,6 +375,10 @@
+                     }
+                 }
+ 
++                if (field_73262_e == field_151254_d.length)
++                {
++                    field_151254_d = Arrays.copyOf(field_151254_d, field_151254_d.length << 1);
++                }
+                 this.field_151254_d[this.field_73262_e++] = short1;
+             }
+         }
+@@ -401,7 +411,7 @@
+                     k = this.field_73264_c.field_77275_b * 16 + (this.field_151254_d[0] >> 8 & 15);
+                     this.func_151251_a(new S23PacketBlockChange(i, j, k, PlayerManager.this.field_72701_a));
+ 
+-                    if (PlayerManager.this.field_72701_a.func_147439_a(i, j, k).func_149716_u())
++                    if (PlayerManager.this.field_72701_a.func_147439_a(i, j, k).hasTileEntity(PlayerManager.this.field_72701_a.func_72805_g(i, j, k)))
+                     {
+                         this.func_151252_a(PlayerManager.this.field_72701_a.func_147438_o(i, j, k));
+                     }
+@@ -410,13 +420,14 @@
+                 {
+                     int l;
+ 
+-                    if (this.field_73262_e == 64)
++                    if (this.field_73262_e == ForgeModContainer.clumpingThreshold)
+                     {
+                         i = this.field_73264_c.field_77276_a * 16;
+                         j = this.field_73264_c.field_77275_b * 16;
+                         this.func_151251_a(new S21PacketChunkData(PlayerManager.this.field_72701_a.func_72964_e(this.field_73264_c.field_77276_a, this.field_73264_c.field_77275_b), false, this.field_73260_f));
+ 
+-                        for (k = 0; k < 16; ++k)
++                        // Forge: Grabs ALL tile entities is costly on a modded server, only send needed ones
++                        for (k = 0; false && k < 16; ++k)
+                         {
+                             if ((this.field_73260_f & 1 << k) != 0)
+                             {
+@@ -433,14 +444,17 @@
+                     else
+                     {
+                         this.func_151251_a(new S22PacketMultiBlockChange(this.field_73262_e, this.field_151254_d, PlayerManager.this.field_72701_a.func_72964_e(this.field_73264_c.field_77276_a, this.field_73264_c.field_77275_b)));
+-
++                    }
++                    
++                    { //Forge: Send only the tile entities that are updated, Adding this brace lets us keep the indent and the patch small
++                        WorldServer world = PlayerManager.this.field_72701_a;
+                         for (i = 0; i < this.field_73262_e; ++i)
+                         {
+                             j = this.field_73264_c.field_77276_a * 16 + (this.field_151254_d[i] >> 12 & 15);
+                             k = this.field_151254_d[i] & 255;
+                             l = this.field_73264_c.field_77275_b * 16 + (this.field_151254_d[i] >> 8 & 15);
+ 
+-                            if (PlayerManager.this.field_72701_a.func_147439_a(j, k, l).func_149716_u())
++                            if (world.func_147439_a(j, k, l).hasTileEntity(world.func_72805_g(j, k, l)))
+                             {
+                                 this.func_151252_a(PlayerManager.this.field_72701_a.func_147438_o(j, k, l));
+                             }

@@ -1,0 +1,37 @@
+#X-Generator: crowdin.com
+commands.forge.usage=/Forge <subcommand>를 사용하세요. 하위 명령은 tps 과 track 입니다
+commands.forge.usage.tracking=/forge track <유형><기간>을 사용하세요. 사용할 수 있는 유형들\: (Tile Entities). <기간>은 60 이하여야 합니다. 
+commands.forge.tps.summary=%s \: 1틱당 평균 시간\: %d ms. 평균 TPS\: %d
+
+commands.forge.tracking.te.enabled=타일 엔터티 추적이 %d초 동안 활성화 되었습니다.
+forge.texture.preload.warning=경고\: 텍스쳐 %s가 미리 로드되지 않았습니다, 렌더링 오류가 발생할 것입니다\!
+forge.client.shutdown.internal=내부 서버를 종료합니다...
+forge.update.newversion=사용 가능한 새로운 Forge 버전\: %s
+forge.update.beta.1=%s주의\: %sForge 베타
+forge.update.beta.2=주요 문제가 발생할 수 있습니다, 보고하기 전에 확인해 주세요
+
+forge.configgui.forgeConfigTitle=Minecraft Forge 구성
+forge.configgui.ctgy.forgeGeneralConfig.tooltip=여기서 forge.cfg에 지정되어 있는 설정들을 편집할 수 있습니다.
+forge.configgui.ctgy.forgeGeneralConfig=일반 설정
+forge.configgui.ctgy.forgeChunkLoadingConfig.tooltip=여기서 forgeChunkLoading.cfg에 지정되어 있는 컨피그 설정들을 편집할 수 있습니다.
+forge.configgui.ctgy.forgeChunkLoadingConfig=포지 청크로더 기본 설정
+forge.configgui.ctgy.forgeChunkLoadingModConfig.tooltip=여기서 기본값 대신에 사용할 모드 재정의 설정을 규정할 수 있습니다.
+forge.configgui.ctgy.forgeChunkLoadingModConfig=모드 재정의
+forge.configgui.ctgy.forgeChunkLoadingAddModConfig.tooltip=기본값을 대체할 청크로딩 관련 모드 재정의 설정을 규정할 수 있게 해 줍니다. 여기에 0의 값을 지정함으로서 해당모드가 청크를 로딩할 수 없게 만들 수 있습니다.
+forge.configgui.ctgy.forgeChunkLoadingAddModConfig=새로운 모드 재정의 추가
+
+forge.configgui.biomeSkyBlendRange.tooltip=바이옴의 하늘 색깔 혼합 범위를 조정
+forge.configgui.biomeSkyBlendRange=바이옴 하늘 혼합 범위
+forge.configgui.disableVersionCheck=Forge 버전 확인 비활성화
+forge.configgui.enableGlobalConfig=전역 설정 활성화
+forge.configgui.removeErroringEntities=오류가 나는 엔티티 제거
+forge.configgui.sortRecipies=제작법 분류
+forge.configgui.zombieBaseSummonChance=좀비 소환 확률
+forge.configgui.stencilbits=GL 스텐실 비트 활성화
+
+forge.configgui.modID=Mod ID
+forge.configgui.enableModOverrides=모드 재정의 활성화
+forge.configgui.maximumChunksPerTicket=티켓 당 청크 제한
+forge.configgui.maximumTicketCount=모드 티켓 제한
+forge.configgui.playerTicketCount=플레이어 티켓 제한
+

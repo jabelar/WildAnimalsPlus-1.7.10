@@ -1,0 +1,22 @@
+#X-Generator: crowdin.com
+commands.forge.usage=Uporabite /forge <subcommand>. Subcommande so tps, track
+commands.forge.usage.tracking=Uporabite /forge tracj <type> <duration>. Veljavni so Tile Entetiji. Dolžina je <60. 
+commands.forge.tps.summary=%s\: Dejanski tick čas\: %d ms. Dejanski TPS\: %d
+
+commands.forge.tracking.te.enabled=Tile Entity sledenje vklopljeno za %d sekund.
+forge.texture.preload.warning=Pozor\: Grafika %s ni naložena v naprej, to zna povzročiti render težave\!
+forge.client.shutdown.internal=Izklapljam notranji strežnik...
+forge.update.newversion=Nova verzija Forge je navoljo\: %s
+forge.update.beta.1=%sPozor\: %sForge Beta
+forge.update.beta.2=Pojavijo se lahko večje težave, preverite preden poročate.
+
+forge.configgui.forgeConfigTitle=Minecraft Forge Nastavitve
+forge.configgui.ctgy.forgeGeneralConfig.tooltip=Tukaj lahko urejate nastavitve, ki se nahajajo v forge.cfg.
+forge.configgui.ctgy.forgeGeneralConfig=Globalne nastavitve
+forge.configgui.ctgy.forgeChunkLoadingConfig.tooltip=Tukaj lahko urejate nastavitve, ki se nahajajo v forgeChunkLoading.cfg.
+forge.configgui.ctgy.forgeChunkLoadingConfig=Forge Chunk Loader Prevzete Nastavitve
+forge.configgui.ctgy.forgeChunkLoadingModConfig.tooltip=Tukaj lahko urejate nastavitve specifičnih modov. Te bodo uporabljene namesto prevzetih nastavitev.
+forge.configgui.ctgy.forgeChunkLoadingModConfig=Prepis Modov
+
+
+

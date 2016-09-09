@@ -1,0 +1,27 @@
+--- ../src-base/minecraft/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
++++ ../src-work/minecraft/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
+@@ -25,6 +25,8 @@
+ import net.minecraft.world.chunk.NibbleArray;
+ import net.minecraft.world.storage.IThreadedFileIO;
+ import net.minecraft.world.storage.ThreadedFileIOBase;
++import net.minecraftforge.common.MinecraftForge;
++import net.minecraftforge.event.world.ChunkDataEvent;
+ 
+ import org.apache.logging.log4j.Level;
+ import org.apache.logging.log4j.LogManager;
+@@ -106,6 +108,7 @@
+                 chunk = this.func_75823_a(p_75822_1_, p_75822_4_.func_74775_l("Level"));
+             }
+ 
++            MinecraftForge.EVENT_BUS.post(new ChunkDataEvent.Load(chunk, p_75822_4_));
+             return chunk;
+         }
+     }
+@@ -120,6 +123,7 @@
+             NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+             nbttagcompound.func_74782_a("Level", nbttagcompound1);
+             this.func_75820_a(p_75816_2_, p_75816_1_, nbttagcompound1);
++            MinecraftForge.EVENT_BUS.post(new ChunkDataEvent.Save(p_75816_2_, nbttagcompound));
+             this.func_75824_a(p_75816_2_.func_76632_l(), nbttagcompound);
+         }
+         catch (Exception exception)

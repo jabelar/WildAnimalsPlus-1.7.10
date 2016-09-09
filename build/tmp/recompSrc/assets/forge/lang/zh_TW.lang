@@ -1,0 +1,32 @@
+#X-Generator: crowdin.com
+commands.forge.usage=使用 /forge <subcommand>。subcommand 為 tps 和 track
+commands.forge.usage.tracking=使用 /forge track <type> <duration>。有效的 type 為 te (實體附加值)。duration 小於 60。 
+commands.forge.tps.summary=%s：平均一刻時間：%d ms。平均每秒刻數：%d
+
+commands.forge.tracking.te.enabled=已開啟實體附加值追蹤 %d 秒。
+forge.texture.preload.warning=警告：材質 %s 未被預載，可能會導致畫面異常！
+forge.client.shutdown.internal=正在停止內部伺服器…
+forge.update.newversion=已有新的Forge版本：%s
+forge.update.beta.1=%s警告：%sForge為Beta版
+forge.update.beta.2=可能會出現重要問題，請在報告前進行確認。
+
+forge.configgui.forgeConfigTitle=Minecraft Forge 設定
+forge.configgui.ctgy.forgeGeneralConfig.tooltip=你可以在此編輯forge.cfg內的設定
+forge.configgui.ctgy.forgeGeneralConfig=通用設定
+forge.configgui.ctgy.forgeChunkLoadingConfig.tooltip=你可以在此編輯forgeChunkLoading.cfg內的設定。
+forge.configgui.ctgy.forgeChunkLoadingConfig=Forge資料塊載入器預設設定
+forge.configgui.ctgy.forgeChunkLoadingModConfig.tooltip=在此你可以針對個別Mod定義覆蓋預設值的設定。
+forge.configgui.ctgy.forgeChunkLoadingModConfig=Mod設定覆蓋
+forge.configgui.ctgy.forgeChunkLoadingAddModConfig.tooltip=允許你定義可覆蓋Mod預設值的設定。任何值為零的設定將禁止該mod載入資料塊。
+
+forge.configgui.sortRecipies=排序合成公式
+forge.configgui.zombieBabyChance.tooltip=殭屍(與衍生怪)是小殭屍的機率。 能更改殭屍出現的機制。
+forge.configgui.zombieBabyChance=招喚小殭屍機率
+forge.configgui.zombieBaseSummonChance=招喚殭屍機率
+
+forge.configgui.modID=Mod ID
+forge.configgui.enableModOverrides.tooltip=啟用這個選項能讓你定義個別mod的設定。
+forge.configgui.enableModOverrides=啟用Mod設定覆蓋
+forge.configgui.maximumChunksPerTicket=每刻資料塊數上限
+forge.configgui.maximumTicketCount.tooltip=這是每個 mod 每刻最多可以要求多少個資料塊載入。
+

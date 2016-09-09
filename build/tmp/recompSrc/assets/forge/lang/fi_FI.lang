@@ -1,0 +1,55 @@
+#X-Generator: crowdin.com
+commands.forge.usage=Käytä /forge <alikomento>. Alikomentoja ovat tps ja track
+commands.forge.usage.tracking=Käytä /forge track <tyyppi> <kestoaika>. Hyväksytyt tyypit ovat te (Tile Entities). Kestoaika on oltava alle 60. 
+commands.forge.tps.summary=%s \: Keskimääräinen päivityksen kesto\: %d ms. Keskimääräinen määrä päivityksiä sekunnissa\: %d
+
+commands.forge.tracking.te.enabled=Palikkaentiteetin seuranta käytössä %d sekunnin ajan.
+forge.texture.preload.warning=Varoitus\: Tekstuuri %s ei ole ennalta ladattu. Tämä aiheuttaa renderöintivirheitä\!
+forge.client.shutdown.internal=Sammutetaan sisäistä palvelinta...
+forge.update.newversion=Uusi Forge versio saatavilla\: %s
+forge.update.beta.1=%sVAROITUS\: %sForge Beta
+forge.update.beta.2=Suuria ongelmia voi syntyä, varmista ennen raportointia.
+
+forge.configgui.forgeConfigTitle=Minecraft Forge Asetukset
+forge.configgui.ctgy.forgeGeneralConfig.tooltip=Täällä voit muokata asetuksia, jotka ovat forge.cfg\:ssä.
+forge.configgui.ctgy.forgeGeneralConfig=Yleiset Asetukset
+forge.configgui.ctgy.forgeChunkLoadingConfig.tooltip=Täällä voit muokata asetuksia, jotka ovat forgeChunkLoading.cfg\:ssä.
+forge.configgui.ctgy.forgeChunkLoadingConfig=Forge Chunk Loader oletusasetukset
+forge.configgui.ctgy.forgeChunkLoadingModConfig.tooltip=Täällä voit määrittää modikohtaiset asetukset, joita käytetään oletusasetusten sijasta.
+forge.configgui.ctgy.forgeChunkLoadingModConfig=Modien Asetusten Ohitukset
+forge.configgui.ctgy.forgeChunkLoadingAddModConfig.tooltip=Tämä antaa sinun määrittää mod-kohtaisia asetuksia, jotka ohittavat oletusasetukset. Jos arvo on nolla kummassakaan kohdassa, kyseisen modin maailmanlatauskyky poistuu.
+forge.configgui.ctgy.forgeChunkLoadingAddModConfig=+ Lisää uusi ohitus modille
+
+forge.configgui.biomeSkyBlendRange.tooltip=Hallitse taivaan värien sekoittamisaluetta, jos eri väriset taivaat eri biomeille ovat käytössä.
+forge.configgui.biomeSkyBlendRange=Biomi Taivaan Sekoitus Alue
+forge.configgui.clumpingThreshold.tooltip=Määrittää numeerisen rajan, jossa Paketilla 51 on etusija Pakettiin 52 verrattuna.
+forge.configgui.clumpingThreshold=Pakettien yhdistämiskynnys
+forge.configgui.disableVersionCheck.tooltip=Asettamalla arvoksi tosi (true), voit poistaa käytöstä Forgen versiontarkistusmekaniikan. Forge hakee pienen json tiedoston meidän palvelimiltamme versiotietoja varten. Jos haluat lisää tietoja, katso ForgeVersion-luokkaa githubissamme.
+forge.configgui.disableVersionCheck=Poista käytöstä Forgen versiontarkistus
+forge.configgui.enableGlobalConfig=Aktivoi globaalit asetukset
+forge.configgui.forceDuplicateFluidBlockCrash.tooltip=Asettamalla arvoksi tosi (true), voit pakottaa kaatumisen siinä tapauksessa, että useampi kuin yksi palikka yrittää yhdistää samaan nestepalikkaan.
+forge.configgui.forceDuplicateFluidBlockCrash=Pakota kaatuminen nestepalikan tuplaantuessa
+forge.configgui.fullBoundingBoxLadders.tooltip=Asettamalla arvoksi tosi (true), tikkaita noustessa koko olennon törmäyslaatikko tarkastetaan tikkaiden varalta sen sijaan, että tarkastettaisiin vain se palikka missä olento on. Aiheuttaa huomattavia eroja mekaniikoissa, joten oletus on tavallisen Minecraftin mekaniikka.
+forge.configgui.removeErroringEntities.tooltip=Aseta tämän arvoksi tosi (true) poistaaksesi kaikki entiteetit, jotka heittävät virheitä päivitysmetodeistaan ilman palvelimen sammuttamista ja ongelman raportoimista kaatumislokiin. VAROITUS\: TÄMÄ SAATTAA HAJOITTAA KAIKEN, JOTEN KÄYTÄ SITÄ VAROVASTI. ME EMME OLE VASTUUSSA VAHINGOISTA.
+forge.configgui.removeErroringEntities=Poista virheitä heittävät entiteetit
+forge.configgui.removeErroringTileEntities.tooltip=Aseta tämän arvoksi tosi (true) poistaaksesi kaikki palikkaentiteetit, jotka heittävät virheitä päivitysmetodeistaan ilman palvelimen sammuttamista ja ongelman raportoimista kaatumislokiin. VAROITUS\: TÄMÄ SAATTAA HAJOITTAA KAIKEN, JOTEN KÄYTÄ SITÄ VAROVASTI. ME EMME OLE VASTUUSSA VAHINGOISTA.
+forge.configgui.removeErroringTileEntities=Poista virheitä heittävät palikkaentiteetit
+forge.configgui.sortRecipies.tooltip=Asettamalla arvoksi tosi (true) voit aktivoida reseptien järjestelemisen jälkialustuksen jälkeen Forgen järjestelijällä. Tämä saattaa aiheuttaa synkronointiongelmia ristiriitaisissa resepteissä. MINECRAFT ON KÄYNNISTETTÄVÄ UUDELLEEN, JOS TÄTÄ MUUTETAAN PELIN SISÄLTÄ KÄSIN.
+forge.configgui.sortRecipies=Järjestä reseptit
+forge.configgui.zombieBabyChance.tooltip=Mahdollisuus, että zombi (tai sen alaluokka) on vauva. Antaa muuttaa zombien syntymismekaniikkaa.
+forge.configgui.zombieBabyChance=Vauvazombien mahdollisuus
+forge.configgui.zombieBaseSummonChance=Zombien kutsumismahdollisuus
+
+forge.configgui.modID.tooltip=Sen modin ID, jolle haluat antaa omat asetukset.
+forge.configgui.modID=Modin tunnus
+forge.configgui.dormantChunkCacheSize.tooltip=Muistista poistetut chunkit voidaan pitää välimuistissa nopeampaa lataamista varten, Määritä välimuistin koko (chunkkeina) tähän.
+forge.configgui.dormantChunkCacheSize=Chunk-välimuistin koko
+forge.configgui.enableModOverrides.tooltip=Aktivoi tämä asetus, jos haluat asettaa tietyille modeille eri asetukset.
+forge.configgui.enableModOverrides=Aktivoi Modien Ohitukset
+forge.configgui.maximumChunksPerTicket.tooltip=Tämä on maksimimäärä chunkkeja, jota yksittäinen lippu voi pakottaa.
+forge.configgui.maximumChunksPerTicket=Maksimimäärä chunkkeja lippua kohden
+forge.configgui.maximumTicketCount.tooltip=Tämä on määrä chunkkien latauspyyntöjä, jota yksittäinen modi saa tehdä.
+forge.configgui.maximumTicketCount=Maksimimäärä lippuja modia kohden
+forge.configgui.playerTicketCount.tooltip=Tämä on määrä lippuja, jotka voidaan asettaa pelaajalle modin sijasta. Tämä jaetaan kaikille modeille ja sen käyttö riippuu modeista.
+forge.configgui.playerTicketCount=Maksimimäärä lippuja pelaajaa kohden
+

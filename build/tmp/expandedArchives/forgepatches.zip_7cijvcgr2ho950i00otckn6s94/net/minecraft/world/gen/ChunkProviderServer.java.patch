@@ -1,0 +1,57 @@
+--- ../src-base/minecraft/net/minecraft/world/gen/ChunkProviderServer.java
++++ ../src-work/minecraft/net/minecraft/world/gen/ChunkProviderServer.java
+@@ -24,6 +24,8 @@
+ import net.minecraft.world.chunk.EmptyChunk;
+ import net.minecraft.world.chunk.IChunkProvider;
+ import net.minecraft.world.chunk.storage.IChunkLoader;
++import net.minecraftforge.common.DimensionManager;
++import net.minecraftforge.common.ForgeChunkManager;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
+@@ -55,7 +57,7 @@
+ 
+     public void func_73241_b(int p_73241_1_, int p_73241_2_)
+     {
+-        if (this.field_73251_h.field_73011_w.func_76567_e())
++        if (this.field_73251_h.field_73011_w.func_76567_e() && DimensionManager.shouldLoadSpawn(this.field_73251_h.field_73011_w.field_76574_g))
+         {
+             ChunkCoordinates chunkcoordinates = this.field_73251_h.func_72861_E();
+             int k = p_73241_1_ * 16 + 8 - chunkcoordinates.field_71574_a;
+@@ -92,7 +94,11 @@
+ 
+         if (chunk == null)
+         {
+-            chunk = this.func_73239_e(p_73158_1_, p_73158_2_);
++            chunk = ForgeChunkManager.fetchDormantChunk(k, this.field_73251_h);
++            if (chunk == null)
++            {
++                chunk = this.func_73239_e(p_73158_1_, p_73158_2_);
++            }
+ 
+             if (chunk == null)
+             {
+@@ -258,6 +264,11 @@
+     {
+         if (!this.field_73251_h.field_73058_d)
+         {
++            for (ChunkCoordIntPair forced : this.field_73251_h.getPersistentChunks().keySet())
++            {
++                this.field_73248_b.remove(ChunkCoordIntPair.func_77272_a(forced.field_77276_a, forced.field_77275_b));
++            }
++
+             for (int i = 0; i < 100; ++i)
+             {
+                 if (!this.field_73248_b.isEmpty())
+@@ -270,6 +281,11 @@
+                     this.field_73248_b.remove(olong);
+                     this.field_73244_f.func_76159_d(olong.longValue());
+                     this.field_73245_g.remove(chunk);
++                    ForgeChunkManager.putDormantChunk(ChunkCoordIntPair.func_77272_a(chunk.field_76635_g, chunk.field_76647_h), chunk);
++                    if(field_73245_g.size() == 0 && ForgeChunkManager.getPersistentChunksFor(this.field_73251_h).size() == 0 && !DimensionManager.shouldLoadSpawn(this.field_73251_h.field_73011_w.field_76574_g)){
++                        DimensionManager.unloadWorld(this.field_73251_h.field_73011_w.field_76574_g);
++                        return field_73246_d.func_73156_b();
++                    }
+                 }
+             }
+ 

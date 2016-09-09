@@ -1,0 +1,16 @@
+[
+{
+  "modid": "wildanimals",
+  "name": "Wild Animals Plus",
+  "description": "It's a zoo out there!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "jabelarminecraft.blogspot.com",
+  "updateUrl": "",
+  "authorList": ["jabelar"],
+  "credits": "jnaejnae and taliaailat",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

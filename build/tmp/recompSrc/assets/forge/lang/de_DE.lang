@@ -1,0 +1,59 @@
+#X-Generator: crowdin.com
+commands.forge.usage=Verwende /forge <Befehl>. Mögliche Befehle sind\: tps, track
+commands.forge.usage.tracking=Verwende /forge track <Typ> <Dauer in s>. Gültige Typen sind te (Tile Entities). Dauer ist < 60. 
+commands.forge.tps.summary=%s \: Durchschnittliche Zeit pro Tick\: %d ms. Durchschnittliche TPS\: %d
+
+commands.forge.tracking.te.enabled=Tile-Entity-Tracking für %d Sekunden aktiviert.
+forge.texture.preload.warning=Warnung\: Textur %s nicht geladen, dies wird Rendering-Fehler verursachen\!
+forge.client.shutdown.internal=Interner Server wird heruntergefahren...
+forge.update.newversion=Neue Forge-Version verfügbar\: %s
+forge.update.beta.1=%sWARNUNG\: %sForge Beta
+forge.update.beta.2=Größere Probleme könnten auftreten, bitte nur reproduzierbare Fehler melden.
+
+forge.configgui.forgeConfigTitle=Minecraft Forge-Konfiguration
+forge.configgui.ctgy.forgeGeneralConfig.tooltip=Hier können sie die in forge.cfg gespeicherten Einstellungen bearbeiten.
+forge.configgui.ctgy.forgeGeneralConfig=Allgemeine Einstellungen
+forge.configgui.ctgy.forgeChunkLoadingConfig.tooltip=Hier können sie die in forgeChunkLoading.cfg gespeicherten Einstellungen bearbeiten.
+forge.configgui.ctgy.forgeChunkLoadingConfig=Forge Chunk Loader Standard Einstellungen
+forge.configgui.ctgy.forgeChunkLoadingModConfig.tooltip=Hier kannst du mod-spezifische Einstellungen überschreiben, welche statt dem Standard genutzt werden.
+forge.configgui.ctgy.forgeChunkLoadingModConfig=Mod-Überschreibung
+forge.configgui.ctgy.forgeChunkLoadingAddModConfig.tooltip=Erlaubt dir, mod-spezifische Einstellungen festzulegen, welche die Standardwerte überschreiben. Ein Wert von 0 deaktiviert effektiv jede Chunkloading Fähigkeiten einer Mod.
+forge.configgui.ctgy.forgeChunkLoadingAddModConfig=+ Füge neue Mod-Überschreibung hinzu
+
+forge.configgui.biomeSkyBlendRange.tooltip=Bestimmt die Reichweite für Überblendung des gefärbten Himmels in Biomen.
+forge.configgui.biomeSkyBlendRange=Reichweite der Biom-Himmelsüberblendung
+forge.configgui.clumpingThreshold.tooltip=Bestimmt die Schwelle, ab der Packet51 statt Packet52 bevorzugt wird.
+forge.configgui.clumpingThreshold=Schwelle der Packet-Gruppierung
+forge.configgui.disableVersionCheck.tooltip=Setze diesen Wert auf true um die Versionsüberprüfung von Forge zu deaktivieren. Forge ruft eine kleine JSON-Datei mit Versionsinformationen auf unserem Server ab. Die ForgeVersion-Klasse auf GitHub enthält weitere Details.
+forge.configgui.disableVersionCheck=Deaktiviere den Forge Versions-Check
+forge.configgui.enableGlobalConfig=Nutze globale Konfiguration
+forge.configgui.forceDuplicateFluidBlockCrash.tooltip=Setz dies auf true um einen Absturz zu erzwingen, wenn mehr als ein Block versucht sich zu einer Flüssigkeit zu verbinden.
+forge.configgui.forceDuplicateFluidBlockCrash=Erzwinge einen Crash bei doppelt registrierten Flüssigkeitsblöcken
+forge.configgui.fullBoundingBoxLadders.tooltip=Setze diesen Wert auf true, damit die ganze Kollisionsbox eines Entitys statt nur der aktuelle Block bei Leitern überprüft wird. Verursacht bemerkbare Unterschiede in der Spielmechanik, weshalb Vanilla das Standardverhalten vorgibt.
+forge.configgui.fullBoundingBoxLadders=Leitern mit gesamter Kollisionsbox
+forge.configgui.removeErroringEntities.tooltip=Setze dies auf true, um jeden Entity, welcher einen Fehler während seiner Update-Methode erzeugt, zu löschen anstatt dass der Server geschlossen wird und eine Absturzmeldung gemeldet wird. SEI GEWARNT, DIES KÖNNTE EIN CHAOS ERZEUGEN. BENUTZE ES SPARSAM, WIR SIND FÜR KEINE SCHADEN VERANTWORTLICH.
+forge.configgui.removeErroringEntities=Entferne fehlerhafte Entities
+forge.configgui.removeErroringTileEntities.tooltip=Setze diesen Wert auf true, damit alle TileEntities, die Fehler bei ihrer Aktualisierung verursachen, gelöscht werden und der Server nicht abstürzt. DIESE EINSTELLUNG KANN ALLES ZERSTÖREN, VERWENDE SIE DESHALB MIT VORSICHT. WIR ÜBERNEHMEN KEINERLEI HAFTUNG BEI SCHÄDEN.
+forge.configgui.removeErroringTileEntities=Entferne fehlerhafte Tile Entities
+forge.configgui.sortRecipies.tooltip=Setze diesen Wert auf true, damit Forge Crafting-Rezepte nach dem letzten Ladeschritt sortiert. Kann Asynchronität bei widersprüchlichen Rezepten verursachen. MINECRAFT MUSS NEUGESTARTET WERDEN, WENN DIESE EINSTELLUNG IN DER GUI GEÄNDERT WIRD.
+forge.configgui.sortRecipies=Rezepte sortieren
+forge.configgui.zombieBabyChance.tooltip=Wahrscheinlichkeit, dass ein Zombie (oder Unterklasse) ein Baby ist. Erlaubt das Ändern des Zombie-Spawning-Verhaltens.
+forge.configgui.zombieBabyChance=Zombie Baby Chance
+forge.configgui.zombieBaseSummonChance.tooltip=Basiswahrscheinlichkeit für das Spawnen von Zombie-Verstärkung. Ermöglicht die Änderung des Mechanismus zur Bonus-Zombie-Verstärkung.
+forge.configgui.zombieBaseSummonChance=Zombie Spawn Chance
+forge.configgui.stencilbits=GL-Stencil-Bits aktivieren
+forge.configgui.spawnfuzz=Respawn-Durchmesser
+
+forge.configgui.modID.tooltip=Die Mod-ID für die du eigene Einstellungen setzen willst.
+forge.configgui.modID=Mod-ID
+forge.configgui.dormantChunkCacheSize.tooltip=Hochgeladene Chunks können zuerst in einem ruhenden Cache belassen werden, um schnellere Ladezeiten zu erreichen. Lege die Größe (in Chunks) dieses Cache hier fest.
+forge.configgui.dormantChunkCacheSize=Größe des ruhenden Chunk-Caches
+forge.configgui.enableModOverrides.tooltip=Aktiviere diese Einstellung um eigene per-Mod Einstellungen zu definieren.
+forge.configgui.enableModOverrides=Mod-Overrides aktivieren
+forge.configgui.maximumChunksPerTicket.tooltip=Dies ist die maximale Anzahl an Chunks die ein einzelnes Ticket erzwingen kann.
+forge.configgui.maximumChunksPerTicket=Chunks pro Ticket Limit
+forge.configgui.maximumTicketCount.tooltip=Dies ist die Nummer an Chunk Ladeanfragen die eine Mod machen darf.
+forge.configgui.maximumTicketCount=Mod Ticket Limit
+forge.configgui.playerTicketCount.tooltip=Die Anzahl der Tickets, die einem Spieler statt einem Mod zugeordnet werden können. Dieser Wert wird von allen Mods geteilt und muss von diesen verwendet werden.
+forge.configgui.playerTicketCount=Spieler Ticket Limit
+

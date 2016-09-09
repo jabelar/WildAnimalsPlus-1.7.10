@@ -1,0 +1,23 @@
+entity.tiger.name=Tiger
+entity.maneatingtiger.name=Man-Eating Tiger
+entity.lion.name=Lion
+entity.jaguar.name=Jaguar
+entity.lynx.name=Lynx
+
+entity.python.name=Python
+
+entity.elephant.name=Elephant
+
+tile.tomatoes.name=Tomatoes
+tile.blueberries.name=Blueberries
+tile.stove.name=Stove
+tile.stove_lit.name=Stove
+tile.pantry.name=Pantry
+
+item.tomato.name=Tomato
+item.blueberry.name=Blueberry
+
+itemGroup.Recipe+=Recipe+
+
+container.stove=Stove
+container.pantry=Pantry

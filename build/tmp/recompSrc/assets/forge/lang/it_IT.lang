@@ -1,0 +1,26 @@
+#X-Generator: crowdin.com
+commands.forge.usage=Usa /forge <subcommand>. I subcomandi sono tps, track
+commands.forge.usage.tracking=Usa /forge track <type> <duration>. I tipi validi sono le entità piatte. La durata deve essere < 60. 
+commands.forge.tps.summary=%s \: Tempo medio dei tick\: %d ms. TPS medi\: %d
+
+commands.forge.tracking.te.enabled=Tracciamento delle entità piatte abilitata per %d secondi.
+forge.texture.preload.warning=Attenzione\: La grafica %s non è pre-caricata, questo causerà errori nel rendering\!
+forge.client.shutdown.internal=Spegnendo server interno....
+forge.update.newversion=Nuova versione di Forge è uscita\: %s
+forge.update.beta.1=%sWARNING\: %sForge Beta
+forge.update.beta.2=Altri problemi possono sorgere, controlla prima di segnalare.
+
+forge.configgui.forgeConfigTitle=Configurazione Minecraft Forge
+forge.configgui.ctgy.forgeGeneralConfig.tooltip=Quì è dove puoi modificare le impostazioni contenute in forge.cfg.
+forge.configgui.ctgy.forgeGeneralConfig=Impostazioni Generali
+forge.configgui.ctgy.forgeChunkLoadingConfig.tooltip=Quì è dove puoi modificare le impostazioni contenute in forgeChunkLoading.cfg.
+forge.configgui.ctgy.forgeChunkLoadingConfig=Forge Chunk Loader Impostazioni di Default
+forge.configgui.ctgy.forgeChunkLoadingModConfig.tooltip=Quì è dove puoi definire le impostazioni mod-specific che saranno utilizzate invece di quelle di default.
+forge.configgui.ctgy.forgeChunkLoadingModConfig=Sostituzioni Mod
+forge.configgui.ctgy.forgeChunkLoadingAddModConfig.tooltip=Quì è dove puoi definire le impostazioni mod-specific che saranno utilizzate invece di quelle di default. Un valore pari a zero in qualuncue entrata disabiliterà tutte le capacità di ChunkLoading per quella mod.
+forge.configgui.ctgy.forgeChunkLoadingAddModConfig=+ Aggiungi Nuova Mod Sustitutiva
+
+forge.configgui.biomeSkyBlendRange.tooltip=Controlla il gamma di Sky Blending per i cieli colorati nei biomi.
+forge.configgui.biomeSkyBlendRange=Gamma Miscela Cielo del Bioma
+
+

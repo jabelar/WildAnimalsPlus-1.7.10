@@ -1,0 +1,35 @@
+--- ../src-base/minecraft/net/minecraft/world/IBlockAccess.java
++++ ../src-work/minecraft/net/minecraft/world/IBlockAccess.java
+@@ -6,6 +6,7 @@
+ import net.minecraft.tileentity.TileEntity;
+ import net.minecraft.util.Vec3Pool;
+ import net.minecraft.world.biome.BiomeGenBase;
++import net.minecraftforge.common.util.ForgeDirection;
+ 
+ public interface IBlockAccess
+ {
+@@ -18,7 +19,6 @@
+ 
+     int func_72805_g(int var1, int var2, int var3);
+ 
+-    @SideOnly(Side.CLIENT)
+     boolean func_147437_c(int var1, int var2, int var3);
+ 
+     @SideOnly(Side.CLIENT)
+@@ -33,4 +33,16 @@
+     Vec3Pool func_82732_R();
+ 
+     int func_72879_k(int var1, int var2, int var3, int var4);
++
++    /**
++     * FORGE: isSideSolid, pulled up from {@link World}
++     *
++     * @param x X coord
++     * @param y Y coord
++     * @param z Z coord
++     * @param side Side
++     * @param _default default return value
++     * @return if the block is solid on the side
++     */
++    boolean isSideSolid(int x, int y, int z, ForgeDirection side, boolean _default);
+ }

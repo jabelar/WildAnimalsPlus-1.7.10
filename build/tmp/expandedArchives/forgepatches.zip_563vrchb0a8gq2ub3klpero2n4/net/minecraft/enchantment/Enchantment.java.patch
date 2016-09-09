@@ -1,0 +1,39 @@
+--- ../src-base/minecraft/net/minecraft/enchantment/Enchantment.java
++++ ../src-work/minecraft/net/minecraft/enchantment/Enchantment.java
+@@ -123,6 +123,36 @@
+ 
+     public void func_151367_b(EntityLivingBase p_151367_1_, Entity p_151367_2_, int p_151367_3_) {}
+ 
++    /**
++     * This applies specifically to applying at the enchanting table. The other method {@link #canApply(ItemStack)}
++     * applies for <i>all possible</i> enchantments.
++     * @param stack
++     * @return
++     */
++    public boolean canApplyAtEnchantingTable(ItemStack stack)
++    {
++        return func_92089_a(stack);
++    }
++
++    /**
++     * Add to the list of enchantments applicable by the anvil from a book
++     *
++     * @param enchantment
++     */
++    public static void addToBookList(Enchantment enchantment)
++    {
++        com.google.common.collect.ObjectArrays.concat(field_92090_c, enchantment);
++    }
++
++    /**
++     * Is this enchantment allowed to be enchanted on books via Enchantment Table
++     * @return false to disable the vanilla feature
++     */
++    public boolean isAllowedOnBooks()
++    {
++        return true;
++    }
++
+     static
+     {
+         ArrayList var0 = new ArrayList();
